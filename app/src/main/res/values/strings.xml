@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">BLEMeter</string>
+    <string name="no_devices_available">No Devices Available</string>
+    <string name="scan_devices">Scan devices</string>
+    <string name="stop_scan">Stop scan</string>
+    <string name="read_meter_data">Read meter data</string>
+    <string name="valve_on">Valve On</string>
+    <string name="valve_off">Valve Off</string>
+    <string name="meter_data">Meter Data</string>
+    <string name="go_to_communications">Go To Communications</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="turn_on">Turn on</string>
+    <string name="bluetooth_is_turned_off">Bluetooth is turned off</string>
+    <string name="bluetooth_enable_desc">Enabling of bluetooth is required for the functioning of the app</string>
+    <string name="deny">Deny</string>
+    <string name="error_">Error!</string>
+    <string name="permission_required_title">Permission Required</string>
+    <string name="permission_required_desc">Bluetooth permission is required for the app to function properly</string>
+    <string name="permission_permanently_denied_title">Permission permanently denied</string>
+    <string name="permission_permanently_denied_desc">Permissions has been denied permanently. Go to Settings to allow it.</string>
+    <string name="go_to_setting">Go to setting</string>
+    <string name="allow">Allow</string>
+</resources>
