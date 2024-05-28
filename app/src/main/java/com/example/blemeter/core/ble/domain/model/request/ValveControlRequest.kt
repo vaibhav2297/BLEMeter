@@ -1,8 +1,9 @@
 package com.example.blemeter.core.ble.domain.model.request
 
 data class ValveControlRequest(
+    val baseRequest: BaseRequest,
     val status: ValveControlCommandStatus
-) : Request
+) : Base by baseRequest
 
 
 enum class ValveControlCommandStatus(val code: Int) {

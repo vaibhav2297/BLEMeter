@@ -6,7 +6,8 @@ import com.example.blemeter.model.MeterData
 import com.example.blemeter.model.ValveControlData
 
 data class CommunicationUiState(
-    val isCommunicating: Boolean = false,
+    val isLoading: Boolean = false,
+    val isReadingMeterData: Boolean = false,
     val error: String? = null,
     val meterData: MeterData = MeterData(),
     val valveControlData: ValveControlData = ValveControlData(),

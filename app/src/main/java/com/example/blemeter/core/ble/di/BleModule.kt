@@ -7,6 +7,7 @@ import com.example.blemeter.core.ble.data.BLEGATTService
 import com.example.blemeter.core.ble.data.BLEScanService
 import com.example.blemeter.core.ble.data.IBLEGATTService
 import com.example.blemeter.core.ble.data.IBLEScanService
+import com.example.blemeter.core.ble.data.repository.BLEService
 import com.example.blemeter.core.ble.data.repository.IBLERepository
 import com.example.blemeter.core.ble.domain.repository.BLERepository
 import com.example.blemeter.core.ble.domain.usecases.ParseDescriptor
@@ -22,6 +23,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
 import javax.inject.Singleton
 
 @Module
@@ -85,4 +87,11 @@ object BleModule {
         bluetoothManager: BluetoothManager
     ): BluetoothAdapter =
         bluetoothManager.adapter
+
+    @Provides
+    @Singleton
+    fun bindBLEService(
+        scope: CoroutineScope
+    ): BLEService =
+        BLEService(scope)
 }

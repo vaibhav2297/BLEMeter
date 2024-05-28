@@ -15,5 +15,5 @@ interface IBLEGATTService {
     fun readCharacteristics(uuid: String)
     fun writeBytes(uuid: String, bytes: ByteArray)
     val connectedDevice: StateFlow<ScannedDevice?>
-    val data: StateFlow<Data?>
+    val data: StateFlow<Result<Data?>>
 }

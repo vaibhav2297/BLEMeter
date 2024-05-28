@@ -6,8 +6,10 @@ import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
+import android.os.ParcelUuid
 import android.util.Log
 import com.example.blemeter.core.ble.domain.model.BleScanEvent
+import com.example.blemeter.core.ble.domain.model.MeterServicesProvider
 import com.example.blemeter.core.ble.domain.model.ScannedDevice
 import com.example.blemeter.core.ble.domain.model.toScannedDevice
 import com.example.blemeter.core.logger.ExceptionHandler
@@ -47,6 +49,7 @@ class BLEScanService @Inject constructor(
 
     private val scanFilter = ScanFilter
         .Builder()
+        .setServiceUuid(ParcelUuid(MeterServicesProvider.getUUIDFor(MeterServicesProvider.MainService.SERVICE)))
         .build()
 
     private fun isBluetoothEnabled() = bluetoothAdapter.isEnabled

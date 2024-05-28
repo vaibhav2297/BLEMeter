@@ -8,31 +8,32 @@ import com.example.blemeter.core.ble.domain.model.updateBytes
 class ParseRead {
 
     operator fun invoke(
-        deviceDetail: List<DeviceService>,
+        deviceServices: List<DeviceService>,
         characteristic: BluetoothGattCharacteristic,
         status: Int
     ): List<DeviceService> {
         return invoke(
-            deviceDetail = deviceDetail,
+            deviceServices = deviceServices,
             characteristic = characteristic,
             value = characteristic.value,
             status = status
         )
     }
 
+    @OptIn(ExperimentalUnsignedTypes::class)
     operator fun invoke(
-        deviceDetail: List<DeviceService>,
+        deviceServices: List<DeviceService>,
         characteristic: BluetoothGattCharacteristic,
         value: ByteArray,
         status: Int
     ): List<DeviceService> {
 
         if (status == BluetoothGatt.GATT_SUCCESS) {
-            val newList = deviceDetail.map { svc ->
+            val newList = deviceServices.map { svc ->
                 svc.copy(
                     characteristics = svc.characteristics.map { char ->
                         if (char.uuid == characteristic.uuid.toString()) {
-                            char.updateBytes(value)
+                            char.updateBytes(value.toUByteArray())
                         } else
                             char
                     }
@@ -41,7 +42,7 @@ class ParseRead {
 
             return newList
         } else {
-            return deviceDetail
+            return deviceServices
         }
     }
 }

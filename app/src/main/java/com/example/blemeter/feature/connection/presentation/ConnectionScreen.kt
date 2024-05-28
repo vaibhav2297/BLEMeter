@@ -74,7 +74,8 @@ fun ConnectionScreen(
 
     ConnectionScreenStateHandle(
         uiState = uiState,
-        onEvent = onEvent
+        onEvent = onEvent,
+        onNavigateToCommunication = onNavigateToCommunication
     )
 
     Column(
@@ -142,7 +143,9 @@ fun ConnectionScreen(
 
             VerticalSpacer(height = 8.dp)
 
-            AnimatedVisibility(visible = uiState.deviceDetail?.connectionState?.isConnected() ?: false) {
+            AnimatedVisibility(
+                visible = uiState.deviceDetail?.connectionState?.isConnected() ?: false
+            ) {
                 Button(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -162,6 +165,7 @@ fun ConnectionScreen(
 @Composable
 private fun ConnectionScreenStateHandle(
     uiState: ConnectionUiState,
+    onNavigateToCommunication: VoidCallback,
     onEvent: ValueChanged<ConnectionUiEvent>
 ) {
     val context = LocalContext.current
@@ -173,6 +177,11 @@ private fun ConnectionScreenStateHandle(
         onEvent(
             ConnectionUiEvent.BluetoothEvent.OnBluetoothEnabled
         )
+    }
+
+    if (uiState.connectionState.isConnected()) {
+        onEvent(ConnectionUiEvent.OnStopScan)
+        onNavigateToCommunication()
     }
 
     if (!uiState.isBluetoothEnabled) {

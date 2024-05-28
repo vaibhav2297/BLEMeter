@@ -3,10 +3,10 @@ package com.example.blemeter.core.ble.domain.model
 enum class ConnectionState(
     val displayName: String
 ) {
+    DISCONNECTED(displayName = "Disconnected"),
     CONNECTING(displayName = "Connecting"),
     CONNECTED(displayName = "Connected"),
     DISCONNECTING(displayName = "Disconnecting"),
-    DISCONNECTED(displayName = "Disconnected")
 }
 
 fun ConnectionState.isConnected() =

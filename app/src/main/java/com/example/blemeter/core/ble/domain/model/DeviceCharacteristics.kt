@@ -1,5 +1,6 @@
 package com.example.blemeter.core.ble.domain.model
 
+@OptIn(ExperimentalUnsignedTypes::class)
 data class DeviceCharacteristics(
     val uuid: String,
     val name: String,
@@ -10,7 +11,7 @@ data class DeviceCharacteristics(
     val descriptors: List<DeviceDescriptor>,
     val canRead: Boolean,
     val canWrite: Boolean,
-    val readBytes: ByteArray?,
+    val readBytes: UByteArray?,
     val notificationBytes: ByteArray?
 ) {
     override fun equals(other: Any?): Boolean {
@@ -74,7 +75,8 @@ fun DeviceCharacteristics.hasNotify(): Boolean = properties.contains(BleProperti
 
 fun DeviceCharacteristics.hasIndicate(): Boolean = properties.contains(BleProperties.PROPERTY_INDICATE)
 
-fun DeviceCharacteristics.updateBytes(fromDevice: ByteArray): DeviceCharacteristics {
+@OptIn(ExperimentalUnsignedTypes::class)
+fun DeviceCharacteristics.updateBytes(fromDevice: UByteArray): DeviceCharacteristics {
     return copy(readBytes = fromDevice)
 }
 
@@ -87,6 +89,11 @@ fun DeviceCharacteristics.updateDescriptors(uuidFromDevice: String, fromDevice: 
     }
 }
 
-fun DeviceCharacteristics.updateNotification(fromDevice: ByteArray): DeviceCharacteristics {
+@OptIn(ExperimentalUnsignedTypes::class)
+fun DeviceCharacteristics.updateNotification(fromDevice: UByteArray): DeviceCharacteristics {
     return copy(readBytes = fromDevice)
+}
+
+fun DeviceCharacteristics.getDescriptor(uuid: String): DeviceDescriptor? {
+    return descriptors.find { it.uuid == uuid }
 }

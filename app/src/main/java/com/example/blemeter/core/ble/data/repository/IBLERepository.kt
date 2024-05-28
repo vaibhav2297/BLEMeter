@@ -13,11 +13,12 @@ interface IBLERepository {
     val connectionState: StateFlow<ConnectionState>
     val deviceServices: StateFlow<List<DeviceService>>
     val connectedDevice: StateFlow<ScannedDevice?>
-    val data: StateFlow<Data?>
+    val data: StateFlow<Result<Data?>>
     suspend fun scanLeDevice()
     fun stopLeScan()
     fun connect(scannedDevice: ScannedDevice)
     fun close()
     @OptIn(ExperimentalUnsignedTypes::class)
     fun writeBytes(uuid: String, values: UByteArray)
+    fun readCharacteristics(uuid: String)
 }

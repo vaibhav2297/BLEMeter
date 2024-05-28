@@ -10,21 +10,19 @@ import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothProfile
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import com.example.blemeter.core.ble.domain.model.ConnectionState
 import com.example.blemeter.core.ble.domain.model.DeviceService
 import com.example.blemeter.core.ble.domain.model.ScannedDevice
+import com.example.blemeter.core.ble.domain.model.MeterServicesProvider
 import com.example.blemeter.core.ble.domain.model.toFormattedString
 import com.example.blemeter.core.ble.domain.usecases.ParseDescriptor
 import com.example.blemeter.core.ble.domain.usecases.ParseRead
 import com.example.blemeter.core.ble.domain.usecases.ParseService
 import com.example.blemeter.core.ble.domain.usecases.ParseWrite
-import com.example.blemeter.core.ble.utils.BLEConstants
 import com.example.blemeter.model.Data
 import com.example.blemeter.core.ble.utils.toHexString
 import com.example.blemeter.core.logger.ExceptionHandler
 import com.example.blemeter.core.logger.ILogger
-import com.example.blemeter.core.logger.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -78,8 +76,8 @@ class BLEGATTService @Inject constructor(
      * A Flow that provides a setting received from BLE
      * @return [Data]
      */
-    private val _data: MutableStateFlow<Data?> by lazy {
-        MutableStateFlow(null)
+    private val _data: MutableStateFlow<Result<Data?>> by lazy {
+        MutableStateFlow(Result.success(null))
     }
     override val data = _data.asStateFlow()
 
@@ -106,6 +104,11 @@ class BLEGATTService @Inject constructor(
     private val gattCallback: BluetoothGattCallback = object : BluetoothGattCallback() {
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             super.onConnectionStateChange(gatt, status, newState)
+
+            if (gatt?.device?.address == _connectedDevice.value?.address
+                && newState == _connectionState.value.ordinal) {
+                return
+            }
 
             btGatt = gatt
 
@@ -178,7 +181,8 @@ class BLEGATTService @Inject constructor(
             status: Int
         ) {
             super.onCharacteristicRead(gatt, characteristic, value, status)
-            logger.d("UUID : ${characteristic.uuid} : value : ${value.toHexString()}")
+            logger.d("UUID : ${characteristic.uuid} : decode value : ${value.decodeToString()}")
+            logger.d("UUID : ${characteristic.uuid} : hex value : ${value.toHexString()}")
             _deviceServices.value = parseRead(_deviceServices.value, characteristic, value, status)
         }
 
@@ -190,7 +194,8 @@ class BLEGATTService @Inject constructor(
             status: Int
         ) {
             super.onCharacteristicRead(gatt, characteristic, status)
-            logger.d("UUID : ${characteristic?.uuid} : value : ${characteristic?.value?.toHexString()}")
+            logger.d("UUID : ${characteristic?.uuid} : decode value : ${characteristic?.value?.decodeToString()}")
+            logger.d("UUID : ${characteristic?.uuid} : hex value : ${characteristic?.value?.toHexString()}")
             characteristic?.let { char ->
                 _deviceServices.value = parseRead(_deviceServices.value, char, status)
             }
@@ -248,7 +253,8 @@ class BLEGATTService @Inject constructor(
             gattSvcForNotify.characteristics?.forEach { svcChar ->
 
                 svcChar.descriptors.find { desc ->
-                    desc.uuid.toString() == BLEConstants.notifyDescriptorId
+                    desc.uuid.toString() == MeterServicesProvider.MainService.USER_DESCRIPTION_DESCRIPTOR ||
+                            desc.uuid.toString() == MeterServicesProvider.MainService.CLIENT_CHARACTERISTIC_CONFIGURATION_DESCRIPTOR
                 }?.also { configDesc ->
                     logger.d("descriptor => UUID : ${configDesc.uuid}")
                     val notifyRegistered = btGatt?.setCharacteristicNotification(svcChar, true)
@@ -304,20 +310,22 @@ class BLEGATTService @Inject constructor(
     @Suppress("DEPRECATION")
     override fun writeBytes(uuid: String, bytes: ByteArray) {
         try {
-            logger.d("Write to characteristic")
+            logger.d("Write to characteristic :: command : ${bytes.toHexString()}")
             btGatt?.services?.flatMap { it.characteristics }?.find { svcChar ->
                 svcChar.uuid.toString() == uuid
             }?.also { foundChar ->
                 logger.d("found characteristic : ${foundChar.uuid}")
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    btGatt?.writeCharacteristic(
+                    val result = btGatt?.writeCharacteristic(
                         foundChar,
                         bytes,
                         BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
                     )
+                    logger.d("Is written successfully : $result")
                 } else {
                     foundChar.value = bytes
-                    btGatt?.writeCharacteristic(foundChar)
+                    val result = btGatt?.writeCharacteristic(foundChar)
+                    logger.d("Is written successfully : $result")
                 }
             }
         } catch (e: Exception) {
@@ -351,7 +359,7 @@ class BLEGATTService @Inject constructor(
 
     private fun cleanUp() {
         _deviceServices.value = emptyList()
-        _data.value = null
+        _data.value = Result.success(null)
         _connectedDevice.value = null
     }
 

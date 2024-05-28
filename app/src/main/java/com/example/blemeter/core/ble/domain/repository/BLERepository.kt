@@ -24,7 +24,7 @@ class BLERepository @Inject constructor(
 
     override val connectedDevice : StateFlow<ScannedDevice?> = bleGattService.connectedDevice
 
-    override val data : StateFlow<Data?> = bleGattService.data
+    override val data : StateFlow<Result<Data?>> = bleGattService.data
 
     override suspend fun scanLeDevice() {
         bleScanService.scanLeDevice()
@@ -45,5 +45,9 @@ class BLERepository @Inject constructor(
     @OptIn(ExperimentalUnsignedTypes::class)
     override fun writeBytes(uuid: String, values: UByteArray) {
         bleGattService.writeBytes(uuid, values.toByteArray())
+    }
+
+    override fun readCharacteristics(uuid: String) {
+        bleGattService.readCharacteristics(uuid)
     }
 }

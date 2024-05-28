@@ -23,26 +23,30 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.blemeter.R
 import com.example.blemeter.core.ble.domain.model.ConnectionState
 import com.example.blemeter.core.ble.domain.model.isConnected
+import com.example.blemeter.core.ble.domain.model.isDisconnected
 import com.example.blemeter.core.ble.domain.model.request.ValveControlCommandStatus
 import com.example.blemeter.feature.communication.navigation.CommunicationDestination
 import com.example.blemeter.model.MeterData
 import com.example.blemeter.model.ValveControlData
+import com.example.blemeter.ui.components.BLECircularProgressIndicator
+import com.example.blemeter.ui.components.BLEMeterAlertDialog
 import com.example.blemeter.utils.HorizontalSpacer
 import com.example.blemeter.utils.NavigationCallback
 import com.example.blemeter.utils.ValueChanged
 import com.example.blemeter.utils.VerticalSpacer
+import com.example.blemeter.utils.VoidCallback
 
 @Composable
 fun CommunicationRoute(
-    onNavigateToDestination: NavigationCallback,
+    navigateBack: VoidCallback,
     viewModel: CommunicationViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     CommunicationScreen(
         uiState = uiState,
-        onEvent = viewModel::onEvent,
-        onNavigateToCommunication = { onNavigateToDestination(CommunicationDestination, null) }
+        navigateBack = navigateBack,
+        onEvent = viewModel::onEvent
     )
 }
 
@@ -50,38 +54,71 @@ fun CommunicationRoute(
 fun CommunicationScreen(
     modifier: Modifier = Modifier,
     uiState: CommunicationUiState,
-    onNavigateToCommunication: () -> Unit,
+    navigateBack: VoidCallback,
     onEvent: ValueChanged<CommunicationUiEvent>,
 ) {
+
+    HandleStates(
+        uiState = uiState,
+        navigateBack = navigateBack
+    )
 
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(24.dp, 48.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-
-        if (uiState.isCommunicating) {
-            CircularProgressIndicator(
-                modifier = Modifier.width(64.dp),
-                color = MaterialTheme.colorScheme.secondary,
-                trackColor = MaterialTheme.colorScheme.surfaceVariant,
-            )
-        }
 
         MeterDataSection(
             meterData = uiState.meterData,
             connectionState = uiState.connectionState,
+            isReadingMeterData = uiState.isReadingMeterData,
             onEvent = onEvent
         )
 
-        VerticalSpacer(height = 20.dp)
+        //Valve interaction section
+        /*VerticalSpacer(height = 20.dp)
 
         ValveInteractionSection(
             valveControlData = uiState.valveControlData,
             connectionState = uiState.connectionState
         ) {
 
+        }*/
+    }
+}
+
+@Composable
+fun HandleStates(
+    uiState: CommunicationUiState,
+    navigateBack: VoidCallback
+) {
+
+    when {
+        uiState.isLoading -> {
+            BLECircularProgressIndicator()
+        }
+
+        !uiState.error.isNullOrEmpty() -> {
+            BLEMeterAlertDialog(
+                title = stringResource(R.string.caution),
+                description = uiState.error,
+                positiveButtonText = stringResource(R.string.ok),
+                onDismiss = { },
+                onConfirmation = navigateBack
+            )
+        }
+
+        uiState.connectionState.isDisconnected() -> {
+            BLEMeterAlertDialog(
+                title = stringResource(id = R.string.device_disconnected_title),
+                description = stringResource(id = R.string.device_disconnected_desc),
+                positiveButtonText = stringResource(R.string.ok),
+                onDismiss = { },
+                onConfirmation = navigateBack
+            )
         }
     }
 }
@@ -90,9 +127,15 @@ fun CommunicationScreen(
 fun MeterDataSection(
     modifier: Modifier = Modifier,
     meterData: MeterData,
+    isReadingMeterData: Boolean,
     connectionState: ConnectionState,
     onEvent: ValueChanged<CommunicationUiEvent>
 ) {
+    val buttonTxt =
+        if (isReadingMeterData) stringResource(id = R.string.stop_read_meter_data) else stringResource(
+            id = R.string.read_meter_data
+        )
+
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -130,7 +173,7 @@ fun MeterDataSection(
             enabled = connectionState.isConnected()
         ) {
             Text(
-                text = stringResource(R.string.read_meter_data),
+                text = buttonTxt,
                 style = MaterialTheme.typography.labelMedium,
                 maxLines = 1
             )

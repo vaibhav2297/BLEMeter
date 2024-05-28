@@ -27,7 +27,7 @@ fun BLEMeterNavHost(
             onNavigateToDestination = onNavigateToDestination
         ) {
             communicationGraph(
-                onNavigateToDestination = onNavigateToDestination
+                navigateBack = onBackClick
             )
         }
     }

@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import com.example.blemeter.feature.communication.presentation.CommunicationRoute
 import com.example.blemeter.navigation.BLEMeterNavDestination
 import com.example.blemeter.utils.NavigationCallback
+import com.example.blemeter.utils.VoidCallback
 
 object CommunicationDestination : BLEMeterNavDestination {
     override val route: String = "CommunicationRoute"
@@ -13,13 +14,13 @@ object CommunicationDestination : BLEMeterNavDestination {
 }
 
 fun NavGraphBuilder.communicationGraph(
-    onNavigateToDestination: NavigationCallback
+    navigateBack: VoidCallback
 ) {
     composable(
         route = CommunicationDestination.route
     ) {
         CommunicationRoute(
-            onNavigateToDestination = onNavigateToDestination
+            navigateBack = navigateBack
         )
     }
 }

@@ -1,5 +1,9 @@
 package com.example.blemeter.core.ble.domain.bleparsable
 
+import com.example.blemeter.core.ble.domain.model.DataIdentifier
+import com.example.blemeter.core.ble.utils.toHighUByte
+import com.example.blemeter.core.ble.utils.toLowUByte
+
 @OptIn(ExperimentalUnsignedTypes::class)
 
 /**
@@ -13,8 +17,22 @@ abstract class Command<T, R>(val uuid: String) {
 
     abstract val requestLength: Int
 
+    abstract val dataIdentifier: DataIdentifier
+
+    /**
+     * Accumulate the commands value and return single [UByte]
+     */
     fun checkCode(commands: UByteArray) =
         commands.sum().toUByte()
+
+    /**
+     * @return [UByteArray] of the data identifier
+     */
+    fun getDataIdentifierByteArray() =
+        ubyteArrayOf(
+            dataIdentifier.identifier.toHighUByte(),
+            dataIdentifier.identifier.toLowUByte()
+        )
 
     /**
      * converts the settings into command

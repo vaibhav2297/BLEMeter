@@ -4,6 +4,7 @@
     <string name="scan_devices">Scan devices</string>
     <string name="stop_scan">Stop scan</string>
     <string name="read_meter_data">Read meter data</string>
+    <string name="stop_read_meter_data">Stop reading meter data</string>
     <string name="valve_on">Valve On</string>
     <string name="valve_off">Valve Off</string>
     <string name="meter_data">Meter Data</string>
@@ -21,4 +22,7 @@
     <string name="permission_permanently_denied_desc">Permissions has been denied permanently. Go to Settings to allow it.</string>
     <string name="go_to_setting">Go to setting</string>
     <string name="allow">Allow</string>
+    <string name="caution">Caution!</string>
+    <string name="device_disconnected_title">Device is disconnected!</string>
+    <string name="device_disconnected_desc">Kindly reconnect to the device and try again.</string>
 </resources>

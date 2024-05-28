@@ -54,3 +54,7 @@ fun List<DeviceService>.hasConfigCharacteristic(configUUID: String): Boolean {
         }
     }
 }
+
+fun DeviceService.getCharacteristic(uuid: String): DeviceCharacteristics? {
+    return characteristics.find { it.uuid == uuid }
+}

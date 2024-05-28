@@ -24,7 +24,7 @@ sealed class MeterType(val code: Int) {
 
     data object ElectricityMeter : MeterType(64) //40H
 
-
+    data object Unknown : MeterType(-1)
 
     companion object {
         fun getMeterType(code: UByte) : MeterType {

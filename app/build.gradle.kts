@@ -96,4 +96,6 @@ dependencies {
     implementation(libs.compose.viewmodel)
     implementation(libs.ktx.viewmodel)
     implementation(libs.dagger.hilt.navigation)
+
+    implementation("com.juul.kable:core:0.31.1")
 }
