@@ -3,18 +3,21 @@ package com.example.blemeter.core.ble.domain.bleparsable
 import com.example.blemeter.core.ble.domain.model.DataIdentifier
 import com.example.blemeter.core.ble.domain.model.MeterServicesProvider
 import com.example.blemeter.core.ble.domain.model.request.MeterDataRequest
+import com.example.blemeter.core.ble.domain.model.request.toByteArray
 import com.example.blemeter.core.ble.utils.BLEConstants
-import com.example.blemeter.core.ble.utils.fromHexToUByteArray
-import com.example.blemeter.core.ble.utils.toUInt32
+import com.example.blemeter.core.ble.utils.toHighByte
+import com.example.blemeter.core.ble.utils.toInt32
 import com.example.blemeter.model.BatteryVoltage
 import com.example.blemeter.model.MeterData
 import com.example.blemeter.model.MeterType
 import com.example.blemeter.model.Statuses
 import com.example.blemeter.model.getControlState
 
-@ExperimentalUnsignedTypes
 object MeterDataCommand :
-    Command<MeterDataRequest, MeterData>(MeterServicesProvider.MainService.WRITE_CHARACTERISTIC) {
+    Command<MeterDataRequest, MeterData>(
+        serviceUuid = MeterServicesProvider.MainService.SERVICE,
+        characteristicUuid = MeterServicesProvider.MainService.WRITE_CHARACTERISTIC
+    ) {
 
     override val controlCode: Int = 1
 
@@ -22,23 +25,20 @@ object MeterDataCommand :
 
     override val dataIdentifier: DataIdentifier = DataIdentifier.METER_DATA
 
-    override fun toCommand(request: MeterDataRequest): UByteArray {
+    override fun toCommand(request: MeterDataRequest): ByteArray {
 
         //uByte array to hold bytes before check code
         // for accumulate total byte
-        val arr = ubyteArrayOf(
+        val arr = byteArrayOf(
             BLEConstants.SOF,
-            MeterType.WaterMeter.ColdWaterMeter.code.toUByte(),
-            *BLEConstants.METER_ADDRESS.fromHexToUByteArray(),
-            controlCode.toUByte(),
-            requestLength.toUByte(),
-//            144u.toUByte(),         //90H - data identification low byte
-//            31u.toUByte(),          //1FH - data identification high byte
+            *request.baseRequest.toByteArray(),
+            controlCode.toByte(),
+            requestLength.toByte(),
             *getDataIdentifierByteArray(),
-            0u.toUByte()            //00F - serial number
+            0 //00F - serial number
         )
 
-        return ubyteArrayOf(
+        return byteArrayOf(
             *arr,
             checkCode(arr), // accumulate total bytes
             BLEConstants.EOF
@@ -46,7 +46,7 @@ object MeterDataCommand :
     }
 
     @Throws
-    override fun fromCommand(command: UByteArray): MeterData {
+    override fun fromCommand(command: ByteArray): MeterData {
 
         require(command.size > 39) { "Expected Meter Data response size should be of 40 bytes. but it is ${command.size}" }
 
@@ -58,9 +58,9 @@ object MeterDataCommand :
             )
 
             return MeterData(
-                accumulatedUsage = this.toUInt32(14).toInt(),
-                surplus = this.toUInt32(18).toInt(),
-                totalPurchase = this.toUInt32(22).toInt(),
+                accumulatedUsage = this.toInt32(14),
+                surplus = this.toInt32(18),
+                totalPurchase = this.toInt32(22),
                 numberTimes = this[26].toInt(),
                 statuses = statuses,
                 alarmVariable = this[29].toInt(),

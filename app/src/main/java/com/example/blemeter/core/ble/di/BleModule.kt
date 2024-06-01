@@ -91,7 +91,9 @@ object BleModule {
     @Provides
     @Singleton
     fun bindBLEService(
-        scope: CoroutineScope
+        scope: CoroutineScope,
+        logger: ILogger,
+        exceptionHandler: ExceptionHandler
     ): BLEService =
-        BLEService(scope)
+        BLEService(scope,logger, exceptionHandler)
 }

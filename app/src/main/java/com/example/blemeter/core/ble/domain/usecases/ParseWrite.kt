@@ -20,11 +20,11 @@ class ParseWrite @Inject constructor(
         characteristic: BluetoothGattCharacteristic
     ): Result<Data?> {
         return characteristic.value?.let { value ->
-            parseCommandAndCreateData(value.toUByteArray())
+            parseCommandAndCreateData(value)
         } ?: Result.success(null)
     }
 
-    private fun parseCommandAndCreateData(value: UByteArray) : Result<Data?> {
+    private fun parseCommandAndCreateData(value: ByteArray) : Result<Data?> {
         val dataIdentifier = DataIdentifier.getDataType(value)
         logger.d("Data Type : ${dataIdentifier.name}")
         return try {

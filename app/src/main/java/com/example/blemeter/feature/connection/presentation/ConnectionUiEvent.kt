@@ -1,11 +1,12 @@
 package com.example.blemeter.feature.connection.presentation
 
 import com.example.blemeter.core.ble.domain.model.ScannedDevice
+import com.juul.kable.AndroidAdvertisement
 
 sealed interface ConnectionUiEvent {
 
     data class OnConnectionEstablish(
-        val device: ScannedDevice
+        val device: AndroidAdvertisement
     ) : ConnectionUiEvent
 
     data object OnStartScan : ConnectionUiEvent
@@ -20,4 +21,6 @@ sealed interface ConnectionUiEvent {
         data object OnBluetoothEnableDismiss : BluetoothEvent
         data object OnBluetoothEnabled : BluetoothEvent
     }
+
+    data object OnNavigated : ConnectionUiEvent
 }

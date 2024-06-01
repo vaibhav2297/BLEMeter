@@ -1,8 +1,9 @@
 package com.example.blemeter.core.ble.domain.bleparsable
 
 import com.example.blemeter.core.ble.domain.model.DataIdentifier
-import com.example.blemeter.core.ble.utils.toHighUByte
-import com.example.blemeter.core.ble.utils.toLowUByte
+import com.example.blemeter.core.ble.utils.accumulateSum
+import com.example.blemeter.core.ble.utils.toHighByte
+import com.example.blemeter.core.ble.utils.toLowByte
 
 @OptIn(ExperimentalUnsignedTypes::class)
 
@@ -11,7 +12,10 @@ import com.example.blemeter.core.ble.utils.toLowUByte
  * @param T The type of setting object that should converted into command
  * @param R The type of setting object that should converted from command
  */
-abstract class Command<T, R>(val uuid: String) {
+abstract class Command<T, R>(
+    val serviceUuid: String,
+    val characteristicUuid: String
+) {
 
     abstract val controlCode: Int
 
@@ -22,27 +26,27 @@ abstract class Command<T, R>(val uuid: String) {
     /**
      * Accumulate the commands value and return single [UByte]
      */
-    fun checkCode(commands: UByteArray) =
-        commands.sum().toUByte()
+    fun checkCode(commands: ByteArray) : Byte =
+        commands.accumulateSum(0, commands.size - 1)
 
     /**
      * @return [UByteArray] of the data identifier
      */
     fun getDataIdentifierByteArray() =
-        ubyteArrayOf(
-            dataIdentifier.identifier.toHighUByte(),
-            dataIdentifier.identifier.toLowUByte()
+        byteArrayOf(
+            dataIdentifier.identifier.toHighByte(),
+            dataIdentifier.identifier.toLowByte()
         )
 
     /**
      * converts the settings into command
      *
      */
-    abstract fun toCommand(request: T): UByteArray
+    abstract fun toCommand(request: T): ByteArray
 
     /**
      * converts response received from BLE into its respective setting class
      *
      */
-    abstract fun fromCommand(command: UByteArray): R
+    abstract fun fromCommand(command: ByteArray): R
 }

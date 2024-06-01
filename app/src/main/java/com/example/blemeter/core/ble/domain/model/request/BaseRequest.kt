@@ -10,10 +10,18 @@ data class BaseRequest(
     override val meterType: MeterType = MeterType.Unknown,
     override val meterAddress: MeterAddress = MeterAddress(),
     override val serialNumber: Int = 0
-) : Base
+) : Base {
+}
 
 interface Base {
     val meterType: MeterType
     val meterAddress: MeterAddress
     val serialNumber: Int
+}
+
+fun BaseRequest.toByteArray(): ByteArray {
+    val meterTypeBytes = meterType.code.toByte()
+    val meterAddressBytes = meterAddress.toByteArray()
+
+    return byteArrayOf(meterTypeBytes, *meterAddressBytes)
 }

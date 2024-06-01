@@ -2,12 +2,8 @@ package com.example.blemeter.feature.communication.domain.usecases
 
 import com.example.blemeter.core.ble.data.repository.IBLERepository
 import com.example.blemeter.core.ble.domain.bleparsable.Command
-import com.example.blemeter.core.ble.domain.bleparsable.MeterAddressCommand
-import com.example.blemeter.core.ble.domain.bleparsable.SerialNumberCommand
 import com.example.blemeter.core.ble.domain.model.MeterServicesProvider
-import com.example.blemeter.core.ble.domain.model.getCharacteristic
 import com.example.blemeter.core.ble.domain.model.request.BaseRequest
-import com.example.blemeter.core.ble.domain.repository.BLERepository
 
 open class BaseCommandUseCase(
     private val bleRepository: IBLERepository
@@ -20,7 +16,7 @@ open class BaseCommandUseCase(
                     .find { it.uuid == MeterServicesProvider.MainService.WRITE_CHARACTERISTIC }
 
                 if (characteristic != null) {
-                    bleRepository.writeBytes(characteristic.uuid, command.toCommand(request))
+                    //bleRepository.writeBytes(characteristic.uuid, command.toCommand(request))
                     Result.success(Unit)
                 } else {
                     Result.failure(Exception("Write characteristic not found"))
@@ -40,25 +36,25 @@ open class BaseCommandUseCase(
         var baseRequest = BaseRequest()
         bleRepository.deviceServices.value.let { svc ->
             svc.find { it.uuid == MeterServicesProvider.DeviceInfo.SERVICE }?.characteristics?.forEach { char ->
-                when (char.uuid) {
-
-                    MeterServicesProvider.DeviceInfo.MODEL_NUMBER -> {
-                        val meterAddress = MeterAddressCommand.fromCommand(
-                            command = char.readBytes ?: ubyteArrayOf()
-                        )
-
-                        baseRequest = baseRequest.copy(
-                            meterAddress = meterAddress,
-                            meterType = meterAddress.meterType
-                        )
-                    }
-
-                    MeterServicesProvider.DeviceInfo.SERIAL_NUMBER -> {
-                        baseRequest = baseRequest.copy(
-                            serialNumber = SerialNumberCommand.fromCommand(char.readBytes ?: ubyteArrayOf())
-                        )
-                    }
-                }
+//                when (char.uuid) {
+//
+//                    MeterServicesProvider.DeviceInfo.MODEL_NUMBER -> {
+//                        val meterAddress = MeterAddressCommand.fromCommand(
+//                            command = char.readBytes ?: ubyteArrayOf()
+//                        )
+//
+//                        baseRequest = baseRequest.copy(
+//                            meterAddress = meterAddress,
+//                            meterType = meterAddress.meterType
+//                        )
+//                    }
+//
+//                    MeterServicesProvider.DeviceInfo.SERIAL_NUMBER -> {
+//                        baseRequest = baseRequest.copy(
+//                            serialNumber = SerialNumberCommand.fromCommand(char.readBytes ?: ubyteArrayOf())
+//                        )
+//                    }
+//                }
             }
 
             return baseRequest

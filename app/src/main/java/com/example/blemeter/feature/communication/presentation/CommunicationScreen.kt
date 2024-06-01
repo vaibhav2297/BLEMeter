@@ -21,6 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.blemeter.R
+import com.example.blemeter.config.isConnected
+import com.example.blemeter.config.isDisconnected
 import com.example.blemeter.core.ble.domain.model.ConnectionState
 import com.example.blemeter.core.ble.domain.model.isConnected
 import com.example.blemeter.core.ble.domain.model.isDisconnected
@@ -35,6 +37,7 @@ import com.example.blemeter.utils.NavigationCallback
 import com.example.blemeter.utils.ValueChanged
 import com.example.blemeter.utils.VerticalSpacer
 import com.example.blemeter.utils.VoidCallback
+import com.juul.kable.State
 
 @Composable
 fun CommunicationRoute(
@@ -128,7 +131,7 @@ fun MeterDataSection(
     modifier: Modifier = Modifier,
     meterData: MeterData,
     isReadingMeterData: Boolean,
-    connectionState: ConnectionState,
+    connectionState: State,
     onEvent: ValueChanged<CommunicationUiEvent>
 ) {
     val buttonTxt =

@@ -91,15 +91,16 @@ class ConnectionViewModel @Inject constructor(
     fun onEvent(event: ConnectionUiEvent) {
         when (event) {
             is ConnectionUiEvent.OnConnectionEstablish -> {
-                if (isDeviceAlreadyConnected(event.device))
-                    close()
-                else
-                    connectToDevice(event.device)
+//                if (isDeviceAlreadyConnected(event.device))
+//                    close()
+//                else
+//                    connectToDevice(event.device)
             }
 
             is ConnectionUiEvent.OnStartScan -> requestBluetoothPermission()
             is ConnectionUiEvent.OnStopScan -> stopLeScan()
             is ConnectionUiEvent.BluetoothEvent -> onBluetoothEvents(event)
+            is ConnectionUiEvent.OnNavigated -> {}
         }
     }
 

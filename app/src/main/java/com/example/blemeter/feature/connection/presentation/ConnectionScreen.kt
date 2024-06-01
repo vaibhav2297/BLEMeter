@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.blemeter.R
+import com.example.blemeter.config.isDisconnected
 import com.example.blemeter.core.ble.domain.model.DeviceDetail
 import com.example.blemeter.core.ble.domain.model.ScannedDevice
 import com.example.blemeter.core.ble.domain.model.isConnected
@@ -49,11 +50,13 @@ import com.example.blemeter.utils.VerticalSpacer
 import com.example.blemeter.utils.VoidCallback
 import com.example.blemeter.utils.permission.AppPermissions
 import com.example.blemeter.utils.permission.RequestAppPermissions
+import com.juul.kable.AndroidAdvertisement
+import com.juul.kable.State
 
 @Composable
 fun ConnectionRoute(
     onNavigateToDestination: NavigationCallback,
-    viewModel: ConnectionViewModel = hiltViewModel(),
+    viewModel: ConnViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -127,13 +130,14 @@ fun ConnectionScreen(
             modifier = Modifier.fillMaxSize()
         ) {
 
-            if (uiState.scannedDevices.isEmpty() && uiState.isScanning.not()) {
+            if (uiState.advertisements.isEmpty() && uiState.isScanning.not()) {
                 NoDevicesAvailable(modifier = Modifier.weight(1f))
             } else {
                 ScannedDevices(
                     modifier = Modifier.weight(1f),
-                    devices = uiState.scannedDevices,
-                    connectedDevice = uiState.deviceDetail
+                    devices = uiState.advertisements,
+                    state = uiState.state,
+                    connectedDevice = uiState.connectedDevice
                 ) { selectedDevice ->
                     onEvent(
                         ConnectionUiEvent.OnConnectionEstablish(selectedDevice)
@@ -179,8 +183,8 @@ private fun ConnectionScreenStateHandle(
         )
     }
 
-    if (uiState.connectionState.isConnected()) {
-        onEvent(ConnectionUiEvent.OnStopScan)
+    if (uiState.isServiceDiscovered) {
+        onEvent(ConnectionUiEvent.OnNavigated)
         onNavigateToCommunication()
     }
 
@@ -273,9 +277,10 @@ private fun ConnectionScreenStateHandle(
 @Composable
 private fun ScannedDevices(
     modifier: Modifier = Modifier,
-    devices: List<ScannedDevice>,
-    connectedDevice: DeviceDetail?,
-    onDeviceSelect: ValueChanged<ScannedDevice>
+    devices: List<AndroidAdvertisement>,
+    state: State,
+    connectedDevice: AndroidAdvertisement?,
+    onDeviceSelect: ValueChanged<AndroidAdvertisement>
 ) {
     LazyColumn(
         modifier = modifier
@@ -285,7 +290,8 @@ private fun ScannedDevices(
             key = { device -> device.address }
         ) { devices ->
             ScannedDevicesItem(
-                scannedDevice = devices,
+                device = devices,
+                state = state,
                 connectedDevice = connectedDevice
             ) { selectedDevice ->
                 onDeviceSelect(selectedDevice)
@@ -297,16 +303,17 @@ private fun ScannedDevices(
 @Composable
 private fun ScannedDevicesItem(
     modifier: Modifier = Modifier,
-    scannedDevice: ScannedDevice,
-    connectedDevice: DeviceDetail?,
-    onClick: ValueChanged<ScannedDevice>
+    device: AndroidAdvertisement,
+    state: State,
+    connectedDevice: AndroidAdvertisement?,
+    onClick: ValueChanged<AndroidAdvertisement>
 ) {
-    val displayName = scannedDevice.deviceName.ifEmpty { scannedDevice.address }
+    val displayName = if (!device.name.isNullOrEmpty()) device.name!! else device.address
 
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .clickable { onClick(scannedDevice) }
+            .clickable { onClick(device) }
             .padding(6.dp),
         verticalArrangement = Arrangement.Center
     ) {
@@ -319,11 +326,11 @@ private fun ScannedDevicesItem(
         VerticalSpacer(height = 2.dp)
 
         connectedDevice?.takeIf {
-            it.device?.address == scannedDevice.address
+            it.address == device.address
         }?.run {
-            if (!connectionState.isDisconnected()) {
+            if (!state.isDisconnected()) {
                 Text(
-                    text = connectionState.displayName,
+                    text = state.toString(),
                     style = MaterialTheme.typography.titleSmall,
                     maxLines = 1
                 )
