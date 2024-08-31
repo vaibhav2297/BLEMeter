@@ -2,34 +2,33 @@ package com.example.blemeter.feature.communication.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.blemeter.config.isConnected
-import com.example.blemeter.core.ble.data.repository.BLEService
+import com.example.blemeter.core.ble.data.BLEService
 import com.example.blemeter.core.ble.data.repository.IBLERepository
-import com.example.blemeter.core.ble.domain.bleparsable.MeterDataCommand
-import com.example.blemeter.core.ble.domain.model.DeviceDetail
+import com.example.blemeter.core.ble.domain.bleparsable.ReadMeterDataCommand
+import com.example.blemeter.core.ble.domain.bleparsable.PurchaseDataCommand
+import com.example.blemeter.core.ble.domain.bleparsable.ValveControlCommand
+import com.example.blemeter.core.ble.domain.model.DataIdentifier
 import com.example.blemeter.core.ble.domain.model.MeterServicesProvider
-import com.example.blemeter.core.ble.domain.model.hasConfigCharacteristic
-import com.example.blemeter.core.ble.domain.model.isConnected
+import com.example.blemeter.core.ble.domain.model.request.AccumulateDataRequest
 import com.example.blemeter.core.ble.domain.model.request.MeterDataRequest
+import com.example.blemeter.core.ble.domain.model.request.PurchaseDataRequest
 import com.example.blemeter.core.ble.domain.model.request.ValveControlCommandStatus
-import com.example.blemeter.core.ble.utils.toHexString
+import com.example.blemeter.core.ble.utils.BLEConstants
+import com.example.blemeter.core.logger.ExceptionHandler
 import com.example.blemeter.core.logger.ILogger
+import com.example.blemeter.feature.communication.domain.usecases.AccumulateDataUseCase
 import com.example.blemeter.feature.communication.domain.usecases.CommunicationUseCases
 import com.example.blemeter.model.Data
 import com.example.blemeter.model.MeterData
 import com.example.blemeter.model.ValveControlData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -38,32 +37,29 @@ class CommunicationViewModel @Inject constructor(
     private val bleRepository: IBLERepository,
     private val bleService: BLEService,
     private val logger: ILogger,
+    private val exceptionHandler: ExceptionHandler,
     private val useCases: CommunicationUseCases
 ) : ViewModel() {
 
-    companion object {
-        private const val POLLING_TIME = 1500L
-    }
-
-    private var _pollingJob: Job? = null
-    private var _observeMeterReadDataJob: Job? = null
-
-    private val MAX_COUNT = 5
-    private var retryAttempt = 0
+    private var _observeBLEResponseJob: Job? = null
 
     private val _uiState = MutableStateFlow(CommunicationUiState())
     val uiState = _uiState.asStateFlow()
 
+    private val meterDataArray = mutableListOf<UByte>()
+
     init {
         observeConnectionState()
-        observeMeterData()
-        startPollingMeterData()
+        observeBLEResponse()
     }
 
     fun onEvent(event: CommunicationUiEvent) {
         when (event) {
-            is CommunicationUiEvent.OnMeterDataRead -> startPollingMeterData()
+            is CommunicationUiEvent.OnMeterDataRead -> readMeterData()
             is CommunicationUiEvent.OnValveInteraction -> valveInteraction(event.valveControlCommandStatus)
+            is CommunicationUiEvent.OnPurchaseData -> writePurchaseData(event.request)
+            is CommunicationUiEvent.OnZeroInitialise -> writeZeroInitialising()
+            is CommunicationUiEvent.OnAccumulateData -> writeAccumulation(event.request)
         }
     }
 
@@ -77,81 +73,151 @@ class CommunicationViewModel @Inject constructor(
     }
 
     //region Meter Data
-    private suspend fun readMeterData() {
-        if (_uiState.value.connectionState.isConnected()) {
-            logger.d("Read meter data...")
-            useCases.readMeterDataUseCase(MeterDataRequest())
+    private fun readMeterData() {
+        viewModelScope.launch {
+            showLoading(true)
+            useCases.readMeterDataUseCase()
                 .onFailure { e ->
+                    showLoading(false)
                     logger.d("readMeterData :: Failure :: ${e.message}")
-                    stopPollingMeterData()
                 }
-        } else {
-            logger.d("readMeterData :: Device is not connected")
-            stopPollingMeterData()
+        }
+    }
+    //endregion Meter Data
+
+    //region valve control
+    private fun valveInteraction(status: ValveControlCommandStatus) {
+        viewModelScope.launch {
+            showLoading(true)
+            logger.d("Valve interaction : ${status.name}")
+            useCases.valveControlUseCase(status)
+                .onFailure { e ->
+                    showLoading(false)
+                    logger.d("valveInteraction :: Failure :: ${e.message}")
+                }
         }
     }
 
-    private fun observeMeterData() {
-        _observeMeterReadDataJob = viewModelScope.launch {
+
+    //endregion valve valve control
+
+    //region Purchase Data
+    private fun writePurchaseData(request: PurchaseDataRequest) {
+        viewModelScope.launch {
+            logger.d("Purchase data")
+            showLoading(true)
+            useCases.purchaseDataUseCase(request)
+                .onFailure { e ->
+                    showLoading(false)
+                    logger.d("purchaseData :: Failure :: ${e.message}")
+                }
+        }
+    }
+    //endregion Purchase Data
+
+    override fun onCleared() {
+        _observeBLEResponseJob?.cancel()
+        _observeBLEResponseJob = null
+        super.onCleared()
+    }
+
+
+    @OptIn(ExperimentalUnsignedTypes::class, ExperimentalStdlibApi::class)
+    private fun observeBLEResponse() {
+        _observeBLEResponseJob = viewModelScope.launch {
             bleService.observeCharacteristic(
                 service = MeterServicesProvider.MainService.SERVICE,
                 observeCharacteristic = MeterServicesProvider.MainService.NOTIFY_CHARACTERISTIC
             )?.map { response ->
 
-                logger.d("observeMeterData :: Response :: ${response.contentToString()}")
-                logger.d("observeMeterData :: Response :: ${response.toHexString()}")
+                logger.d("observeBLEResponse :: Response :: ${response.contentToString()}")
+                logger.d("observeBLEResponse :: Response :: ${response.toHexString()}")
 
-                val meterData = MeterDataCommand.fromCommand(response)
-                logger.d("observeMeterData :: Response to MeterData :: $meterData")
+                meterDataArray.addAll(response)
 
-                meterData
+                if (response.last() == BLEConstants.EOF) {
+                    /*val meterData = MeterDataCommand.fromCommand(meterDataArray.toUByteArray().toHexString())*/
+                    logger.d("observeBLEResponse :: Complete command received")
+                    val data = parseCommandAndCreateData(meterDataArray.toUByteArray().toHexString())
+                    meterDataArray.clear()
+
+                    showLoading(false)
+
+                    return@map data
+                } else {
+                    return@map null
+                }
             }?.catch {e ->
-                logger.d("observeMeterData :: catch :: ${e.message}")
-                retryAttempt++
-                logger.d("observeMeterData :: Retrying attempt : $retryAttempt")
-                if (retryAttempt == MAX_COUNT) {
-                    stopPollingMeterData()
+                logger.d("observeBLEResponse :: catch :: ${e.message}")
+            }?.collect { data ->
+                data?.let {
+                    logger.d("observeBLEResponse :: Data : $data")
+                    updateDataToUI(it)
                 }
-            }?.collect { meterData ->
-                //handle meter data
+            }
+        }
+    }
+
+    private fun updateDataToUI(data: Data) {
+        when(data) {
+            is MeterData -> {
                 _uiState.update {
-                    it.copy(meterData = meterData)
+                    it.copy(meterData = data)
+                }
+            }
+            is ValveControlData -> {
+                _uiState.update {
+                    it.copy(valveControlData = data)
                 }
             }
         }
     }
 
-    private fun startPollingMeterData() {
-        logger.d("Start polling Read meter data....")
-        _pollingJob = viewModelScope.launch {
-            while (isActive) {
-                readMeterData()
-                delay(POLLING_TIME)
+    private fun parseCommandAndCreateData(value: String) : Data? {
+        val dataIdentifier = DataIdentifier.getDataType(value)
+        logger.d("parseCommandAndCreateData :: Data Type : ${dataIdentifier.name}")
+        return try {
+            return when(dataIdentifier) {
+                DataIdentifier.METER_DATA -> ReadMeterDataCommand.fromCommand(value)
+                DataIdentifier.VALVE_CONTROL_DATA -> ValveControlCommand.fromCommand(value)
+                DataIdentifier.PURCHASE_DATA -> PurchaseDataCommand.fromCommand(value)
+                else -> null
             }
+        } catch (e: Exception) {
+            exceptionHandler.handle(e)
+            null
         }
     }
 
-    private fun stopPollingMeterData() {
-        logger.e("stopPollingMeterData")
-        _pollingJob?.cancel()
-        retryAttempt = 0
+    private fun showLoading(isLoading: Boolean) {
+        _uiState.update { it.copy(isLoading = isLoading) }
     }
-    //endregion Meter Data
 
-    private fun valveInteraction(status: ValveControlCommandStatus) {
+    //region Zero Initialising
+    private fun writeZeroInitialising() {
         viewModelScope.launch {
-            if (bleRepository.connectionState.value.isConnected()) {
-                logger.d("valve interaction : ${status.name}")
-                _uiState.update { it.copy(isLoading = true) }
-                useCases.valveControlUseCase(status)
-            }
+            logger.d("Zero Initialising")
+            showLoading(true)
+            useCases.zeroInitialisationUseCase()
+                .onFailure { e ->
+                    showLoading(false)
+                    logger.d("Zero Initialising :: Failure :: ${e.message}")
+                }
         }
     }
+    //endregion Zero Initialising
 
-    override fun onCleared() {
-        stopPollingMeterData()
-        _observeMeterReadDataJob?.cancel()
-        _observeMeterReadDataJob = null
-        super.onCleared()
+    //region Accumulation
+    private fun writeAccumulation(request: AccumulateDataRequest) {
+        viewModelScope.launch {
+            logger.d("Accumulation")
+            showLoading(true)
+            useCases.accumulateDataUseCase(request)
+                .onFailure { e ->
+                    showLoading(false)
+                    logger.d("Accumulation :: Failure :: ${e.message}")
+                }
+        }
     }
+    //endregion Accumulation
 }

@@ -1,7 +1,7 @@
 package com.example.blemeter.core.ble.domain.usecases
 
 import android.bluetooth.BluetoothGattCharacteristic
-import com.example.blemeter.core.ble.domain.bleparsable.MeterDataCommand
+import com.example.blemeter.core.ble.domain.bleparsable.ReadMeterDataCommand
 import com.example.blemeter.core.ble.domain.bleparsable.ValveControlCommand
 import com.example.blemeter.core.ble.domain.model.DataIdentifier
 import com.example.blemeter.core.logger.ExceptionHandler
@@ -16,20 +16,21 @@ class ParseWrite @Inject constructor(
     private val exceptionHandler: ExceptionHandler
 ) {
 
+    @OptIn(ExperimentalStdlibApi::class)
     operator fun invoke(
         characteristic: BluetoothGattCharacteristic
     ): Result<Data?> {
         return characteristic.value?.let { value ->
-            parseCommandAndCreateData(value)
+            parseCommandAndCreateData(value.toUByteArray().toHexString())
         } ?: Result.success(null)
     }
 
-    private fun parseCommandAndCreateData(value: ByteArray) : Result<Data?> {
+    private fun parseCommandAndCreateData(value: String) : Result<Data?> {
         val dataIdentifier = DataIdentifier.getDataType(value)
         logger.d("Data Type : ${dataIdentifier.name}")
         return try {
             val data = when(dataIdentifier) {
-                DataIdentifier.METER_DATA -> MeterDataCommand.fromCommand(value)
+                DataIdentifier.METER_DATA -> ReadMeterDataCommand.fromCommand(value)
                 DataIdentifier.VALVE_CONTROL_DATA -> ValveControlCommand.fromCommand(value)
                 else -> null
             }

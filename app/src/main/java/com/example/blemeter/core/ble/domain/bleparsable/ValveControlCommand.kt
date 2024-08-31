@@ -4,10 +4,14 @@ import com.example.blemeter.core.ble.domain.model.DataIdentifier
 import com.example.blemeter.core.ble.domain.model.MeterServicesProvider
 import com.example.blemeter.core.ble.domain.model.request.ValveControlRequest
 import com.example.blemeter.core.ble.utils.BLEConstants
+import com.example.blemeter.core.ble.utils.chunkAndReverseString
 import com.example.blemeter.core.ble.utils.fromHexToByteArray
+import com.example.blemeter.core.ble.utils.fromHexToUByteArray
 import com.example.blemeter.core.ble.utils.toHighByte
 import com.example.blemeter.model.MeterType
 import com.example.blemeter.model.ValveControlData
+import com.example.blemeter.model.ValveStatus
+import com.example.blemeter.model.getControlState
 
 @ExperimentalUnsignedTypes
 object ValveControlCommand :
@@ -16,44 +20,63 @@ object ValveControlCommand :
         characteristicUuid = MeterServicesProvider.MainService.WRITE_CHARACTERISTIC
     ) {
 
-    override val controlCode: Int = 4
+    override val controlCode: UByte = 0x04u
 
-    override val requestLength: Int = 7
+    override val requestLength: UInt = 0x07u
 
     override val dataIdentifier: DataIdentifier = DataIdentifier.VALVE_CONTROL_DATA
 
-    override fun toCommand(request: ValveControlRequest): ByteArray {
+    override val serialNumber: UByte = 0x00u
+
+    override fun toCommand(request: ValveControlRequest): UByteArray {
 
         //uByte array to hold bytes before check code
         // for accumulate total byte
-        val arr = byteArrayOf(
+        val arr = ubyteArrayOf(
             BLEConstants.SOF,
-            MeterType.WaterMeter.ColdWaterMeter.code.toByte(),
-            *BLEConstants.METER_ADDRESS.fromHexToByteArray(),
-            controlCode.toByte(),
-            requestLength.toByte(),
-//            160.toUByte(),                          //90H - data identification low byte
-//            23.toUByte(),                           //1FH - data identification high byte
-            *getDataIdentifierByteArray(),
-            0u.toByte(),                            //00F - serial number
-            request.status.code.toByte(),          // Open 055H  Close 99H
+            BLEConstants.METER_TYPE,
+            *BLEConstants.METER_ADDRESS.fromHexToUByteArray(),
+            controlCode,
+            requestLength.toUByte(),
+            *dataIdentifier.identifier.fromHexToUByteArray(),
+            serialNumber,
+            request.status.code,
             BLEConstants.STAND_BY,
             BLEConstants.STAND_BY,
             BLEConstants.STAND_BY
         )
 
-        return byteArrayOf(
+        return ubyteArrayOf(
             *arr,
-            checkCode(arr).toByte(), // accumulate total bytes
+            checkCode(arr), // accumulate total bytes
             BLEConstants.EOF
         )
     }
 
-    override fun fromCommand(command: ByteArray): ValveControlData {
-        require(command.size > 18) { "Expected Valve Control Data response size should be of 19 bytes. but it is ${command.size}" }
+    /**
+     * E.x
+     * 68 -> SOF
+     * 12 -> Meter Type
+     * 02 00 18 03 24 96 71 -> Meter Address
+     * 84 -> Control Code
+     * 07 -> Length
+     * A0 17 -> Data Identification
+     * 00 -> Serial Number
+     * 00 00 -> Status Code
+     * 00 00 -> Stand by
+     * 02 -> Check Sum
+     * 16 -> EOF
+     */
+    override fun fromCommand(command: String): ValveControlData {
+        require(command.length > 18 * 2) { "Expected Valve Control Data response length should be of 38. but it is ${command.length}" }
 
         command.run {
-            return ValveControlData()
+
+            val meterType = MeterType.getMeterType(BLEConstants.METER_TYPE)
+            val statusByte = substring(28..29).toUByte(16)
+            val valveStatus = getControlState(meterType, statusByte)
+
+            return ValveControlData(controlState = valveStatus)
         }
     }
 }

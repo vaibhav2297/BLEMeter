@@ -1,6 +1,5 @@
 package com.example.blemeter.feature.communication.presentation
 
-import com.example.blemeter.core.ble.domain.model.ConnectionState
 import com.example.blemeter.core.ble.domain.model.ScannedDevice
 import com.example.blemeter.model.MeterData
 import com.example.blemeter.model.ValveControlData

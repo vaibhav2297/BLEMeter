@@ -1,9 +1,12 @@
 package com.example.blemeter.feature.communication.di
 
+import com.example.blemeter.feature.communication.domain.usecases.AccumulateDataUseCase
 import com.example.blemeter.feature.communication.domain.usecases.CommunicationUseCases
 import com.example.blemeter.feature.communication.domain.usecases.GetDeviceInfoUseCase
+import com.example.blemeter.feature.communication.domain.usecases.PurchaseDataUseCase
 import com.example.blemeter.feature.communication.domain.usecases.ReadMeterDataUseCase
 import com.example.blemeter.feature.communication.domain.usecases.ValveControlUseCase
+import com.example.blemeter.feature.communication.domain.usecases.ZeroInitialisationUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,11 +22,17 @@ object CommunicationModule {
     fun provideCommunicationUseCases(
         readMeterDataUseCase: ReadMeterDataUseCase,
         valveControlUseCase: ValveControlUseCase,
-        getDeviceInfoUseCase: GetDeviceInfoUseCase
+        getDeviceInfoUseCase: GetDeviceInfoUseCase,
+        purchaseDataUseCase: PurchaseDataUseCase,
+        zeroInitialisationUseCase: ZeroInitialisationUseCase,
+        accumulateDataUseCase: AccumulateDataUseCase
     ): CommunicationUseCases =
         CommunicationUseCases(
             readMeterDataUseCase = readMeterDataUseCase,
             valveControlUseCase = valveControlUseCase,
-            getDeviceInfoUseCase = getDeviceInfoUseCase
+            getDeviceInfoUseCase = getDeviceInfoUseCase,
+            purchaseDataUseCase = purchaseDataUseCase,
+            zeroInitialisationUseCase = zeroInitialisationUseCase,
+            accumulateDataUseCase = accumulateDataUseCase
         )
 }

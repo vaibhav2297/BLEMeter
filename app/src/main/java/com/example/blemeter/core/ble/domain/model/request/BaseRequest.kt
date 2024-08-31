@@ -7,21 +7,10 @@ import com.example.blemeter.model.MeterType
  * Class represents the base request that contains in every command.
  */
 data class BaseRequest(
-    override val meterType: MeterType = MeterType.Unknown,
-    override val meterAddress: MeterAddress = MeterAddress(),
-    override val serialNumber: Int = 0
+    override val meterAddress: String = ""
 ) : Base {
 }
 
 interface Base {
-    val meterType: MeterType
-    val meterAddress: MeterAddress
-    val serialNumber: Int
-}
-
-fun BaseRequest.toByteArray(): ByteArray {
-    val meterTypeBytes = meterType.code.toByte()
-    val meterAddressBytes = meterAddress.toByteArray()
-
-    return byteArrayOf(meterTypeBytes, *meterAddressBytes)
+    val meterAddress: String
 }

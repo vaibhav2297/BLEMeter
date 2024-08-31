@@ -1,7 +1,10 @@
 package com.example.blemeter.model
 
-import com.example.blemeter.core.ble.domain.model.request.ValveControlCommandStatus
+import com.example.blemeter.core.ble.domain.model.DataIdentifier
 
 data class ValveControlData(
-    val valveControlCommandStatus: ValveControlCommandStatus = ValveControlCommandStatus.NONE
-) : Data
+    val controlState: ControlState = NoneStatus.NONE
+) : Data {
+    override val dataIdentifier: DataIdentifier
+        get() = DataIdentifier.VALVE_CONTROL_DATA
+}

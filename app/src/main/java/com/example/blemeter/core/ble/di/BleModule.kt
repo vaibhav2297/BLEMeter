@@ -7,17 +7,16 @@ import com.example.blemeter.core.ble.data.BLEGATTService
 import com.example.blemeter.core.ble.data.BLEScanService
 import com.example.blemeter.core.ble.data.IBLEGATTService
 import com.example.blemeter.core.ble.data.IBLEScanService
-import com.example.blemeter.core.ble.data.repository.BLEService
+import com.example.blemeter.core.ble.data.BLEService
+import com.example.blemeter.core.ble.data.IBLEService
 import com.example.blemeter.core.ble.data.repository.IBLERepository
 import com.example.blemeter.core.ble.domain.repository.BLERepository
 import com.example.blemeter.core.ble.domain.usecases.ParseDescriptor
 import com.example.blemeter.core.ble.domain.usecases.ParseRead
 import com.example.blemeter.core.ble.domain.usecases.ParseService
 import com.example.blemeter.core.ble.domain.usecases.ParseWrite
-import com.example.blemeter.core.file.IFileService
 import com.example.blemeter.core.logger.ExceptionHandler
 import com.example.blemeter.core.logger.ILogger
-import com.example.blemeter.core.logger.Logger
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -95,5 +94,14 @@ object BleModule {
         logger: ILogger,
         exceptionHandler: ExceptionHandler
     ): BLEService =
+        BLEService(scope,logger, exceptionHandler)
+
+    @Provides
+    @Singleton
+    fun bindIBLEService(
+        scope: CoroutineScope,
+        logger: ILogger,
+        exceptionHandler: ExceptionHandler
+    ): IBLEService =
         BLEService(scope,logger, exceptionHandler)
 }

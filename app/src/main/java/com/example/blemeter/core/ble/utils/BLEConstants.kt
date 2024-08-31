@@ -4,15 +4,16 @@ object BLEConstants {
 
     const val MTU = 20
 
-    const val SOF: Byte = 104 //Start of Frame
+    const val SOF: UByte = 0x68u //Start of Frame
 
-    const val EOF: Byte = 22 //End of Frame
+    const val EOF: UByte = 0x16u //End of Frame
 
-    const val METER_ADDRESS = "AA5504B10000B5"
+    // Meter number : 71 96 24 03 18 00 02
+    const val METER_ADDRESS = "01001803249671"
 
-    const val COMMAND_RESPONSE_SIZE = 40
+    const val METER_TYPE: UByte = 0x12u
 
-    const val STAND_BY: Byte = 0
+    const val SERIAL_NUMBER: UByte = 0xD0u
 
-    const val IS_CONFIGURATION_MODE = false
+    const val STAND_BY: UByte = 0x00u
 }

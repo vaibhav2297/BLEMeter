@@ -54,32 +54,6 @@ class ConnectionViewModel @Inject constructor(
             }
         }
 
-//    val uiState = combine(
-////        _uiState,
-////        _deviceDetails,
-////        _connectionState,
-////        _scanEvent
-////    ) { uiState, deviceDetail, connectionState, scanEvents ->
-////        ConnectionUiState(
-////            scannedDevices = scanEvents.scannedDevices,
-////            isScanning = scanEvents.isScanning,
-////            deviceDetail = deviceDetail,
-////            connectionState = connectionState,
-////            connectionError = scanEvents.error,
-////            isBluetoothEnabled = scanEvents.isBluetoothEnabled,
-////
-////            showBluetoothEnableDialog = uiState.showBluetoothEnableDialog,
-////            shouldRequestBluetoothPermission = uiState.shouldRequestBluetoothPermission,
-////            isPermissionGranted = uiState.isPermissionGranted,
-////            dialog = uiState.dialog
-////        )
-////    }.flowOn(Dispatchers.IO)
-////        .stateIn(
-////            viewModelScope,
-////            SharingStarted.WhileSubscribed(),
-////            ConnectionUiState()
-////        )
-
 
     init {
         observeConnectionStatus()
@@ -100,7 +74,7 @@ class ConnectionViewModel @Inject constructor(
             is ConnectionUiEvent.OnStartScan -> requestBluetoothPermission()
             is ConnectionUiEvent.OnStopScan -> stopLeScan()
             is ConnectionUiEvent.BluetoothEvent -> onBluetoothEvents(event)
-            is ConnectionUiEvent.OnNavigated -> {}
+            is ConnectionUiEvent.OnNavigated -> { }
         }
     }
 

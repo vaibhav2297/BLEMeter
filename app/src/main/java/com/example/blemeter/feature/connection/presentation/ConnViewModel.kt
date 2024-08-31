@@ -1,13 +1,14 @@
 package com.example.blemeter.feature.connection.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.blemeter.config.isDisconnected
-import com.example.blemeter.core.ble.data.repository.BLEService
-import com.example.blemeter.core.ble.domain.model.isDisconnected
+import com.example.blemeter.config.extenstions.getMeterAddress
+import com.example.blemeter.config.extenstions.isConnected
+import com.example.blemeter.config.extenstions.isDisconnected
+import com.example.blemeter.core.ble.data.BLEService
+import com.example.blemeter.core.local.DataStore
+import com.example.blemeter.core.logger.ExceptionHandler
 import com.example.blemeter.core.logger.ILogger
-import com.example.blemeter.core.logger.Logger
 import com.example.blemeter.feature.connection.domain.usecases.ConnectionUseCases
 import com.juul.kable.AndroidAdvertisement
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,6 +16,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,7 +25,9 @@ import javax.inject.Inject
 class ConnViewModel @Inject constructor(
     private val bleService: BLEService,
     private val useCases: ConnectionUseCases,
-    private val logger: ILogger
+    private val dataStore: DataStore,
+    private val logger: ILogger,
+    private val exceptionHandler: ExceptionHandler
 ) : ViewModel() {
 
     private var _scanningJob: Job? = null
@@ -34,6 +38,12 @@ class ConnViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(ConnectionUiState())
     val uiState = _uiState.asStateFlow()
+
+    init {
+        //Use when handling Meter address manually
+        /*checkMeterAddress()
+        observeMeterAddress()*/
+    }
 
     fun onEvent(event: ConnectionUiEvent) {
         when (event) {
@@ -94,7 +104,7 @@ class ConnViewModel @Inject constructor(
 
     private fun connect(advertisement: AndroidAdvertisement) {
         viewModelScope.launch {
-            logger.d("Connecting device :: ${advertisement.address}")
+            logger.d("Connecting device :: name :: ${advertisement.name} :: address :: ${advertisement.address}")
             bleService.apply {
                 stopScanning()
                 _selectedDevice = advertisement
@@ -121,8 +131,15 @@ class ConnViewModel @Inject constructor(
         viewModelScope.launch {
             bleService.peripheral?.state?.collect { state ->
                 logger.d("Connection VM :: Connection Status :: $state")
+
+                //updating state to UI
                 _uiState.update {
                     it.copy(state = state)
+                }
+
+                //saving meter address to preference on connection established
+                if (state.isConnected()) {
+                    extractAndSaveMeterAddress()
                 }
             }
         }
@@ -133,6 +150,44 @@ class ConnViewModel @Inject constructor(
             val deviceInfo = useCases.getDeviceInfoUseCase()
             logger.d("Connection VM :: Fetch Device Info $deviceInfo")
             _uiState.update { it.copy(isServiceDiscovered = true) }
+        }
+    }
+
+    //Used when auto extract meter address
+    private fun extractAndSaveMeterAddress() {
+        try {
+            val address = bleService.peripheral?.name?.getMeterAddress() ?: ""
+            logger.d("extractAndSaveMeterAddress :: meter Address :: $address")
+            saveMeterAddress(address)
+        } catch (e:Exception) {
+            exceptionHandler.handle(e)
+        }
+    }
+
+    private fun saveMeterAddress(address: String) {
+        viewModelScope.launch {
+            dataStore.saveMeterAddress(address)
+        }
+    }
+
+    //Used when manually get meter address
+    private fun checkMeterAddress() {
+        viewModelScope.launch {
+            val isMeterAddressRequired = dataStore.getMeterAddress().first().isEmpty()
+
+            _uiState.update {
+                it.copy(isMeterAddressRequired = isMeterAddressRequired)
+            }
+        }
+    }
+
+    private fun observeMeterAddress() {
+        viewModelScope.launch {
+            dataStore.getMeterAddress().collect { address ->
+                _uiState.update {
+                    it.copy(isMeterAddressRequired = address.isEmpty())
+                }
+            }
         }
     }
 

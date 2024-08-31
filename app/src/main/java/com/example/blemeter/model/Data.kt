@@ -1,3 +1,7 @@
 package com.example.blemeter.model
 
-interface Data
+import com.example.blemeter.core.ble.domain.model.DataIdentifier
+
+interface Data {
+    val dataIdentifier : DataIdentifier
+}

@@ -3,58 +3,71 @@ package com.example.blemeter.model
 import com.example.blemeter.core.ble.utils.getBits
 
 interface ControlState {
-    fun code(): Int
+    fun code(): UInt
+    fun title(): String
 }
 
-enum class ValveStatus(private val code: Int) : ControlState {
-    OPEN(0b00), //00 bit
-    CLOSE(0b01), //01 bit
-    ABNORMAL(0b11); // 11 bit
+enum class ValveStatus(private val code: UInt) : ControlState {
+    NONE(0xFFFFFFFFu),
+    OPEN(0b00u), //00 bit
+    CLOSE(0b10u), //01 bit
+    ABNORMAL(0b11u); // 11 bit
 
-    override fun code(): Int {
+    override fun code(): UInt {
         return this.code
     }
 
+    override fun title(): String {
+        return this.name
+    }
+
     companion object {
-        fun getState(byte: Byte): ControlState {
-            //val stateBits = (byte.toInt() shr 6) and 3 // Get first 2 bits and mask to 0 or 3
-            return when (val stateBits = byte.getBits(0,1)) {
+        fun getState(byte: UByte): ControlState {
+            return when (byte.getBits(0,1)) {
                 OPEN.code -> OPEN
                 CLOSE.code -> CLOSE
                 ABNORMAL.code -> ABNORMAL
-                else -> throw IllegalArgumentException("Invalid binary string for Valve state: $stateBits")
+                else -> NONE
             }
         }
     }
 }
 
-enum class RelayStatus(private val code: Int) : ControlState {
-    CONDUCTING_ELECTRICITY(0b00),  //00 bit
-    DISCONNECT_POWER(0b01);        //01 bit
+enum class RelayStatus(private val code: UInt) : ControlState {
+    NONE(0xFFFFFFFFu),
+    CONDUCTING_ELECTRICITY(0b00u),  //00 bit
+    DISCONNECT_POWER(0b01u);        //01 bit
 
-    override fun code(): Int {
+    override fun code(): UInt {
         return this.code
     }
 
+    override fun title(): String {
+        return this.name
+    }
+
     companion object {
-        fun getState(byte: Byte): ControlState {
-            //val stateBits = (byte.toInt() shr 6) and 3 // Get first 2 bits and mask to 0 or 3
-            return when (val stateBits = byte.getBits(0,1)) {
+        fun getState(byte: UByte): ControlState {
+            return when (byte.getBits(0,1)) {
                 CONDUCTING_ELECTRICITY.code -> CONDUCTING_ELECTRICITY
                 DISCONNECT_POWER.code -> DISCONNECT_POWER
-                else -> throw IllegalArgumentException("Invalid binary string for Relay state: $stateBits")
+                else -> NONE
             }
         }
     }
 }
 
-enum class NoneStatus(private val code: Int) : ControlState {
-    NONE(-1);
+enum class NoneStatus(private val code: UInt) : ControlState {
+    NONE(0xFFFFFFFFu);
 
-    override fun code(): Int = NONE.code
+    override fun title(): String {
+        return this.name
+    }
+
+    override fun code(): UInt = NONE.code
 }
 
-fun getControlState(meterType: MeterType, byte: Byte): ControlState {
+fun getControlState(meterType: MeterType, byte: UByte): ControlState {
     return when(meterType) {
         is MeterType.WaterMeter -> ValveStatus.getState(byte)
         is MeterType.ElectricityMeter -> RelayStatus.getState(byte)

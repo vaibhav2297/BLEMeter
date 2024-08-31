@@ -18,6 +18,7 @@ data class ConnectionUiState(
     val connectionState: ConnectionState = ConnectionState.DISCONNECTED,
     val connectionError: String? = null,
     val isBluetoothEnabled: Boolean = true,
+    val isMeterAddressRequired: Boolean = false,
 
     //bluetooth permissions
     val showBluetoothEnableDialog: Boolean = false,

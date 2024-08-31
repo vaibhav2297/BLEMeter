@@ -7,6 +7,9 @@ import androidx.navigation.compose.NavHost
 import com.example.blemeter.feature.communication.navigation.communicationGraph
 import com.example.blemeter.feature.connection.navigation.ConnectionDestination
 import com.example.blemeter.feature.connection.navigation.connectionGraph
+import com.example.blemeter.feature.scan.navigation.ScanDestination
+import com.example.blemeter.feature.scan.navigation.scanGraph
+import com.example.blemeter.feature.setting.navigation.settingGraph
 import com.example.blemeter.utils.NavigationCallback
 import com.example.blemeter.utils.VoidCallback
 
@@ -16,7 +19,7 @@ fun BLEMeterNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     onNavigateToDestination: NavigationCallback,
-    startDestination: String = ConnectionDestination.route,
+    startDestination: String = ScanDestination.route,
 ) {
     NavHost(
         modifier = modifier,
@@ -29,6 +32,16 @@ fun BLEMeterNavHost(
             communicationGraph(
                 navigateBack = onBackClick
             )
+
+            settingGraph(
+                navigateBack = onBackClick
+            )
+        }
+
+        scanGraph(
+            onNavigateToDestination = onNavigateToDestination
+        ) {
+
         }
     }
 }

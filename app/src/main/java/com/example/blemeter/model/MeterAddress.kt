@@ -1,27 +1,30 @@
 package com.example.blemeter.model
 
 import com.example.blemeter.core.ble.utils.to4ByteArray
+import com.example.blemeter.core.ble.utils.to4UByteArray
 import com.example.blemeter.core.ble.utils.toHighByte
 import com.example.blemeter.core.ble.utils.toInt16
 import com.example.blemeter.core.ble.utils.toInt32
 import com.example.blemeter.core.ble.utils.toLowByte
+import com.example.blemeter.core.ble.utils.toUInt16
+import com.example.blemeter.core.ble.utils.toUInt32
 
 data class MeterAddress(
-    val addressCode: Int = -1,
+    val addressCode: UInt = 0u,
     val meterType: MeterType = MeterType.Unknown,
-    val manufacturerCode: Short = -1
+    val manufacturerCode: UShort = 0u
 ) {
 
     @OptIn(ExperimentalUnsignedTypes::class)
-    fun toByteArray(): ByteArray {
+    fun toUByteArray(): UByteArray {
         // Create a ByteBuffer with capacity 7 bytes
-        val byteArray = ByteArray(7)
+        val byteArray = UByteArray(7)
 
         // Put addressCode as 4 bytes
-        addressCode.to4ByteArray().copyInto(byteArray, 0)
+        addressCode.to4UByteArray().copyInto(byteArray, 0)
 
         // Put meterType as 1 byte
-        byteArray[4] = meterType.code.toByte()
+        byteArray[4] = meterType.code.toUByte()
 
         // Put manufacturerCode as 2 bytes
         byteArray[5] = manufacturerCode.toLowByte()
@@ -34,22 +37,22 @@ data class MeterAddress(
     companion object {
         @OptIn(ExperimentalUnsignedTypes::class)
         @Throws
-        fun ByteArray.toMeterAddress(): MeterAddress {
+        fun UByteArray.toMeterAddress(): MeterAddress {
             require(this.size > 6) { "Not enough bytes to retrieve meter address" }
 
-            val addressCode = this.toInt32(0)
+            val addressCode = this.toUInt32(0)
             val meterType = MeterType.getMeterType(this[4])
-            val manufacturerCode = this.toInt16(5)
+            val manufacturerCode = this.toUInt16(5)
 
             return MeterAddress(
-                addressCode = addressCode.toInt(),
+                addressCode = addressCode,
                 meterType = meterType,
-                manufacturerCode = manufacturerCode.toShort()
+                manufacturerCode = manufacturerCode
             )
         }
 
         @OptIn(ExperimentalUnsignedTypes::class)
-        fun ByteArray.retrieveMeterType(): MeterType {
+        fun UByteArray.retrieveMeterType(): MeterType {
             require(this.size > 6) { "Not enough bytes to retrieve meter address" }
 
             return MeterType.getMeterType(this[4])

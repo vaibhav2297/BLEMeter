@@ -1,7 +1,6 @@
 package com.example.blemeter.feature.communication.domain.usecases
 
-import com.example.blemeter.core.ble.data.repository.BLEService
-import com.example.blemeter.core.ble.data.repository.IBLERepository
+import com.example.blemeter.core.ble.data.BLEService
 import com.example.blemeter.core.ble.domain.model.MeterServicesProvider
 import com.example.blemeter.model.DeviceInfo
 import kotlinx.coroutines.delay

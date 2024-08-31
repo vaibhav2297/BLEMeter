@@ -1,9 +1,7 @@
 package com.example.blemeter.core.ble.domain.bleparsable
 
 import com.example.blemeter.core.ble.domain.model.DataIdentifier
-import com.example.blemeter.core.ble.utils.accumulateSum
-import com.example.blemeter.core.ble.utils.toHighByte
-import com.example.blemeter.core.ble.utils.toLowByte
+import com.example.blemeter.core.ble.utils.accumulateUByteArray
 
 @OptIn(ExperimentalUnsignedTypes::class)
 
@@ -17,36 +15,29 @@ abstract class Command<T, R>(
     val characteristicUuid: String
 ) {
 
-    abstract val controlCode: Int
+    abstract val controlCode: UByte
 
-    abstract val requestLength: Int
+    abstract val requestLength: UInt
 
     abstract val dataIdentifier: DataIdentifier
+
+    abstract val serialNumber: UByte
 
     /**
      * Accumulate the commands value and return single [UByte]
      */
-    fun checkCode(commands: ByteArray) : Byte =
-        commands.accumulateSum(0, commands.size - 1)
-
-    /**
-     * @return [UByteArray] of the data identifier
-     */
-    fun getDataIdentifierByteArray() =
-        byteArrayOf(
-            dataIdentifier.identifier.toHighByte(),
-            dataIdentifier.identifier.toLowByte()
-        )
+    fun checkCode(commands: UByteArray) : UByte =
+        commands.accumulateUByteArray()
 
     /**
      * converts the settings into command
      *
      */
-    abstract fun toCommand(request: T): ByteArray
+    abstract fun toCommand(request: T): UByteArray
 
     /**
      * converts response received from BLE into its respective setting class
      *
      */
-    abstract fun fromCommand(command: ByteArray): R
+    abstract fun fromCommand(command: String): R
 }

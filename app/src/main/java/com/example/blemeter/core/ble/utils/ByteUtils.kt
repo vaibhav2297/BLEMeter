@@ -10,19 +10,18 @@ fun String.fromHexToByteArray(): ByteArray {
     return chunked(2).map { it.toInt(16).toByte() }.toByteArray()
 }
 
-@OptIn(ExperimentalUnsignedTypes::class)
-fun String.fromHexToUByteArray(): UByteArray {
+fun String.chunkAndReverseString(): String {
     check(length % 2 == 0) { "Must have an even length" }
 
-    return chunked(2).map { it.toInt(16).toUByte() }.toUByteArray()
+    return this
+        .chunked(2)
+        .reversed()
+        .joinToString("")
 }
 
 fun List<Byte>.toHexString(): String = map { String.format("%02x", it) }.toList().toString()
 
 fun ByteArray.toHexString(): String = map { String.format("%02x", it) }.toList().toString()
-
-@OptIn(ExperimentalUnsignedTypes::class)
-fun UByteArray.toHexString(): String = this.toByteArray().toHexString()
 
 fun Char.intoByte(): Byte = this.code.toByte()
 fun Char.intoUByte(): UByte = this.code.toUByte()
@@ -37,11 +36,6 @@ fun Byte.getBit(position: Int): Int {
 }
 
 fun Byte.getBits(start: Int, end: Int): Int {
-   /* var value = 0
-    for (i in start..end) {
-        value = (value shl 1) or this.getBit(i)
-    }
-    return value*/
     if (start !in 0..7 || end !in 0..7 || start > end) {
         throw IllegalArgumentException("Invalid bit range. Start index must be between 0 and 7, and end index must be greater than or equal to start index.")
     }
@@ -84,9 +78,6 @@ fun Int.toLowByte(): Byte = (this and 0xFF).toByte()
 fun Int.toHighByte(): Byte = ((this shr 8) and 0xFF).toByte()
 fun Int.toMidByte(): Byte = ((this shr 16) and 0xFF).toByte()
 
-fun Int.toLowUByte(): UByte = (this and 0xFF).toUByte()
-fun Int.toHighUByte(): UByte = ((this shr 8) and 0xFF).toUByte()
-
 fun Int.to4ByteArray(): ByteArray {
     val byteArray = ByteArray(4)
 
@@ -117,7 +108,7 @@ fun ByteArray.toInt16(startIndex: Int, byteOrder: ByteOrder = BLEMeterConfig.def
 }
 
 /**
- * Returns a 24-bit signed integer converted from 3 bytes at a specified position in a byte array.
+ * Returns a 24-bit unsigned integer converted from 3 bytes at a specified position in a byte array.
  */
 fun ByteArray.toInt24(startIndex: Int, byteOrder: ByteOrder = BLEMeterConfig.defaultByteOrder): Int {
     require(startIndex + 3 <= size) { "Not enough bytes in the array for an Int24" }

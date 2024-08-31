@@ -98,4 +98,9 @@ dependencies {
     implementation(libs.dagger.hilt.navigation)
 
     implementation("com.juul.kable:core:0.31.1")
+    
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+    /*Lottie Animation*/
+    implementation(libs.lottie.compose)
 }

@@ -1,18 +1,19 @@
 package com.example.blemeter.core.ble.domain.model.request
 
 data class ValveControlRequest(
-    val baseRequest: BaseRequest,
-    val status: ValveControlCommandStatus
+    val status: ValveControlCommandStatus,
+    val baseRequest: BaseRequest = BaseRequest()
 ) : Base by baseRequest
 
 
-enum class ValveControlCommandStatus(val code: Int) {
-    NONE(-1),
-    OPEN(85), //055H
-    CLOSE(153); //99H
+enum class ValveControlCommandStatus(val code: UByte) {
+
+    NONE(255u),
+    OPEN(0x55u),
+    CLOSE(0x99u);
 
     companion object {
-        fun getValveControlCommandStatus(code: Int): ValveControlCommandStatus {
+        fun getValveControlCommandStatus(code: UByte): ValveControlCommandStatus {
             return when(code) {
                 OPEN.code -> OPEN
                 CLOSE.code -> CLOSE

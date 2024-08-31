@@ -1,29 +1,35 @@
 package com.example.blemeter
 
-import android.util.Log
-import com.example.blemeter.core.ble.domain.bleparsable.MeterDataCommand
+import android.text.TextUtils.substring
+import com.example.blemeter.config.constants.Constants
+import com.example.blemeter.config.extenstions.getMeterType
+import com.example.blemeter.core.ble.domain.bleparsable.ReadMeterDataCommand
+import com.example.blemeter.core.ble.domain.bleparsable.PurchaseDataCommand
+import com.example.blemeter.core.ble.domain.bleparsable.ValveControlCommand
 import com.example.blemeter.core.ble.domain.model.DataIdentifier
 import com.example.blemeter.core.ble.domain.model.request.BaseRequest
 import com.example.blemeter.core.ble.domain.model.request.MeterDataRequest
+import com.example.blemeter.core.ble.domain.model.request.PurchaseDataRequest
+import com.example.blemeter.core.ble.domain.model.request.ValveControlCommandStatus
+import com.example.blemeter.core.ble.domain.model.request.ValveControlRequest
 import com.example.blemeter.core.ble.utils.accumulateSum
-import com.example.blemeter.core.ble.utils.toHexString
+import com.example.blemeter.core.ble.utils.chunkAndReverseString
+import com.example.blemeter.core.ble.utils.to4UByteArray
 import com.example.blemeter.core.ble.utils.toInt16
 import com.example.blemeter.model.BatteryVoltage
 import com.example.blemeter.model.MeterAddress
-import com.example.blemeter.model.MeterAddress.Companion.toMeterAddress
 import com.example.blemeter.model.MeterType
-import com.example.blemeter.model.Statuses
 import com.example.blemeter.model.ValveStatus
 import com.example.blemeter.model.getControlState
+import org.junit.Assert.assertEquals
 import org.junit.Test
-
-import org.junit.Assert.*
 
 /**
  * Example local unit test, which will execute on the development machine (host).
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
+@OptIn(ExperimentalStdlibApi::class)
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
@@ -34,22 +40,22 @@ class ExampleUnitTest {
     @Test
     fun assert_meter_request_to_byte_command() {
 
-        val meterAddressBytes = byteArrayOf()
+       /* val meterAddressBytes = ubyteArrayOf()
         val meterAddress = meterAddressBytes.toMeterAddress()
 
 
         val baseRequest = BaseRequest(
             meterAddress = meterAddress,
             meterType = meterAddress.meterType
-        )
+        )*/
     }
 
     @Test
     fun assert_base_request() {
-        val meterAddressStr = "LSD4BTC"
+        /*val meterAddressStr = "LSD4BTC"
 
-        val meterAddressBytes = meterAddressStr.toByteArray(Charsets.UTF_8)
-        val byteAray = byteArrayOf(76, 83, 68, 52, 66, 84, 67)
+        val meterAddressBytes = meterAddressStr.toByteArray(Charsets.UTF_8).toUByteArray()
+        val byteAray = ubyteArrayOf(76u, 83u, 68u, 52u, 66u, 84u, 67u)
         val meterAddress = meterAddressBytes.toMeterAddress()
 
         val actualBaseRequest = BaseRequest(
@@ -61,16 +67,17 @@ class ExampleUnitTest {
         val expectedBaseRequest = BaseRequest(
             meterType = MeterType.ElectricityMeter,
             meterAddress = MeterAddress(
-                addressCode = 879986924,
+                addressCode = 879986924u,
                 meterType = MeterType.ElectricityMeter,
-                manufacturerCode = 17236
+                manufacturerCode = 17236u
             )
         )
 
-        assertEquals(meterAddressBytes.decodeToString(), byteAray.decodeToString())
+        assertEquals(meterAddressBytes.toByteArray().decodeToString(), byteAray.toByteArray().decodeToString())*/
 
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     @Test
     fun assert_string_to_bytearray() {
         val string = "LSD4BTC"
@@ -92,7 +99,7 @@ class ExampleUnitTest {
 
     @Test
     fun assert_byte_to_water_battery_normal() {
-        val water_valve_close_battery_normal: Byte = 0b00000001
+        val water_valve_close_battery_normal: UByte = 0b00000001u
         val batteryState = BatteryVoltage.NORMAL
 
         assertEquals(batteryState, BatteryVoltage.getBatteryVoltage(water_valve_close_battery_normal))
@@ -100,7 +107,7 @@ class ExampleUnitTest {
 
     @Test
     fun assert_byte_to_water_valve_close() {
-        val water_meter_valve_close_battery_normal: Byte = 0b00000001
+        val water_meter_valve_close_battery_normal: UByte = 0b00000001u
         val controlState = ValveStatus.CLOSE
 
         assertEquals(controlState, getControlState(MeterType.WaterMeter.ColdWaterMeter, water_meter_valve_close_battery_normal))
@@ -108,7 +115,7 @@ class ExampleUnitTest {
 
     @Test
     fun assert_byte_to_water_valve_open() {
-        val water_meter_valve_close_battery_normal: Byte = 0b00000000
+        val water_meter_valve_close_battery_normal: UByte = 0b00000000u
         val controlState = ValveStatus.OPEN
 
         assertEquals(controlState, getControlState(MeterType.WaterMeter.ColdWaterMeter, water_meter_valve_close_battery_normal))
@@ -116,7 +123,7 @@ class ExampleUnitTest {
 
     @Test
     fun assert_byte_to_water_valve_abnormal() {
-        val water_meter_valve_close_battery_normal: Byte = 0b00000101
+        val water_meter_valve_close_battery_normal: UByte = 0b00000101u
         val controlState = ValveStatus.ABNORMAL
 
         assertEquals(controlState, getControlState(MeterType.WaterMeter.ColdWaterMeter, water_meter_valve_close_battery_normal))
@@ -124,7 +131,7 @@ class ExampleUnitTest {
 
     @Test
     fun assert_byte_to_water_battery_undervolt() {
-        val water_meter_valve_open_battery_undervolt: Byte = 0b00000100
+        val water_meter_valve_open_battery_undervolt: UByte = 0b00000100u
         val batteryVoltage = BatteryVoltage.NORMAL
 
         assertEquals(batteryVoltage, BatteryVoltage.getBatteryVoltage(water_meter_valve_open_battery_undervolt))
@@ -143,7 +150,7 @@ class ExampleUnitTest {
 
     @Test
     fun assert_meter_address_to_byte_array() {
-        val meterAddress = MeterAddress(addressCode=876893004, meterType= MeterType.ElectricityMeter, manufacturerCode=17236).toByteArray()
+        val meterAddress = MeterAddress(addressCode = 876893004u, meterType = MeterType.ElectricityMeter, manufacturerCode =17236u).toUByteArray()
         val size = 7
 
         assertEquals(size,meterAddress.size)
@@ -160,4 +167,156 @@ class ExampleUnitTest {
         assertEquals(expectedCheckCode,actualCheckCode)
     }
 
+    @Test
+    fun assert_byteArray_to_float() {
+        //val actual = "00000002"
+        val actual = "681202001803249671811b901f0000000005ffff".substring(22..25)
+        //val expected = "00000002"
+        val expected = "901f"
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun assert_check_code_output() {
+        val uByteArray = ubyteArrayOf(0x68u, 0x10u, 0x02u, 0x00u, 0x18u, 0x03u, 0x24u, 0x96u, 0x71u, 0x01u, 0x03u, 0x90u, 0x1Fu, 0xD0u)
+        val actual = ValveControlCommand.toCommand(ValveControlRequest(status = ValveControlCommandStatus.OPEN))
+        val expected: UByte = 0x43u
+
+        assertEquals(expected, actual)
+    }
+
+
+    @Test
+    fun assert_byteArray_toHexString() {
+        val byteArray = listOf<UByte>(104u, 18u, 2u, 0u, 24u, 3u, 36u, 150u, 113u, 129u, 27u, 144u, 31u, 0u, 0u, 0u, 0u, 5u, 255u, 255u, 255u, 251u, 0u, 0u, 0u, 0u, 0u, 2u, 0u, 0u, 0u, 0u, 0u, 5u, 1u, 0u, 0u, 0u, 18u, 22u)
+
+        val expected = DataIdentifier.METER_DATA
+
+        val hexString = byteArray.toUByteArray().toHexString()
+
+        val dataIdentifier = DataIdentifier.getDataType(hexString)
+
+        assertEquals(expected, dataIdentifier)
+    }
+
+    @Test
+    fun assert_valve_command_generation() {
+        val actual = ValveControlCommand.toCommand(
+            request = ValveControlRequest(
+                status = ValveControlCommandStatus.CLOSE,
+                baseRequest = BaseRequest(meterAddress = "71962403180002")
+            )
+        ).toHexString(format = HexFormat.UpperCase)
+
+        val expected = Constants.valveOpen
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun assert_read_meter_command_generation() {
+        val actual = ReadMeterDataCommand.toCommand(
+            request = MeterDataRequest(
+                baseRequest = BaseRequest(meterAddress = "71962403180002")
+            )
+        ).toHexString(format = HexFormat.UpperCase)
+
+        val expected = Constants.hexReadMeterData.toUpperCase()
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun assert_reverse_chunck() {
+        val address = "71962403180002"
+        val expected = "02001803249671"
+
+        val actual = address.chunkAndReverseString()
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun assert_meterType_extract() {
+        val address = "71962403180002"
+        val expected = "18"
+
+        val actual = address.getMeterType()
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun assert_int_to_4byteArray() {
+        val expected = ubyteArrayOf(0u,0u,0u,100u)
+
+        val actual = 100u.to4UByteArray()
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun assert_to_purchase_command() {
+        val expected = "6810020018032496710408A013000100000064E416"
+
+        val actual = PurchaseDataCommand.toCommand(
+            request = PurchaseDataRequest(
+                baseRequest = BaseRequest(meterAddress = "71962403180002"),
+                numberTimes = 1u,
+                purchaseVariable = 100u
+            )
+        ).toHexString(format = HexFormat.UpperCase)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun assert_string_to_read_command() {
+        val data = "681201001803249671811b901f00000000000000006400000064010200000000000501000000db16"
+        val expectedAccumulation = "00000000"
+        val expectedTotal = "00000064"
+
+        val actualAccumulation = data.substring(28..35)
+        val actualTotal = data.substring(44..51)
+
+        val actualStatusByte = data.substring(54..55)
+        val expectedStatusByte = "02"
+
+        val alarmVariable = data.substring(58..59)
+        val expectedAlarm = "00"
+
+        val overdraft = data.substring(60..61)
+        val expectedOverdraft = "00"
+
+        val minimumUsage = data.substring(62..63)
+        val expectedMinimum = "00"
+
+        val additionDeduction = data.substring(64..65)
+        val expectedAdditionDeduction = "00"
+
+        val productVersion = data.substring(66..67)
+        val expectedProductVersion = "05"
+
+        val programVersion = data.substring(68..69)
+        val expectedProgramVersion = "01"
+
+        assertEquals(expectedAccumulation, actualAccumulation)
+        assertEquals(expectedTotal, actualTotal)
+        assertEquals(expectedStatusByte, actualStatusByte)
+        assertEquals(expectedMinimum, minimumUsage)
+        assertEquals(expectedProductVersion, productVersion)
+        assertEquals(expectedProgramVersion, programVersion)
+        assertEquals(expectedAdditionDeduction, additionDeduction)
+        assertEquals(expectedOverdraft, overdraft)
+        assertEquals(expectedAlarm, alarmVariable)
+    }
+
+    @Test
+    fun assert_string_to_int() {
+        val data = "00000064"
+        val expected = 100
+        val actual = data.toInt(16)
+
+        assertEquals(expected, actual)
+    }
 }
