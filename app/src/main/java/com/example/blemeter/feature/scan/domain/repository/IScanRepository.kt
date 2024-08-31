@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface IScanRepository {
     val advertisement: Flow<AndroidAdvertisement>
-    fun initPeripheral(advertisement: AndroidAdvertisement)
+    fun initPeripheral(advertisement: AndroidAdvertisement) : Peripheral?
     suspend fun connect()
     suspend fun disconnect()
     val peripheral: Peripheral?

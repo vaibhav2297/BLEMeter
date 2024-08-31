@@ -13,10 +13,9 @@ class ScanRepository @Inject constructor(
     override val advertisement =
         bleService.scanner.advertisements
 
-    override val peripheral: Peripheral? =
-        bleService._peripheral
+    override val peripheral: Peripheral? = null
 
-    override fun initPeripheral(advertisement: AndroidAdvertisement) =
+    override fun initPeripheral(advertisement: AndroidAdvertisement) : Peripheral? =
         bleService.initPeripheral(advertisement)
 
     override suspend fun connect() = bleService.connect()

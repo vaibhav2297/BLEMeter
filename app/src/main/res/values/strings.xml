@@ -49,4 +49,19 @@
     <string name="rescan_desc">Make sure meter is nearby and try rescanning</string>
     <string name="establishing_connection">Establishing Connection</string>
     <string name="the_connection_process_is_underway">The connection process is underway...</string>
+    <string name="success">Success!</string>
+    <string name="your_device_is_connected">Your device is connected</string>
+    <string name="read_data">Read Data</string>
+    <string name="valve_control">Valve Control</string>
+    <string name="recharge">Recharge</string>
+    <string name="reset_data">Reset Data</string>
+    <string name="accumulate">Accumulate</string>
+    <string name="controls">Controls</string>
+    <string name="overview">Overview</string>
+    <string name="accumulated_usage">Accumulated Usage</string>
+    <string name="last_sync">Last Sync : %1$s</string>
+    <string name="total_purchase">Total Purchase</string>
+    <string name="recharge_times">Recharge Times</string>
+    <string name="valve_status">Valve Status</string>
+    <string name="battery_voltage">Battery Voltage</string>
 </resources>

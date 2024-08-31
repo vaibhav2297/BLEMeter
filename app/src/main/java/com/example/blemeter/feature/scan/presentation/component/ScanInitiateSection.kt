@@ -1,5 +1,6 @@
 package com.example.blemeter.feature.scan.presentation.component
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -17,7 +18,8 @@ fun ScanInitiateSection(
     onScan: VoidCallback
 ) {
     ScanScreenSlot(
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxSize(),
         topContent = { mod ->
             InformationSection(
                 modifier = mod,

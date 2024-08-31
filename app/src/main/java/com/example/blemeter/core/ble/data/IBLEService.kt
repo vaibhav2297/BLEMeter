@@ -9,9 +9,7 @@ interface IBLEService {
 
     val scanner: PlatformScanner
 
-    val peripheral: Peripheral?
-
-    fun initPeripheral(advertisement: AndroidAdvertisement)
+    fun initPeripheral(advertisement: AndroidAdvertisement) : Peripheral?
 
     suspend fun connect()
 
@@ -30,5 +28,4 @@ interface IBLEService {
     fun observeCharacteristic(service: String, observeCharacteristic: String): Flow<UByteArray>?
 
     suspend fun connectAndWrite(onCharWrite: suspend () -> Unit)
-    var _peripheral: Peripheral?
 }

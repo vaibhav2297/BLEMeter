@@ -11,6 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.blemeter.R
+import com.example.blemeter.config.extenstions.isConnected
 import com.example.blemeter.config.extenstions.toDisplay
 import com.example.blemeter.ui.components.AppOutlinedButton
 import com.example.blemeter.ui.components.AppSurface
@@ -27,13 +28,20 @@ fun DeviceConnectionSection(
     state: State,
     onCancel: VoidCallback
 ) {
+
+    val title = if (state.isConnected()) stringResource(R.string.success)
+    else stringResource(R.string.establishing_connection)
+
+    val description = if (state.isConnected()) stringResource(R.string.your_device_is_connected)
+    else stringResource(R.string.the_connection_process_is_underway)
+
     ScanScreenSlot(
         modifier = modifier,
         topContent = { mod ->
             InformationSection(
                 modifier = mod,
-                title = stringResource(R.string.establishing_connection),
-                description = stringResource(R.string.the_connection_process_is_underway)
+                title = title,
+                description = description
             )
         },
         centerContent = { mod ->

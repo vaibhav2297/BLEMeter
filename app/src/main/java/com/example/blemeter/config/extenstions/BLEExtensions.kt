@@ -16,7 +16,7 @@ fun State.toDisplay() = when (this) {
     Connecting.Observes -> "Observing"
     Connecting.Services -> "Servicing"
     Disconnecting -> "Disconnecting"
-    is Disconnected -> error("Unreachable")
+    is Disconnected -> "Disconnected"
 }
 
 fun String.getMeterAddress(): String {

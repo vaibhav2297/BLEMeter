@@ -3,15 +3,13 @@ package com.example.blemeter.feature.scan.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.blemeter.config.extenstions.isConnected
 import com.example.blemeter.core.ble.data.BLEService
-import com.example.blemeter.core.ble.data.IBLEService
 import com.example.blemeter.feature.scan.domain.model.ScanScreenStatus
 import com.example.blemeter.feature.scan.domain.repository.IScanRepository
 import com.juul.kable.AndroidAdvertisement
+import com.juul.kable.Peripheral
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,14 +23,18 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ScanViewModel @Inject constructor(
-    private val scanRepo: IScanRepository
+    private val scanRepo: IScanRepository,
+    private val bleService: BLEService
 ) : ViewModel() {
 
     companion object {
-        const val SCAN_DURATION_MILLIS = 10000L
+        const val SCAN_DURATION_MILLIS = 5000L
+        const val TAG = "ScanModel"
     }
 
     private var scanJob : Job? = null
+
+    private var connectionJob : Job? = null
 
     private val foundDevices = hashMapOf<String, AndroidAdvertisement>()
 
@@ -104,17 +106,18 @@ class ScanViewModel @Inject constructor(
     }
 
     private fun onConnectionCancel() {
-
+        connectionJob?.cancel()
+        updateScreenState(ScanScreenStatus.None)
     }
 
 
     private fun onDeviceConnect() {
         _uiState.value.selectedDevice?.let { device ->
-            viewModelScope.launch {
-                scanRepo.initPeripheral(device)
+            connectionJob = viewModelScope.launch {
+                val peripheral = scanRepo.initPeripheral(device)
 
                 //observing the state only after initialising the peripheral
-                observeConnectionState()
+                observeConnectionState(peripheral)
 
                 //Making connection
                 delay(100L)
@@ -123,10 +126,9 @@ class ScanViewModel @Inject constructor(
         }
     }
 
-    private fun observeConnectionState() {
+    private fun observeConnectionState(peripheral: Peripheral?) {
         viewModelScope.launch {
-            scanRepo.peripheral?.state?.collect { state ->
-                Log.d("ConnectionMaking", "state: $state")
+           peripheral?.state?.collect { state ->
                 _uiState.update {
                     it.copy(
                         screenStatus = ScanScreenStatus.OnConnection(state)
@@ -137,4 +139,11 @@ class ScanViewModel @Inject constructor(
     }
 
     //endregion Connection
+
+
+    override fun onCleared() {
+        super.onCleared()
+        scanJob = null
+        connectionJob = null
+    }
 }

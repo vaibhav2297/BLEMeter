@@ -1,10 +1,12 @@
 package com.example.blemeter.core.ble.data
 
 import android.bluetooth.le.ScanSettings
+import android.util.Log
 import com.benasher44.uuid.uuidFrom
 import com.example.blemeter.core.ble.domain.model.MeterServicesProvider
 import com.example.blemeter.core.logger.ExceptionHandler
 import com.example.blemeter.core.logger.ILogger
+import com.example.blemeter.feature.scan.presentation.ScanViewModel
 import com.example.blemeter.model.DeviceInfo
 import com.juul.kable.AndroidAdvertisement
 import com.juul.kable.Filter
@@ -41,16 +43,15 @@ class BLEService @Inject constructor(
 
     private var _deviceInfo: DeviceInfo? = null
 
-    override var _peripheral: Peripheral? = null
-    override val peripheral: Peripheral? = _peripheral
+    var peripheral: Peripheral? = null
 
     override val scanner = Scanner {
         scanSettings = ScanSettings.Builder()
             .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
             .build()
-/*        filters = listOf(
+        filters = listOf(
             Filter.Service(uuidFrom(MeterServicesProvider.MainService.SERVICE))
-        )*/
+        )
         logging {
             level = Logging.Level.Data
             format = Logging.Format.Multiline
@@ -59,9 +60,9 @@ class BLEService @Inject constructor(
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    override fun initPeripheral(advertisement: AndroidAdvertisement) {
+    override fun initPeripheral(advertisement: AndroidAdvertisement): Peripheral? {
         logger.d("Initial peripheral")
-        _peripheral = scope.peripheral(advertisement) {
+        peripheral = scope.peripheral(advertisement) {
             logging {
                 level = Logging.Level.Data
                 format = Logging.Format.Multiline
@@ -81,11 +82,13 @@ class BLEService @Inject constructor(
                 exceptionHandler.handle(cause)
             }
         }
+
+        return peripheral
     }
 
     override suspend fun connect() {
         try {
-            _peripheral?.connect()
+            peripheral?.connect()
         } catch (e: Exception) {
             exceptionHandler.handle(e)
         }
@@ -93,8 +96,8 @@ class BLEService @Inject constructor(
 
     override suspend fun disconnect() {
         try {
-            _peripheral?.disconnect()
-            _peripheral = null
+            peripheral?.disconnect()
+            peripheral = null
             _deviceInfo = null
         } catch (e: Exception) {
             exceptionHandler.handle(e)
@@ -111,7 +114,7 @@ class BLEService @Inject constructor(
             characteristic = characteristic
         )
 
-        return _peripheral?.read(char)
+        return peripheral?.read(char)
     }
 
     @OptIn(ExperimentalUnsignedTypes::class)
@@ -126,8 +129,8 @@ class BLEService @Inject constructor(
             service = service,
             characteristic = writeCharacteristic
         )
-        logger.d("Write characteristic :: Confirming device before writing char :: name :: ${_peripheral?.name} :: state : ${peripheral?.state?.value}")
-        _peripheral?.write(writeChar, value.toByteArray(), WriteType.WithResponse)
+        logger.d("Write characteristic :: Confirming device before writing char :: name :: ${peripheral?.name} :: state : ${peripheral?.state?.value}")
+        peripheral?.write(writeChar, value.toByteArray(), WriteType.WithResponse)
     }
 
     @OptIn(ExperimentalUnsignedTypes::class)
@@ -140,7 +143,7 @@ class BLEService @Inject constructor(
             characteristic = observeCharacteristic,
         )
 
-        return _peripheral?.observe(observeChar)?.map { it.toUByteArray() }
+        return peripheral?.observe(observeChar)?.map { it.toUByteArray() }
     }
 
     fun setDeviceInfo(deviceInfo: DeviceInfo) {
@@ -150,7 +153,7 @@ class BLEService @Inject constructor(
     fun getDeviceInfo(): DeviceInfo? = _deviceInfo
 
     override suspend fun connectAndWrite(onCharWrite: suspend () -> Unit) {
-        val stateFlow = _peripheral?.state ?: return
+        val stateFlow = peripheral?.state ?: return
         val connectionJob = CoroutineScope(Dispatchers.IO).launch {
             stateFlow.collect { state ->
                 logger.d("connectAndWrite :: observe connection $state")
