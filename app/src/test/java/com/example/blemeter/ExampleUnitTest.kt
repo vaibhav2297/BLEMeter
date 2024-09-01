@@ -1,6 +1,5 @@
 package com.example.blemeter
 
-import android.text.TextUtils.substring
 import com.example.blemeter.config.constants.Constants
 import com.example.blemeter.config.extenstions.getMeterType
 import com.example.blemeter.core.ble.domain.bleparsable.ReadMeterDataCommand
@@ -10,7 +9,6 @@ import com.example.blemeter.core.ble.domain.model.DataIdentifier
 import com.example.blemeter.core.ble.domain.model.request.BaseRequest
 import com.example.blemeter.core.ble.domain.model.request.MeterDataRequest
 import com.example.blemeter.core.ble.domain.model.request.PurchaseDataRequest
-import com.example.blemeter.core.ble.domain.model.request.ValveControlCommandStatus
 import com.example.blemeter.core.ble.domain.model.request.ValveControlRequest
 import com.example.blemeter.core.ble.utils.accumulateSum
 import com.example.blemeter.core.ble.utils.chunkAndReverseString
@@ -179,7 +177,7 @@ class ExampleUnitTest {
     @Test
     fun assert_check_code_output() {
         val uByteArray = ubyteArrayOf(0x68u, 0x10u, 0x02u, 0x00u, 0x18u, 0x03u, 0x24u, 0x96u, 0x71u, 0x01u, 0x03u, 0x90u, 0x1Fu, 0xD0u)
-        val actual = ValveControlCommand.toCommand(ValveControlRequest(status = ValveControlCommandStatus.OPEN))
+        val actual = ValveControlCommand.toCommand(ValveControlRequest(status = ValveControlCommand.OPEN))
         val expected: UByte = 0x43u
 
         assertEquals(expected, actual)
@@ -203,7 +201,7 @@ class ExampleUnitTest {
     fun assert_valve_command_generation() {
         val actual = ValveControlCommand.toCommand(
             request = ValveControlRequest(
-                status = ValveControlCommandStatus.CLOSE,
+                status = ValveControlCommand.CLOSE,
                 baseRequest = BaseRequest(meterAddress = "71962403180002")
             )
         ).toHexString(format = HexFormat.UpperCase)

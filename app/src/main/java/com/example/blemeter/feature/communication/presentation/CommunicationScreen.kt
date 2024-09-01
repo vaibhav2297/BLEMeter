@@ -29,7 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.blemeter.R
 import com.example.blemeter.core.ble.domain.model.request.AccumulateDataRequest
 import com.example.blemeter.core.ble.domain.model.request.PurchaseDataRequest
-import com.example.blemeter.core.ble.domain.model.request.ValveControlCommandStatus
+import com.example.blemeter.core.ble.domain.model.request.ValveInteractionCommand
 import com.example.blemeter.core.ble.utils.roundTo
 import com.example.blemeter.model.MeterData
 import com.example.blemeter.model.ValveControlData
@@ -244,7 +244,7 @@ fun ValveInteractionSection(
                 modifier = Modifier.weight(1f),
                 onClick = {
                     onEvent(
-                        CommunicationUiEvent.OnValveInteraction(ValveControlCommandStatus.OPEN)
+                        CommunicationUiEvent.OnValveInteraction(ValveInteractionCommand.OPEN)
                     )
                 },
                 //enabled = connectionState.isConnected()
@@ -261,7 +261,7 @@ fun ValveInteractionSection(
                 modifier = Modifier.weight(1f),
                 onClick = {
                     onEvent(
-                        CommunicationUiEvent.OnValveInteraction(ValveControlCommandStatus.CLOSE)
+                        CommunicationUiEvent.OnValveInteraction(ValveInteractionCommand.CLOSE)
                     )
                 },
                 //enabled = connectionState.isConnected()

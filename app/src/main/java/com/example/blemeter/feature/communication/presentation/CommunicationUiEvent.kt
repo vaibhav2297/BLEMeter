@@ -2,14 +2,14 @@ package com.example.blemeter.feature.communication.presentation
 
 import com.example.blemeter.core.ble.domain.model.request.AccumulateDataRequest
 import com.example.blemeter.core.ble.domain.model.request.PurchaseDataRequest
-import com.example.blemeter.core.ble.domain.model.request.ValveControlCommandStatus
+import com.example.blemeter.core.ble.domain.model.request.ValveInteractionCommand
 
 sealed interface CommunicationUiEvent {
 
     data object OnMeterDataRead : CommunicationUiEvent
 
     data class OnValveInteraction(
-        val valveControlCommandStatus: ValveControlCommandStatus
+        val valveInteractionCommand: ValveInteractionCommand
     ) : CommunicationUiEvent
 
     data class OnPurchaseData(val request: PurchaseDataRequest) : CommunicationUiEvent

@@ -1,11 +1,15 @@
 package com.example.blemeter.feature.scan.presentation
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.blemeter.core.ble.data.BLEService
+import com.example.blemeter.config.extenstions.chunkAndReverseString
+import com.example.blemeter.config.extenstions.getMeterAddress
+import com.example.blemeter.config.extenstions.isConnected
+import com.example.blemeter.core.local.DataStore
+import com.example.blemeter.feature.dashboard.navigation.DashboardDestination
 import com.example.blemeter.feature.scan.domain.model.ScanScreenStatus
 import com.example.blemeter.feature.scan.domain.repository.IScanRepository
+import com.example.blemeter.navigation.BLEMeterNavDestination
 import com.juul.kable.AndroidAdvertisement
 import com.juul.kable.Peripheral
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +28,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ScanViewModel @Inject constructor(
     private val scanRepo: IScanRepository,
-    private val bleService: BLEService
+    private val dataStore: DataStore
 ) : ViewModel() {
 
     companion object {
@@ -51,6 +55,7 @@ class ScanViewModel @Inject constructor(
             is ScanUiEvent.OnConnectionCancel -> onConnectionCancel()
             is ScanUiEvent.OnDeviceSelect -> onDeviceSelect(event.device)
             is ScanUiEvent.OnConnect -> onDeviceConnect()
+            is ScanUiEvent.OnNavigated -> navigateTo(null)
         }
     }
 
@@ -134,11 +139,38 @@ class ScanViewModel @Inject constructor(
                         screenStatus = ScanScreenStatus.OnConnection(state)
                     )
                 }
+
+               //storing the meter address on connection
+               if (state.isConnected()) {
+                   try {
+                       saveMeterAddress(address = peripheral.name?.getMeterAddress() ?: "")
+                       navigateTo(DashboardDestination)
+                   } catch (e: Exception) {
+                       e.printStackTrace()
+                   }
+               }
             }
         }
     }
 
     //endregion Connection
+
+    /**
+     * Save the meter address to the data store.
+     * Meter address is stored in the reverse order of 2 chunks
+     * e.x - 123456 will store as 563412
+     */
+    private fun saveMeterAddress(address: String) {
+        viewModelScope.launch {
+            dataStore.saveMeterAddress(address.chunkAndReverseString())
+        }
+    }
+
+    private fun navigateTo(destination: BLEMeterNavDestination?) {
+        _uiState.update {
+            it.copy(navigateTo = destination)
+        }
+    }
 
 
     override fun onCleared() {

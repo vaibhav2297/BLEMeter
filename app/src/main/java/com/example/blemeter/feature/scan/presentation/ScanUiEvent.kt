@@ -13,4 +13,6 @@ sealed interface ScanUiEvent {
     data object OnConnect : ScanUiEvent
 
     data class OnDeviceSelect(val device: AndroidAdvertisement) : ScanUiEvent
+
+    data object OnNavigated : ScanUiEvent
 }

@@ -18,15 +18,3 @@ fun State.toDisplay() = when (this) {
     Disconnecting -> "Disconnecting"
     is Disconnected -> "Disconnected"
 }
-
-fun String.getMeterAddress(): String {
-    check(this.length >= 14 ) { "Not enough size to extract meter address" }
-
-    return this.takeLast(14)
-}
-
-fun String.getMeterType(): String {
-    check(this.length == 14 ) { "Size of meter address is not proper" }
-
-    return this.substring(8..9)
-}

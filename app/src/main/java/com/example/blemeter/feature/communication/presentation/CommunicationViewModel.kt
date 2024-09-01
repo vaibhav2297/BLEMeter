@@ -3,21 +3,16 @@ package com.example.blemeter.feature.communication.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.blemeter.core.ble.data.BLEService
-import com.example.blemeter.core.ble.data.repository.IBLERepository
-import com.example.blemeter.core.ble.domain.bleparsable.ReadMeterDataCommand
 import com.example.blemeter.core.ble.domain.bleparsable.PurchaseDataCommand
+import com.example.blemeter.core.ble.domain.bleparsable.ReadMeterDataCommand
 import com.example.blemeter.core.ble.domain.bleparsable.ValveControlCommand
 import com.example.blemeter.core.ble.domain.model.DataIdentifier
 import com.example.blemeter.core.ble.domain.model.MeterServicesProvider
 import com.example.blemeter.core.ble.domain.model.request.AccumulateDataRequest
-import com.example.blemeter.core.ble.domain.model.request.MeterDataRequest
 import com.example.blemeter.core.ble.domain.model.request.PurchaseDataRequest
-import com.example.blemeter.core.ble.domain.model.request.ValveControlCommandStatus
 import com.example.blemeter.core.ble.utils.BLEConstants
 import com.example.blemeter.core.logger.ExceptionHandler
 import com.example.blemeter.core.logger.ILogger
-import com.example.blemeter.feature.communication.domain.usecases.AccumulateDataUseCase
-import com.example.blemeter.feature.communication.domain.usecases.CommunicationUseCases
 import com.example.blemeter.model.Data
 import com.example.blemeter.model.MeterData
 import com.example.blemeter.model.ValveControlData
@@ -34,11 +29,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CommunicationViewModel @Inject constructor(
-    private val bleRepository: IBLERepository,
     private val bleService: BLEService,
     private val logger: ILogger,
-    private val exceptionHandler: ExceptionHandler,
-    private val useCases: CommunicationUseCases
+    private val exceptionHandler: ExceptionHandler
 ) : ViewModel() {
 
     private var _observeBLEResponseJob: Job? = null
@@ -56,7 +49,7 @@ class CommunicationViewModel @Inject constructor(
     fun onEvent(event: CommunicationUiEvent) {
         when (event) {
             is CommunicationUiEvent.OnMeterDataRead -> readMeterData()
-            is CommunicationUiEvent.OnValveInteraction -> valveInteraction(event.valveControlCommandStatus)
+            is CommunicationUiEvent.OnValveInteraction -> valveInteraction(event.valveInteractionCommand)
             is CommunicationUiEvent.OnPurchaseData -> writePurchaseData(event.request)
             is CommunicationUiEvent.OnZeroInitialise -> writeZeroInitialising()
             is CommunicationUiEvent.OnAccumulateData -> writeAccumulation(event.request)
@@ -74,20 +67,20 @@ class CommunicationViewModel @Inject constructor(
 
     //region Meter Data
     private fun readMeterData() {
-        viewModelScope.launch {
+        /*viewModelScope.launch {
             showLoading(true)
             useCases.readMeterDataUseCase()
                 .onFailure { e ->
                     showLoading(false)
                     logger.d("readMeterData :: Failure :: ${e.message}")
                 }
-        }
+        }*/
     }
     //endregion Meter Data
 
     //region valve control
-    private fun valveInteraction(status: ValveControlCommandStatus) {
-        viewModelScope.launch {
+    private fun valveInteraction(status: com.example.blemeter.core.ble.domain.model.request.ValveInteractionCommand) {
+        /*viewModelScope.launch {
             showLoading(true)
             logger.d("Valve interaction : ${status.name}")
             useCases.valveControlUseCase(status)
@@ -95,7 +88,7 @@ class CommunicationViewModel @Inject constructor(
                     showLoading(false)
                     logger.d("valveInteraction :: Failure :: ${e.message}")
                 }
-        }
+        }*/
     }
 
 
@@ -103,7 +96,7 @@ class CommunicationViewModel @Inject constructor(
 
     //region Purchase Data
     private fun writePurchaseData(request: PurchaseDataRequest) {
-        viewModelScope.launch {
+        /*viewModelScope.launch {
             logger.d("Purchase data")
             showLoading(true)
             useCases.purchaseDataUseCase(request)
@@ -111,7 +104,7 @@ class CommunicationViewModel @Inject constructor(
                     showLoading(false)
                     logger.d("purchaseData :: Failure :: ${e.message}")
                 }
-        }
+        }*/
     }
     //endregion Purchase Data
 
@@ -195,7 +188,7 @@ class CommunicationViewModel @Inject constructor(
 
     //region Zero Initialising
     private fun writeZeroInitialising() {
-        viewModelScope.launch {
+        /*viewModelScope.launch {
             logger.d("Zero Initialising")
             showLoading(true)
             useCases.zeroInitialisationUseCase()
@@ -203,13 +196,13 @@ class CommunicationViewModel @Inject constructor(
                     showLoading(false)
                     logger.d("Zero Initialising :: Failure :: ${e.message}")
                 }
-        }
+        }*/
     }
     //endregion Zero Initialising
 
     //region Accumulation
     private fun writeAccumulation(request: AccumulateDataRequest) {
-        viewModelScope.launch {
+        /*viewModelScope.launch {
             logger.d("Accumulation")
             showLoading(true)
             useCases.accumulateDataUseCase(request)
@@ -217,7 +210,7 @@ class CommunicationViewModel @Inject constructor(
                     showLoading(false)
                     logger.d("Accumulation :: Failure :: ${e.message}")
                 }
-        }
+        }*/
     }
     //endregion Accumulation
 }

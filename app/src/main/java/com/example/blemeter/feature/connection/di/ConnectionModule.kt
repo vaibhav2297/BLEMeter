@@ -1,6 +1,5 @@
 package com.example.blemeter.feature.connection.di
 
-import com.example.blemeter.feature.communication.domain.usecases.GetDeviceInfoUseCase
 import com.example.blemeter.feature.connection.domain.usecases.ConnectionUseCases
 import dagger.Module
 import dagger.Provides

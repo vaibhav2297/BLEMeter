@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import com.example.blemeter.feature.communication.navigation.communicationGraph
 import com.example.blemeter.feature.connection.navigation.ConnectionDestination
 import com.example.blemeter.feature.connection.navigation.connectionGraph
+import com.example.blemeter.feature.dashboard.navigation.dashboardGraph
 import com.example.blemeter.feature.scan.navigation.ScanDestination
 import com.example.blemeter.feature.scan.navigation.scanGraph
 import com.example.blemeter.feature.setting.navigation.settingGraph
@@ -41,7 +42,9 @@ fun BLEMeterNavHost(
         scanGraph(
             onNavigateToDestination = onNavigateToDestination
         ) {
-
+            dashboardGraph(
+                onNavigateToDestination = onNavigateToDestination
+            )
         }
     }
 }

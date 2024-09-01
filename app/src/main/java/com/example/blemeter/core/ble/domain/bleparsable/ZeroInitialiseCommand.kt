@@ -1,10 +1,11 @@
 package com.example.blemeter.core.ble.domain.bleparsable
 
+import com.example.blemeter.config.extenstions.chunkAndReverseString
+import com.example.blemeter.config.model.MeterConfig
 import com.example.blemeter.core.ble.domain.model.DataIdentifier
 import com.example.blemeter.core.ble.domain.model.MeterServicesProvider
 import com.example.blemeter.core.ble.domain.model.request.MeterDataRequest
 import com.example.blemeter.core.ble.utils.BLEConstants
-import com.example.blemeter.core.ble.utils.chunkAndReverseString
 import com.example.blemeter.core.ble.utils.fromHexToUByteArray
 import com.example.blemeter.model.BatteryVoltage
 import com.example.blemeter.model.MeterData
@@ -26,14 +27,14 @@ object ZeroInitialiseCommand : Command<MeterDataRequest, MeterData>(
 
     override val serialNumber: UByte = 0x00u
 
-    override fun toCommand(request: MeterDataRequest): UByteArray {
+    override fun toCommand(request: MeterDataRequest, meterConfig: MeterConfig): UByteArray {
 
         //uByte array to hold bytes before check code
         // for accumulate total byte
         val arr = ubyteArrayOf(
             BLEConstants.SOF,
-            BLEConstants.METER_TYPE,
-            *BLEConstants.METER_ADDRESS.fromHexToUByteArray(),
+            meterConfig.meterType.code.toUByte(),
+            *meterConfig.meterAddress.chunkAndReverseString().fromHexToUByteArray(),
             controlCode,
             requestLength.toUByte(),
             *dataIdentifier.identifier.fromHexToUByteArray(),

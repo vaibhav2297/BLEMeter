@@ -1,5 +1,6 @@
 package com.example.blemeter.core.ble.domain.bleparsable
 
+import com.example.blemeter.config.model.MeterConfig
 import com.example.blemeter.core.ble.domain.model.DataIdentifier
 import com.example.blemeter.core.ble.utils.accumulateUByteArray
 
@@ -33,7 +34,7 @@ abstract class Command<T, R>(
      * converts the settings into command
      *
      */
-    abstract fun toCommand(request: T): UByteArray
+    abstract fun toCommand(request: T, meterConfig: MeterConfig): UByteArray
 
     /**
      * converts response received from BLE into its respective setting class

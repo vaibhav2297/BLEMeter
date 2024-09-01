@@ -10,15 +10,6 @@ fun String.fromHexToByteArray(): ByteArray {
     return chunked(2).map { it.toInt(16).toByte() }.toByteArray()
 }
 
-fun String.chunkAndReverseString(): String {
-    check(length % 2 == 0) { "Must have an even length" }
-
-    return this
-        .chunked(2)
-        .reversed()
-        .joinToString("")
-}
-
 fun List<Byte>.toHexString(): String = map { String.format("%02x", it) }.toList().toString()
 
 fun ByteArray.toHexString(): String = map { String.format("%02x", it) }.toList().toString()

@@ -21,6 +21,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.blemeter.R
+import com.example.blemeter.feature.dashboard.presentation.DashboardUiState
 import com.example.blemeter.ui.components.AppSurface
 import com.example.blemeter.ui.components.OutlinedSlotWithTitle
 import com.example.blemeter.ui.components.TitleSlot
@@ -32,20 +33,22 @@ import com.example.blemeter.utils.VerticalSpacer
 
 @Composable
 fun OverviewSlot(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    uiState: DashboardUiState
 ) {
     TitleSlot(
         modifier = modifier
             .fillMaxWidth(),
         title = stringResource(R.string.overview)
     ) {
-        OverviewSection()
+        OverviewSection(uiState = uiState)
     }
 }
 
 @Composable
 private fun OverviewSection(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    uiState: DashboardUiState
 ) {
     LazyVerticalGrid(
         modifier = modifier.fillMaxWidth(),
@@ -59,8 +62,8 @@ private fun OverviewSection(
             span = { GridItemSpan(maxLineSpan) }
         ) {
             AccumulatedUsageSection(
-                usage = 142.3,
-                syncTime = System.currentTimeMillis()
+                usage = uiState.meterData.accumulatedUsage,
+                syncTime = uiState.lastSync
             )
         }
 
@@ -81,7 +84,7 @@ private fun OverviewSection(
                                 color = AppTheme.colors.textPrimary
                             )
                         ) {
-                            append("25.3")
+                            append("${uiState.meterData.totalPurchase}")
                         }
                         append(" ")
 
@@ -121,7 +124,7 @@ private fun OverviewSection(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    text = "1",
+                    text = uiState.meterData.numberTimes.toString(),
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.labelLarge,
                     color = AppTheme.colors.textPrimary
@@ -137,7 +140,7 @@ private fun OverviewSection(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    text = "OPEN",
+                    text = uiState.meterData.statuses.controlState.title(),
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.labelLarge,
                     color = AppTheme.colors.textPrimary
@@ -153,7 +156,7 @@ private fun OverviewSection(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    text = "NORMAL",
+                    text = uiState.meterData.statuses.batteryState.name,
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.labelLarge,
                     color = AppTheme.colors.textPrimary
@@ -240,7 +243,9 @@ private fun AccumulatedUsageSection(
 private fun PreviewOverviewSection() {
     MeterAppTheme {
         AppSurface {
-            OverviewSlot()
+            OverviewSlot(
+                uiState = DashboardUiState()
+            )
         }
     }
 }

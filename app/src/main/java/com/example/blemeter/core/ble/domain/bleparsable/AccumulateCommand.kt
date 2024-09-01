@@ -1,13 +1,12 @@
 package com.example.blemeter.core.ble.domain.bleparsable
 
+import com.example.blemeter.config.extenstions.chunkAndReverseString
+import com.example.blemeter.config.model.MeterConfig
 import com.example.blemeter.core.ble.domain.model.DataIdentifier
 import com.example.blemeter.core.ble.domain.model.MeterServicesProvider
 import com.example.blemeter.core.ble.domain.model.request.AccumulateDataRequest
-import com.example.blemeter.core.ble.domain.model.request.MeterDataRequest
 import com.example.blemeter.core.ble.utils.BLEConstants
-import com.example.blemeter.core.ble.utils.chunkAndReverseString
 import com.example.blemeter.core.ble.utils.fromHexToUByteArray
-import com.example.blemeter.core.ble.utils.to4UByteArray
 import com.example.blemeter.core.ble.utils.toHighByte
 import com.example.blemeter.core.ble.utils.toLowByte
 import com.example.blemeter.model.BatteryVoltage
@@ -30,14 +29,14 @@ object AccumulateCommand : Command<AccumulateDataRequest, MeterData>(
 
     override val serialNumber: UByte = 0x00u
 
-    override fun toCommand(request: AccumulateDataRequest): UByteArray {
+    override fun toCommand(request: AccumulateDataRequest, meterConfig: MeterConfig): UByteArray {
 
         //uByte array to hold bytes before check code
         // for accumulate total byte
         val arr = ubyteArrayOf(
             BLEConstants.SOF,
-            BLEConstants.METER_TYPE,
-            *BLEConstants.METER_ADDRESS.fromHexToUByteArray(),
+            meterConfig.meterType.code.toUByte(),
+            *meterConfig.meterAddress.chunkAndReverseString().fromHexToUByteArray(),
             controlCode,
             requestLength.toUByte(),
             *dataIdentifier.identifier.fromHexToUByteArray(),

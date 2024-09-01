@@ -23,6 +23,7 @@ import com.example.blemeter.ui.theme.AppTheme
 import com.example.blemeter.ui.theme.MeterAppTheme
 import com.example.blemeter.utils.ValueChanged
 import com.example.blemeter.utils.VerticalSpacer
+import com.example.blemeter.utils.VoidCallback
 
 @Composable
 fun MeterControlIcon(
@@ -31,15 +32,13 @@ fun MeterControlIcon(
     onClick: ValueChanged<MeterControl>
 ) {
     Column(
-        modifier = modifier
-            .clickable {
-                onClick(meterControl)
-            },
+        modifier = modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         MeterControlRoundedIcon(
-            icon = meterControl.controlIcon
+            icon = meterControl.controlIcon,
+            onClick = { onClick(meterControl) }
         )
 
         VerticalSpacer(height = AppTheme.padding.extraSmall)
@@ -59,11 +58,13 @@ fun MeterControlIcon(
 @Composable
 private fun MeterControlRoundedIcon(
     modifier: Modifier = Modifier,
-    icon: AppIcon
+    icon: AppIcon,
+    onClick: VoidCallback
 ) {
     OutlinedSlot(
         modifier = modifier
-            .size(64.dp),
+            .size(64.dp)
+            .clickable(onClick = onClick),
         shape = RoundedCornerShape(50),
         strokeWidth = 2.dp
     ) {
