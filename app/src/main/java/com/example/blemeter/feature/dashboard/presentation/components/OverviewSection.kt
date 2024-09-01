@@ -142,6 +142,7 @@ private fun OverviewSection(
                         .fillMaxWidth(),
                     text = uiState.meterData.statuses.controlState.title(),
                     textAlign = TextAlign.Center,
+                    maxLines = 1,
                     style = MaterialTheme.typography.labelLarge,
                     color = AppTheme.colors.textPrimary
                 )
@@ -158,6 +159,7 @@ private fun OverviewSection(
                         .fillMaxWidth(),
                     text = uiState.meterData.statuses.batteryState.name,
                     textAlign = TextAlign.Center,
+                    maxLines = 1,
                     style = MaterialTheme.typography.labelLarge,
                     color = AppTheme.colors.textPrimary
                 )

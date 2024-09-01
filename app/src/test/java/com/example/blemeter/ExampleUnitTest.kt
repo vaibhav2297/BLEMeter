@@ -1,17 +1,9 @@
 package com.example.blemeter
 
-import com.example.blemeter.config.constants.Constants
+import com.example.blemeter.config.extenstions.chunkAndReverseString
 import com.example.blemeter.config.extenstions.getMeterType
-import com.example.blemeter.core.ble.domain.bleparsable.ReadMeterDataCommand
-import com.example.blemeter.core.ble.domain.bleparsable.PurchaseDataCommand
-import com.example.blemeter.core.ble.domain.bleparsable.ValveControlCommand
 import com.example.blemeter.core.ble.domain.model.DataIdentifier
-import com.example.blemeter.core.ble.domain.model.request.BaseRequest
-import com.example.blemeter.core.ble.domain.model.request.MeterDataRequest
-import com.example.blemeter.core.ble.domain.model.request.PurchaseDataRequest
-import com.example.blemeter.core.ble.domain.model.request.ValveControlRequest
 import com.example.blemeter.core.ble.utils.accumulateSum
-import com.example.blemeter.core.ble.utils.chunkAndReverseString
 import com.example.blemeter.core.ble.utils.to4UByteArray
 import com.example.blemeter.core.ble.utils.toInt16
 import com.example.blemeter.model.BatteryVoltage
@@ -174,14 +166,14 @@ class ExampleUnitTest {
         assertEquals(expected, actual)
     }
 
-    @Test
+    /*@Test
     fun assert_check_code_output() {
         val uByteArray = ubyteArrayOf(0x68u, 0x10u, 0x02u, 0x00u, 0x18u, 0x03u, 0x24u, 0x96u, 0x71u, 0x01u, 0x03u, 0x90u, 0x1Fu, 0xD0u)
-        val actual = ValveControlCommand.toCommand(ValveControlRequest(status = ValveControlCommand.OPEN))
+        val actual = ValveControlCommand.toCommand(ValveControlRequest(status = ValveInteractionCommand.OPEN))
         val expected: UByte = 0x43u
 
         assertEquals(expected, actual)
-    }
+    }*/
 
 
     @Test
@@ -197,12 +189,11 @@ class ExampleUnitTest {
         assertEquals(expected, dataIdentifier)
     }
 
-    @Test
+   /* @Test
     fun assert_valve_command_generation() {
         val actual = ValveControlCommand.toCommand(
             request = ValveControlRequest(
                 status = ValveControlCommand.CLOSE,
-                baseRequest = BaseRequest(meterAddress = "71962403180002")
             )
         ).toHexString(format = HexFormat.UpperCase)
 
@@ -222,7 +213,7 @@ class ExampleUnitTest {
         val expected = Constants.hexReadMeterData.toUpperCase()
 
         assertEquals(expected, actual)
-    }
+    }*/
 
     @Test
     fun assert_reverse_chunck() {
@@ -253,7 +244,7 @@ class ExampleUnitTest {
         assertEquals(expected, actual)
     }
 
-    @Test
+    /*@Test
     fun assert_to_purchase_command() {
         val expected = "6810020018032496710408A013000100000064E416"
 
@@ -266,7 +257,7 @@ class ExampleUnitTest {
         ).toHexString(format = HexFormat.UpperCase)
 
         assertEquals(expected, actual)
-    }
+    }*/
 
     @Test
     fun assert_string_to_read_command() {

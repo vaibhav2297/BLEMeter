@@ -54,7 +54,10 @@ fun OutlinedSlotWithTitle(
     ) {
         Column(
             modifier = Modifier
-                .padding(AppTheme.padding.extraLarge)
+                .padding(
+                    vertical = AppTheme.padding.extraLarge,
+                    horizontal = AppTheme.padding.medium
+                )
         ) {
             Text(
                 modifier = Modifier

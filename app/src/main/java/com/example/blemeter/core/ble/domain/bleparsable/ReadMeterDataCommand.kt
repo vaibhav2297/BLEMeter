@@ -34,7 +34,7 @@ object ReadMeterDataCommand : Command<MeterDataRequest, MeterData>(
         val arr = ubyteArrayOf(
             BLEConstants.SOF,
             meterConfig.meterType.code.toUByte(),
-            *meterConfig.meterAddress.chunkAndReverseString().fromHexToUByteArray(),
+            *meterConfig.meterAddress.fromHexToUByteArray(),
             controlCode,
             requestLength.toUByte(),
             *dataIdentifier.identifier.fromHexToUByteArray(),

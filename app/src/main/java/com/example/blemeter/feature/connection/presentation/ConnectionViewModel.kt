@@ -7,7 +7,6 @@ import com.example.blemeter.core.ble.domain.model.DeviceDetail
 import com.example.blemeter.core.ble.domain.model.ScannedDevice
 import com.example.blemeter.core.ble.domain.model.MeterServicesProvider
 import com.example.blemeter.core.ble.domain.model.hasConfigCharacteristic
-import com.example.blemeter.feature.connection.domain.usecases.ConnectionUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,8 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ConnectionViewModel @Inject constructor(
-    private val bleRepository: IBLERepository,
-    private val useCases: ConnectionUseCases
+    private val bleRepository: IBLERepository
 ) : ViewModel() {
 
     private val _services = bleRepository.deviceServices
@@ -129,7 +127,7 @@ class ConnectionViewModel @Inject constructor(
 
     private fun getDeviceInfo() {
         viewModelScope.launch {
-            useCases.getDeviceInfoUseCase()
+            //useCases.getDeviceInfoUseCase()
         }
     }
 

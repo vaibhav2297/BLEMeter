@@ -9,7 +9,6 @@ import com.example.blemeter.core.ble.data.BLEService
 import com.example.blemeter.core.local.DataStore
 import com.example.blemeter.core.logger.ExceptionHandler
 import com.example.blemeter.core.logger.ILogger
-import com.example.blemeter.feature.connection.domain.usecases.ConnectionUseCases
 import com.juul.kable.AndroidAdvertisement
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -24,7 +23,6 @@ import javax.inject.Inject
 @HiltViewModel
 class ConnViewModel @Inject constructor(
     private val bleService: BLEService,
-    private val useCases: ConnectionUseCases,
     private val dataStore: DataStore,
     private val logger: ILogger,
     private val exceptionHandler: ExceptionHandler
@@ -147,9 +145,9 @@ class ConnViewModel @Inject constructor(
 
     private fun fetchDeviceInfo() {
         viewModelScope.launch {
-            val deviceInfo = useCases.getDeviceInfoUseCase()
+            /*val deviceInfo = useCases.getDeviceInfoUseCase()
             logger.d("Connection VM :: Fetch Device Info $deviceInfo")
-            _uiState.update { it.copy(isServiceDiscovered = true) }
+            _uiState.update { it.copy(isServiceDiscovered = true) }*/
         }
     }
 

@@ -9,7 +9,6 @@ import com.example.blemeter.core.ble.domain.model.ScannedDevice
 import com.example.blemeter.core.ble.domain.model.MeterServicesProvider
 import com.example.blemeter.core.ble.domain.model.hasConfigCharacteristic
 import com.example.blemeter.core.local.DataStore
-import com.example.blemeter.feature.connection.domain.usecases.ConnectionUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
