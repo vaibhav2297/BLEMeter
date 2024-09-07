@@ -3,14 +3,12 @@ package com.example.blemeter.ui.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.blemeter.ui.icon.AppIcon
@@ -18,9 +16,7 @@ import com.example.blemeter.ui.icon.AppIcons
 import com.example.blemeter.ui.theme.AppTheme
 import com.example.blemeter.ui.theme.MeterAppTheme
 import com.example.blemeter.ui.theme.White
-import com.example.blemeter.utils.HorizontalSpacer
-import com.example.blemeter.utils.VerticalSpacer
-import com.example.blemeter.utils.VoidComposable
+import com.example.blemeter.config.utils.VoidComposable
 
 @Composable
 fun TitleSlot(

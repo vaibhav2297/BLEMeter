@@ -1,13 +1,11 @@
 package com.example.blemeter.core.ble.data
 
 import android.bluetooth.le.ScanSettings
-import android.util.Log
 import com.benasher44.uuid.uuidFrom
 import com.example.blemeter.core.ble.domain.model.MeterServicesProvider
 import com.example.blemeter.core.logger.ExceptionHandler
 import com.example.blemeter.core.logger.ILogger
-import com.example.blemeter.feature.scan.presentation.ScanViewModel
-import com.example.blemeter.model.DeviceInfo
+import com.example.blemeter.config.model.DeviceInfo
 import com.juul.kable.AndroidAdvertisement
 import com.juul.kable.Filter
 import com.juul.kable.ObsoleteKableApi
@@ -24,7 +22,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject

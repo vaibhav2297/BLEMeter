@@ -1,6 +1,6 @@
 package com.example.blemeter.core.ble.domain.model.request
 
-import com.example.blemeter.model.ValveStatus
+import com.example.blemeter.config.model.ValveStatus
 
 data class ValveControlRequest(
     val status: ValveInteractionCommand

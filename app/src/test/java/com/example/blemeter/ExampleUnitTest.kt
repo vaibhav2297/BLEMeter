@@ -4,14 +4,14 @@ import com.example.blemeter.config.extenstions.chunkAndReverseString
 import com.example.blemeter.config.extenstions.getMeterType
 import com.example.blemeter.config.extenstions.isDecimal
 import com.example.blemeter.core.ble.domain.model.DataIdentifier
-import com.example.blemeter.core.ble.utils.accumulateSum
-import com.example.blemeter.core.ble.utils.to4UByteArray
-import com.example.blemeter.core.ble.utils.toInt16
-import com.example.blemeter.model.BatteryVoltage
-import com.example.blemeter.model.MeterAddress
-import com.example.blemeter.model.MeterType
-import com.example.blemeter.model.ValveStatus
-import com.example.blemeter.model.getControlState
+import com.example.blemeter.config.extenstions.accumulateSum
+import com.example.blemeter.config.extenstions.to4UByteArray
+import com.example.blemeter.config.extenstions.toInt16
+import com.example.blemeter.config.model.BatteryVoltage
+import com.example.blemeter.config.model.MeterAddress
+import com.example.blemeter.config.model.MeterType
+import com.example.blemeter.config.model.ValveStatus
+import com.example.blemeter.config.model.getControlState
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

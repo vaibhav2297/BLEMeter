@@ -19,9 +19,8 @@ import com.example.blemeter.ui.icon.AppIcon
 import com.example.blemeter.ui.icon.AppIcons
 import com.example.blemeter.ui.theme.AppTheme
 import com.example.blemeter.ui.theme.MeterAppTheme
-import com.example.blemeter.utils.VerticalSpacer
-import com.example.blemeter.utils.VoidCallback
-import com.juul.kable.AndroidAdvertisement
+import com.example.blemeter.ui.components.VerticalSpacer
+import com.example.blemeter.config.utils.VoidCallback
 
 @Composable
 fun NoFoundDeviceSection(

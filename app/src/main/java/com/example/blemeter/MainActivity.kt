@@ -1,19 +1,16 @@
 package com.example.blemeter
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.content.FileProvider
 import com.example.blemeter.app.BLEMeterApp
-import com.example.blemeter.core.file.FileService
 import com.example.blemeter.core.file.IFileService
 import com.example.blemeter.core.shake.ShakeDetector
-import com.example.blemeter.utils.Extras
-import com.example.blemeter.utils.ShakeDetectorConstant
+import com.example.blemeter.config.constants.Extras
+import com.example.blemeter.config.constants.ShakeDetectorConstant
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 @AndroidEntryPoint

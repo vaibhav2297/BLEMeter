@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.blemeter.ui.components.AppSurface
 import com.example.blemeter.ui.theme.AppTheme
 import com.example.blemeter.ui.theme.MeterAppTheme
-import com.example.blemeter.utils.VerticalSpacer
+import com.example.blemeter.ui.components.VerticalSpacer
 
 @Composable
 internal fun InformationSection(

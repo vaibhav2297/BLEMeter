@@ -22,9 +22,9 @@ import com.example.blemeter.feature.dashboard.presentation.components.OverviewSl
 import com.example.blemeter.ui.components.AppSurface
 import com.example.blemeter.ui.components.TitleSlot
 import com.example.blemeter.ui.theme.MeterAppTheme
-import com.example.blemeter.utils.NavigationCallback
-import com.example.blemeter.utils.ValueChanged
-import com.example.blemeter.utils.VerticalSpacer
+import com.example.blemeter.config.utils.NavigationCallback
+import com.example.blemeter.config.utils.ValueChanged
+import com.example.blemeter.ui.components.VerticalSpacer
 
 @Composable
 fun DashboardRoute(

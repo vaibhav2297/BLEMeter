@@ -20,7 +20,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.blemeter.R
 import com.example.blemeter.feature.dashboard.presentation.DashboardUiState
 import com.example.blemeter.ui.components.AppSurface
@@ -28,8 +27,8 @@ import com.example.blemeter.ui.components.OutlinedSlotWithTitle
 import com.example.blemeter.ui.components.TitleSlot
 import com.example.blemeter.ui.theme.AppTheme
 import com.example.blemeter.ui.theme.MeterAppTheme
-import com.example.blemeter.utils.TimeUtils
-import com.example.blemeter.utils.VerticalSpacer
+import com.example.blemeter.config.utils.TimeUtils
+import com.example.blemeter.ui.components.VerticalSpacer
 
 
 @Composable

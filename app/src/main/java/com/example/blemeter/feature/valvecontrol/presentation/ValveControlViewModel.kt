@@ -6,9 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.blemeter.core.ble.domain.model.MeterServicesProvider
 import com.example.blemeter.core.ble.domain.model.request.ValveInteractionCommand
 import com.example.blemeter.feature.dashboard.domain.usecases.DashboardUseCases
-import com.example.blemeter.model.MeterData
-import com.example.blemeter.model.ValveControlData
-import com.example.blemeter.model.ValveStatus
+import com.example.blemeter.config.model.ValveControlData
+import com.example.blemeter.config.model.ValveStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

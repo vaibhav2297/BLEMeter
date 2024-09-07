@@ -3,8 +3,6 @@ package com.example.blemeter.ui.theme
 import android.provider.CalendarContract.Colors
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Stable
@@ -14,7 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
-import com.example.blemeter.utils.VoidComposable
+import com.example.blemeter.config.utils.VoidComposable
 
 private val DarkColorScheme = AppColors(
     brand = Primary,

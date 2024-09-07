@@ -5,7 +5,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import com.example.blemeter.utils.ShakeDetectorConstant
+import com.example.blemeter.config.constants.ShakeDetectorConstant
 import kotlin.math.sqrt
 
 class ShakeDetector(

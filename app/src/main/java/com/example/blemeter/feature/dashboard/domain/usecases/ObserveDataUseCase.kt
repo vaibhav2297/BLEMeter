@@ -1,13 +1,13 @@
 package com.example.blemeter.feature.dashboard.domain.usecases
 
-import com.example.blemeter.core.ble.domain.bleparsable.PurchaseDataCommand
-import com.example.blemeter.core.ble.domain.bleparsable.ReadMeterDataCommand
-import com.example.blemeter.core.ble.domain.bleparsable.ValveControlCommand
+import com.example.blemeter.core.ble.domain.command.PurchaseDataCommand
+import com.example.blemeter.core.ble.domain.command.ReadMeterDataCommand
+import com.example.blemeter.core.ble.domain.command.ValveControlCommand
 import com.example.blemeter.core.ble.domain.model.DataIdentifier
-import com.example.blemeter.core.ble.utils.BLEConstants
+import com.example.blemeter.config.constants.BLEConstants
 import com.example.blemeter.feature.dashboard.domain.repository.IDashboardRepository
-import com.example.blemeter.model.Data
-import com.example.blemeter.model.NoData
+import com.example.blemeter.config.model.Data
+import com.example.blemeter.config.model.NoData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map

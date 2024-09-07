@@ -1,6 +1,5 @@
 package com.example.blemeter.feature.dashboard.domain.repository
 
-import com.example.blemeter.model.Data
 import kotlinx.coroutines.flow.Flow
 
 interface IDashboardRepository {

@@ -16,7 +16,7 @@ import com.example.blemeter.ui.components.AppOutlinedButton
 import com.example.blemeter.ui.components.AppSurface
 import com.example.blemeter.ui.components.ButtonState
 import com.example.blemeter.ui.theme.MeterAppTheme
-import com.example.blemeter.utils.VoidCallback
+import com.example.blemeter.config.utils.VoidCallback
 
 @Composable
 fun ScanOngoingSection(

@@ -22,14 +22,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.text.isDigitsOnly
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.blemeter.R
 import com.example.blemeter.config.extenstions.isDecimal
 import com.example.blemeter.feature.scan.presentation.component.ScanScreenSlot
-import com.example.blemeter.feature.valvecontrol.presentation.ValveControlScreen
-import com.example.blemeter.feature.valvecontrol.presentation.ValveControlViewModel
 import com.example.blemeter.ui.components.AppOutlinedButton
 import com.example.blemeter.ui.components.AppSurface
 import com.example.blemeter.ui.components.ButtonState
@@ -37,9 +34,9 @@ import com.example.blemeter.ui.components.textfield.TextFieldInputState
 import com.example.blemeter.ui.components.textfield.rememberTextFieldInputState
 import com.example.blemeter.ui.theme.AppTheme
 import com.example.blemeter.ui.theme.MeterAppTheme
-import com.example.blemeter.utils.ValueChanged
-import com.example.blemeter.utils.VerticalSpacer
-import com.example.blemeter.utils.VoidCallback
+import com.example.blemeter.config.utils.ValueChanged
+import com.example.blemeter.ui.components.VerticalSpacer
+import com.example.blemeter.config.utils.VoidCallback
 import kotlinx.coroutines.delay
 
 @Composable

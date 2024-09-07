@@ -9,7 +9,7 @@ import com.example.blemeter.feature.dashboard.domain.model.MeterControl
 import com.example.blemeter.feature.dashboard.domain.usecases.DashboardUseCases
 import com.example.blemeter.feature.recharge.navigation.RechargeDestination
 import com.example.blemeter.feature.valvecontrol.navigation.ValveControlDestination
-import com.example.blemeter.model.MeterData
+import com.example.blemeter.config.model.MeterData
 import com.example.blemeter.navigation.BLEMeterNavDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

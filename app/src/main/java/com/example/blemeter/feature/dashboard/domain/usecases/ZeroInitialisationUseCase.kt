@@ -1,7 +1,7 @@
 package com.example.blemeter.feature.dashboard.domain.usecases
 
 import com.example.blemeter.config.model.MeterConfig
-import com.example.blemeter.core.ble.domain.bleparsable.ZeroInitialiseCommand
+import com.example.blemeter.core.ble.domain.command.ZeroInitialiseCommand
 import com.example.blemeter.core.ble.domain.model.request.MeterDataRequest
 import com.example.blemeter.core.local.DataStore
 import com.example.blemeter.feature.dashboard.domain.repository.IDashboardRepository

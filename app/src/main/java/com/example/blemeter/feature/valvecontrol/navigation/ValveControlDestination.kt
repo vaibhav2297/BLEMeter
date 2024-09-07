@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.example.blemeter.feature.valvecontrol.presentation.ValveControlRoute
 import com.example.blemeter.navigation.BLEMeterNavDestination
-import com.example.blemeter.utils.VoidCallback
+import com.example.blemeter.config.utils.VoidCallback
 
 object ValveControlDestination : BLEMeterNavDestination {
     override val route: String = "valveControlRoute"

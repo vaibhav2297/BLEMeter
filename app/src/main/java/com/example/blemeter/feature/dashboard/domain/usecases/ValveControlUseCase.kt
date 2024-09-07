@@ -1,7 +1,7 @@
 package com.example.blemeter.feature.dashboard.domain.usecases
 
 import com.example.blemeter.config.model.MeterConfig
-import com.example.blemeter.core.ble.domain.bleparsable.ValveControlCommand
+import com.example.blemeter.core.ble.domain.command.ValveControlCommand
 import com.example.blemeter.core.ble.domain.model.request.ValveControlRequest
 import com.example.blemeter.core.ble.domain.model.request.ValveInteractionCommand
 import com.example.blemeter.core.local.DataStore

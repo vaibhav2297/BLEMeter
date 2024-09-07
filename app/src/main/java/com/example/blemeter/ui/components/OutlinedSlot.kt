@@ -2,10 +2,7 @@ package com.example.blemeter.ui.components
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,26 +11,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.blemeter.ui.theme.AppPadding
 import com.example.blemeter.ui.theme.AppShape
 import com.example.blemeter.ui.theme.AppTheme
-import com.example.blemeter.ui.theme.AppTypography
-import com.example.blemeter.ui.theme.Grey
 import com.example.blemeter.ui.theme.MeterAppTheme
-import com.example.blemeter.ui.theme.Stroke
-import com.example.blemeter.utils.ColumnScopeComposable
-import com.example.blemeter.utils.RowScopeComposable
-import com.example.blemeter.utils.VerticalSpacer
-import com.example.blemeter.utils.VoidComposable
+import com.example.blemeter.config.utils.ColumnScopeComposable
+import com.example.blemeter.config.utils.VoidComposable
 
 object OutlinedSlotDefaults {
     val strokeWidth = 1.dp

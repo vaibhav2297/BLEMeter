@@ -1,6 +1,6 @@
 package com.example.blemeter.feature.dashboard.presentation
 
-import com.example.blemeter.model.MeterData
+import com.example.blemeter.config.model.MeterData
 import com.example.blemeter.navigation.BLEMeterNavDestination
 
 data class DashboardUiState(
