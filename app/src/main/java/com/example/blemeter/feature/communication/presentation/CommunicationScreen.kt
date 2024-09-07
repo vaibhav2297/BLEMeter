@@ -322,8 +322,8 @@ fun PurchaseDataSection(
                 onEvent(
                     CommunicationUiEvent.OnPurchaseData(
                         request = PurchaseDataRequest(
-                            purchaseVariable = purchaseData,
-                            numberTimes = 1u
+                            purchaseVariable = purchaseData.toDouble(),
+                            numberTimes = 1
                         )
                     )
                 )

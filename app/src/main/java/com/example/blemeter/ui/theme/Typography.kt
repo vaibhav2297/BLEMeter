@@ -52,6 +52,12 @@ private val phoneTypography = Typography(
         fontSize = 16.sp,
         color = White
     ),
+    titleMedium = TextStyle(
+        fontFamily = montserratFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 20.sp,
+        color = White
+    ),
     labelLarge = TextStyle(
         fontFamily = montserratFamily,
         fontWeight = FontWeight.Medium,

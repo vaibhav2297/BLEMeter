@@ -1,5 +1,9 @@
 package com.example.blemeter.model
 
+import com.example.blemeter.core.ble.domain.model.request.ValveInteractionCommand
+import com.example.blemeter.core.ble.domain.model.request.ValveInteractionCommand.CLOSE
+import com.example.blemeter.core.ble.domain.model.request.ValveInteractionCommand.NONE
+import com.example.blemeter.core.ble.domain.model.request.ValveInteractionCommand.OPEN
 import com.example.blemeter.core.ble.utils.getBits
 
 interface ControlState {
@@ -28,6 +32,14 @@ enum class ValveStatus(private val code: UInt) : ControlState {
                 CLOSE.code -> CLOSE
                 ABNORMAL.code -> ABNORMAL
                 else -> NONE
+            }
+        }
+
+        fun ValveStatus.toValveInteraction(): ValveInteractionCommand {
+            return when(this) {
+                OPEN -> ValveInteractionCommand.OPEN
+                CLOSE -> ValveInteractionCommand.CLOSE
+                else -> ValveInteractionCommand.NONE
             }
         }
     }

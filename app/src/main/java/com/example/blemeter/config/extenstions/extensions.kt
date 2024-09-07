@@ -25,3 +25,6 @@ fun String.getMeterType(): String {
 
     return this.substring(8..9)
 }
+
+fun String.isDecimal() =
+    this.matches("\\d+(?:\\.\\d+)?".toRegex())

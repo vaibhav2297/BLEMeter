@@ -2,6 +2,7 @@ package com.example.blemeter
 
 import com.example.blemeter.config.extenstions.chunkAndReverseString
 import com.example.blemeter.config.extenstions.getMeterType
+import com.example.blemeter.config.extenstions.isDecimal
 import com.example.blemeter.core.ble.domain.model.DataIdentifier
 import com.example.blemeter.core.ble.utils.accumulateSum
 import com.example.blemeter.core.ble.utils.to4UByteArray
@@ -305,6 +306,15 @@ class ExampleUnitTest {
         val data = "00000064"
         val expected = 100
         val actual = data.toInt(16)
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun assert_string_to_isDecimalOnly() {
+        val data = "100"
+        val expected = false
+        val actual = data.isDecimal()
 
         assertEquals(expected, actual)
     }

@@ -13,4 +13,6 @@ object MockDataProvider {
     const val ZeroInitialising = "6812010018032496710404a02100bb4516"
 
     const val Accumulate = "6812010018032496710407a03500000c0000ad16"
+
+    const val Purchase = "6812010018032496710408a0130002000000008216"
 }

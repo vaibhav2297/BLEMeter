@@ -1,6 +1,5 @@
 package com.example.blemeter.app
 
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -25,7 +24,7 @@ fun BLEMeterApp(
                 modifier = Modifier
                     .padding(padding)
                     .systemBarsPadding(),
-                onBackClick = appState::onBackClick,
+                onBackNavigation = appState::onBackClick,
                 navController = appState.navController,
                 onNavigateToDestination = appState::navigate
             )

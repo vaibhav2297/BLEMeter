@@ -4,9 +4,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.blemeter.core.ble.domain.model.MeterServicesProvider
+import com.example.blemeter.core.local.DataStore
 import com.example.blemeter.feature.dashboard.domain.model.MeterControl
 import com.example.blemeter.feature.dashboard.domain.usecases.DashboardUseCases
+import com.example.blemeter.feature.recharge.navigation.RechargeDestination
+import com.example.blemeter.feature.valvecontrol.navigation.ValveControlDestination
 import com.example.blemeter.model.MeterData
+import com.example.blemeter.navigation.BLEMeterNavDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,7 +21,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
-    private val useCases: DashboardUseCases
+    private val useCases: DashboardUseCases,
+    private val dataStore: DataStore
 ) : ViewModel() {
 
     companion object {
@@ -37,21 +42,18 @@ class DashboardViewModel @Inject constructor(
     fun onEvent(event: DashboardUiEvent) {
         when (event) {
             is DashboardUiEvent.OnMeterControl -> onMeterControl(event.control)
+            is DashboardUiEvent.OnNavigated -> onNavigateTo(null)
         }
     }
 
     private fun onMeterControl(control: MeterControl) {
         when (control) {
             MeterControl.READ_DATA -> readMeterData()
-            MeterControl.VALVE_CONTROL -> onValveControl()
-            MeterControl.RECHARGE -> rechargeMeter()
+            MeterControl.VALVE_CONTROL -> onNavigateTo(ValveControlDestination)
+            MeterControl.RECHARGE -> onNavigateTo(RechargeDestination)
             MeterControl.RESET_DATA -> resetMeterData()
-            MeterControl.ACCUMULATE -> accumulateData()
+            MeterControl.ACCUMULATE -> { }
         }
-    }
-
-    private fun accumulateData() {
-
     }
 
     private fun resetMeterData() {
@@ -60,14 +62,6 @@ class DashboardViewModel @Inject constructor(
                 .onFailure { }
                 .onSuccess { }
         }
-    }
-
-    private fun rechargeMeter() {
-
-    }
-
-    private fun onValveControl() {
-
     }
 
     private fun readMeterData() {
@@ -90,6 +84,9 @@ class DashboardViewModel @Inject constructor(
                 when (data) {
                     is MeterData -> {
                         _uiState.update { it.copy(meterData = data) }
+
+                        //saving recharge times
+                        saveRechargeTimes(data.numberTimes.toInt())
                     }
                 }
 
@@ -102,6 +99,18 @@ class DashboardViewModel @Inject constructor(
     private fun updateSyncTime() {
         _uiState.update {
             it.copy(lastSync = System.currentTimeMillis())
+        }
+    }
+
+    private fun saveRechargeTimes(numberOfTimes: Int) {
+        viewModelScope.launch {
+            dataStore.saveRechargeTimes(numberOfTimes)
+        }
+    }
+
+    private fun onNavigateTo(destination: BLEMeterNavDestination?) {
+        _uiState.update {
+            it.copy(navigationTo = destination)
         }
     }
 }

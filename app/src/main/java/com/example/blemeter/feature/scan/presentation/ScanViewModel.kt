@@ -32,7 +32,7 @@ class ScanViewModel @Inject constructor(
 ) : ViewModel() {
 
     companion object {
-        const val SCAN_DURATION_MILLIS = 5000L
+        const val SCAN_DURATION_MILLIS = 7500L
         const val TAG = "ScanModel"
     }
 
@@ -55,7 +55,10 @@ class ScanViewModel @Inject constructor(
             is ScanUiEvent.OnConnectionCancel -> onConnectionCancel()
             is ScanUiEvent.OnDeviceSelect -> onDeviceSelect(event.device)
             is ScanUiEvent.OnConnect -> onDeviceConnect()
-            is ScanUiEvent.OnNavigated -> navigateTo(null)
+            is ScanUiEvent.OnNavigated -> {
+                updateScreenState(ScanScreenStatus.None)
+                navigateTo(null)
+            }
         }
     }
 

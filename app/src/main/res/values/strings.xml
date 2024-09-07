@@ -64,4 +64,5 @@
     <string name="recharge_times">Recharge Times</string>
     <string name="valve_status">Valve Status</string>
     <string name="battery_voltage">Battery Voltage</string>
+    <string name="enter_the_amount">Enter the Amount</string>
 </resources>

@@ -48,6 +48,13 @@ fun DashboardScreen(
     onNavigateToDestination: NavigationCallback,
     onEvent: ValueChanged<DashboardUiEvent>
 ) {
+
+    //navigation
+    if (uiState.navigationTo != null) {
+        onNavigateToDestination(uiState.navigationTo, null)
+        onEvent(DashboardUiEvent.OnNavigated)
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize(),

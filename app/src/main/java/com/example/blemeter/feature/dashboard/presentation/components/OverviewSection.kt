@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.blemeter.R
 import com.example.blemeter.feature.dashboard.presentation.DashboardUiState
 import com.example.blemeter.ui.components.AppSurface
@@ -78,9 +79,9 @@ private fun OverviewSection(
                     text = buildAnnotatedString {
                         withStyle(
                             style = SpanStyle(
-                                fontFamily = MaterialTheme.typography.labelLarge.fontFamily,
+                                fontFamily = MaterialTheme.typography.titleMedium.fontFamily,
                                 fontWeight = FontWeight.Medium,
-                                fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                                fontSize = MaterialTheme.typography.titleMedium.fontSize,
                                 color = AppTheme.colors.textPrimary
                             )
                         ) {
@@ -126,7 +127,7 @@ private fun OverviewSection(
                         .fillMaxWidth(),
                     text = uiState.meterData.numberTimes.toString(),
                     textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.labelLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     color = AppTheme.colors.textPrimary
                 )
             }
@@ -143,7 +144,7 @@ private fun OverviewSection(
                     text = uiState.meterData.statuses.controlState.title(),
                     textAlign = TextAlign.Center,
                     maxLines = 1,
-                    style = MaterialTheme.typography.labelLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     color = AppTheme.colors.textPrimary
                 )
             }
@@ -160,7 +161,7 @@ private fun OverviewSection(
                     text = uiState.meterData.statuses.batteryState.name,
                     textAlign = TextAlign.Center,
                     maxLines = 1,
-                    style = MaterialTheme.typography.labelLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     color = AppTheme.colors.textPrimary
                 )
             }
