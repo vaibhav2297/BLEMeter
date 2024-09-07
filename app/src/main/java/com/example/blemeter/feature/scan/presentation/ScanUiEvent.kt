@@ -15,4 +15,8 @@ sealed interface ScanUiEvent {
     data class OnDeviceSelect(val device: AndroidAdvertisement) : ScanUiEvent
 
     data object OnNavigated : ScanUiEvent
+
+    data class OnPermissionResult(val isGranted: Boolean) : ScanUiEvent
+
+    data class OnBluetoothEnabled(val isEnabled: Boolean) : ScanUiEvent
 }

@@ -1,11 +1,21 @@
 package com.example.blemeter.feature.scan.presentation
 
+import android.app.Activity
+import android.bluetooth.BluetoothAdapter
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.blemeter.R
 import com.example.blemeter.feature.scan.domain.model.ScanScreenStatus
 import com.example.blemeter.feature.scan.presentation.component.DeviceConnectionSection
 import com.example.blemeter.feature.scan.presentation.component.FoundDeviceSection
@@ -16,6 +26,9 @@ import com.example.blemeter.ui.components.AppSurface
 import com.example.blemeter.ui.theme.MeterAppTheme
 import com.example.blemeter.config.utils.NavigationCallback
 import com.example.blemeter.config.utils.ValueChanged
+import com.example.blemeter.core.permission.AppPermissions
+import com.example.blemeter.core.permission.RequestAppPermissions
+import com.example.blemeter.ui.components.AppAlertDialog
 
 @Composable
 fun ScanRoute(
@@ -45,13 +58,46 @@ private fun ScanScreen(
         onEvent(ScanUiEvent.OnNavigated)
     }
 
-    when(uiState.screenStatus) {
+    //Permissions
+    if (uiState.shouldRequestPermission) {
+        RequestBluetoothPermissions { isGranted ->
+            onEvent(
+                ScanUiEvent.OnPermissionResult(isGranted)
+            )
+        }
+    }
+
+    //device bluetooth
+    val bluetoothEnableResult = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        onEvent(
+            ScanUiEvent.OnBluetoothEnabled(
+                isEnabled = result.resultCode == Activity.RESULT_OK
+            )
+        )
+    }
+
+    if (!uiState.isBluetoothEnabled) {
+        AppAlertDialog(
+            title = stringResource(id = R.string.bluetooth_is_turned_off),
+            description = stringResource(id = R.string.bluetooth_enable_desc),
+            positiveButtonText = stringResource(R.string.turn_on),
+            negativeButtonText = stringResource(R.string.cancel),
+            onDismiss = { }
+        ) {
+            bluetoothEnableResult.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
+        }
+    }
+
+    when (uiState.screenStatus) {
         is ScanScreenStatus.None -> {
             ScanInitiateSection(
                 modifier = modifier,
                 onScan = { onEvent(ScanUiEvent.OnScan) }
             )
         }
+
         is ScanScreenStatus.OnDevicesFound -> {
             FoundDeviceSection(
                 foundDevices = uiState.screenStatus.foundDevices,
@@ -67,6 +113,7 @@ private fun ScanScreen(
                 }
             )
         }
+
         is ScanScreenStatus.NoDeviceFound -> {
             NoFoundDeviceSection(
                 modifier = modifier,
@@ -74,22 +121,52 @@ private fun ScanScreen(
                 onReScan = { onEvent(ScanUiEvent.OnScan) }
             )
         }
+
         is ScanScreenStatus.OnError -> {
 
         }
+
         is ScanScreenStatus.OnConnection -> {
             DeviceConnectionSection(
                 modifier = modifier,
                 state = uiState.screenStatus.state,
-                onCancel =  { onEvent(ScanUiEvent.OnConnectionCancel) }
+                onCancel = { onEvent(ScanUiEvent.OnConnectionCancel) }
             )
         }
+
         is ScanScreenStatus.Scanning -> {
             ScanOngoingSection(
                 modifier = modifier,
-                onCancel =  { onEvent(ScanUiEvent.OnScanCancel) }
+                onCancel = { onEvent(ScanUiEvent.OnScanCancel) }
             )
         }
+    }
+}
+
+@Composable
+private fun RequestBluetoothPermissions(
+    onPermission: ValueChanged<Boolean>
+) {
+    val context = LocalContext.current
+
+    RequestAppPermissions(
+        appPermissions = AppPermissions.BluetoothPermissions,
+        onPermissionRevoked = {
+            onPermission(false)
+        },
+        navigateToSetting = {
+            onPermission(false)
+            //Navigate to the setting screen
+
+            context.startActivity(
+                Intent(
+                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                    Uri.parse("package:${context.packageName}")
+                )
+            )
+        }
+    ) {
+        onPermission(true)
     }
 }
 
@@ -103,7 +180,7 @@ private fun PreviewDeviceScanScreen() {
                 uiState = ScanUiState(
                     isScanning = true
                 ),
-                onNavigateToDestination = { destination, route ->  }
+                onNavigateToDestination = { destination, route -> }
             ) {
 
             }

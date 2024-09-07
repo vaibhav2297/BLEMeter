@@ -9,5 +9,7 @@ data class ScanUiState(
     val selectedDevice: AndroidAdvertisement? = null,
     val foundDevices: List<AndroidAdvertisement> = listOf(),
     val screenStatus: ScanScreenStatus = ScanScreenStatus.None,
+    val shouldRequestPermission: Boolean = false,
+    val isBluetoothEnabled: Boolean = true,
     val navigateTo: BLEMeterNavDestination? = null
 )

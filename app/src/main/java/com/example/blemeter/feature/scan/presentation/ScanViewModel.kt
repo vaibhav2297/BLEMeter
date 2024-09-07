@@ -1,5 +1,6 @@
 package com.example.blemeter.feature.scan.presentation
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.blemeter.config.extenstions.chunkAndReverseString
@@ -11,6 +12,7 @@ import com.example.blemeter.feature.scan.domain.model.ScanScreenStatus
 import com.example.blemeter.feature.scan.domain.repository.IScanRepository
 import com.example.blemeter.navigation.BLEMeterNavDestination
 import com.juul.kable.AndroidAdvertisement
+import com.juul.kable.BluetoothDisabledException
 import com.juul.kable.Peripheral
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -50,11 +52,13 @@ class ScanViewModel @Inject constructor(
 
     fun onEvent(event: ScanUiEvent) {
         when(event) {
-            is ScanUiEvent.OnScan -> onScan()
+            is ScanUiEvent.OnScan -> requestPermission(true)
             is ScanUiEvent.OnScanCancel -> onScanCancel()
             is ScanUiEvent.OnConnectionCancel -> onConnectionCancel()
             is ScanUiEvent.OnDeviceSelect -> onDeviceSelect(event.device)
             is ScanUiEvent.OnConnect -> onDeviceConnect()
+            is ScanUiEvent.OnPermissionResult -> onPermissionResult(event.isGranted)
+            is ScanUiEvent.OnBluetoothEnabled -> onBluetoothEnabled(event.isEnabled)
             is ScanUiEvent.OnNavigated -> {
                 updateScreenState(ScanScreenStatus.None)
                 navigateTo(null)
@@ -87,7 +91,7 @@ class ScanViewModel @Inject constructor(
                     .onStart {
                         updateScreenState(ScanScreenStatus.Scanning)
                     }
-                    .catch { cause ->  }
+                    .catch { cause -> handleError(cause)  }
                     .onCompletion {
                         if (foundDevices.isEmpty()) {
                             updateScreenState(ScanScreenStatus.NoDeviceFound)
@@ -98,6 +102,14 @@ class ScanViewModel @Inject constructor(
                     .collect { devices ->
                         foundDevices[devices.address] = devices
                     }
+            }
+        }
+    }
+
+    private fun handleError(cause: Throwable) {
+        when(cause) {
+            is BluetoothDisabledException -> {
+                requestBluetoothEnable()
             }
         }
     }
@@ -174,6 +186,44 @@ class ScanViewModel @Inject constructor(
             it.copy(navigateTo = destination)
         }
     }
+
+    //region Permissions
+    private fun onPermissionResult(isGranted: Boolean) {
+        _uiState.update {
+            it.copy(
+                shouldRequestPermission = _uiState.value.shouldRequestPermission
+            )
+        }
+
+        //To trigger the ui state
+        requestPermission(false)
+
+        if (isGranted) {
+            onScan()
+        }
+    }
+
+    private fun requestPermission(shouldRequest: Boolean) {
+        _uiState.update {
+            it.copy(shouldRequestPermission = shouldRequest)
+        }
+    }
+
+    private fun requestBluetoothEnable() {
+        _uiState.update {
+            it.copy(isBluetoothEnabled = false)
+        }
+    }
+
+    private fun onBluetoothEnabled(isEnabled: Boolean) {
+        _uiState.update {
+            it.copy(
+                isBluetoothEnabled = if (isEnabled) true else !_uiState.value.isBluetoothEnabled
+            )
+        }
+    }
+
+    //endregion Permission
 
 
     override fun onCleared() {
