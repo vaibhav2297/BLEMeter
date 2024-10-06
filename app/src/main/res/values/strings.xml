@@ -34,7 +34,7 @@
     <string name="caution">Caution!</string>
     <string name="device_disconnected_title">Device is disconnected!</string>
     <string name="device_disconnected_desc">Kindly reconnect to the device and try again.</string>
-    <string name="brand_name">Ankur Technologies</string>
+    <string name="brand_name">© Ankur Technologies</string>
     <string name="meter_address">Meter Address</string>
     <string name="purchase_data">Purchase Data</string>
     <string name="meter_cube">m3</string>

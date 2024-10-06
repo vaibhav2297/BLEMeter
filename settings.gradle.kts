@@ -23,4 +23,10 @@ dependencyResolutionManagement {
 
 rootProject.name = "BLEMeter"
 include(":app")
- 
+include(":feature:dashboard")
+include(":feature:authentication")
+include(":core:network")
+include(":core:payment")
+include(":core:data:auth")
+include(":core:designsystem")
+include(":core:navigation")

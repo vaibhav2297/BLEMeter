@@ -5,10 +5,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.blemeter.feature.scan.presentation.ScanRoute
-import com.example.blemeter.navigation.BLEMeterNavDestination
-import com.example.blemeter.config.utils.NavigationCallback
+import com.example.navigation.BLEMeterTopLevelDestination
+import com.example.navigation.uitls.NavigationCallback
 
-object ScanDestination : BLEMeterNavDestination {
+object ScanDestination : BLEMeterTopLevelDestination {
     override val route: String = "scanRoute"
     override val destination: String = "scanDestination"
 }

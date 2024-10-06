@@ -11,6 +11,8 @@ import com.example.blemeter.core.file.IFileService
 import com.example.blemeter.core.shake.ShakeDetector
 import com.example.blemeter.config.constants.Extras
 import com.example.blemeter.config.constants.ShakeDetectorConstant
+import com.example.payment.PaymentActivity
+import com.example.payment.data.IPaymentService
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 @AndroidEntryPoint
@@ -21,6 +23,9 @@ class MainActivity : ComponentActivity(), ShakeDetector.OnShakeListener {
 
     @Inject
     lateinit var fileService: IFileService
+
+    @Inject
+    lateinit var paymentService: IPaymentService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +58,14 @@ class MainActivity : ComponentActivity(), ShakeDetector.OnShakeListener {
     override fun onDestroy() {
         shakeDetector.stopListening()
         super.onDestroy()
+    }
+
+    private fun launchPayment() {
+        paymentService.apply {
+            initialisePayment()
+            setKeyID("rzp_test_NeREBciyHyczNU")
+            openPayment(this@MainActivity)
+        }
     }
 }
 

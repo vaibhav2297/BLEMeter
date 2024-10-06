@@ -24,11 +24,11 @@ import com.example.blemeter.feature.scan.presentation.component.ScanInitiateSect
 import com.example.blemeter.feature.scan.presentation.component.ScanOngoingSection
 import com.example.blemeter.ui.components.AppSurface
 import com.example.blemeter.ui.theme.MeterAppTheme
-import com.example.blemeter.config.utils.NavigationCallback
 import com.example.blemeter.config.utils.ValueChanged
 import com.example.blemeter.core.permission.AppPermissions
 import com.example.blemeter.core.permission.RequestAppPermissions
 import com.example.blemeter.ui.components.AppAlertDialog
+import com.example.navigation.uitls.NavigationCallback
 
 @Composable
 fun ScanRoute(

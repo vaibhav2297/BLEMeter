@@ -1,4 +1,4 @@
-package com.example.blemeter.navigation
+package com.example.navigation
 
 interface BLEMeterNavDestination {
     /**

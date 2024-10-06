@@ -8,8 +8,8 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.blemeter.navigation.BLEMeterNavDestination
-import com.example.blemeter.navigation.BLEMeterTopLevelDestination
+import com.example.navigation.BLEMeterNavDestination
+import com.example.navigation.BLEMeterTopLevelDestination
 
 @Composable
 fun rememberBLEMeterAppState(

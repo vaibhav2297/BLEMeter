@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.blemeter"
-        minSdk = 25
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "0.0.1"
@@ -82,9 +82,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     /*Dagger Hilt*/
-    val hiltVersion = "2.48"
     implementation(libs.dagger.hilt)
-    kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
+    kapt(libs.dagger.kapt)
 
     /*Kotlin Serialization*/
     implementation(libs.ktx.serialization)
@@ -103,4 +102,10 @@ dependencies {
 
     /*Lottie Animation*/
     implementation(libs.lottie.compose)
+
+    //projects
+    api(project(":core:payment"))
+    api(project(":core:data:auth"))
+    api(project(":feature:authentication"))
+    api(project(":core:navigation"))
 }

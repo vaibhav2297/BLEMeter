@@ -1,3 +1,3 @@
-package com.example.blemeter.navigation
+package com.example.navigation
 
 interface BLEMeterTopLevelDestination : BLEMeterNavDestination

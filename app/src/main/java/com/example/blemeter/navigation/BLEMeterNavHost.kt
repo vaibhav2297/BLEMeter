@@ -4,13 +4,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import com.example.authentication.navigation.AuthenticationDestination
+import com.example.authentication.navigation.authenticationGraph
 import com.example.blemeter.feature.dashboard.navigation.dashboardGraph
 import com.example.blemeter.feature.recharge.navigation.rechargeGraph
 import com.example.blemeter.feature.scan.navigation.ScanDestination
 import com.example.blemeter.feature.scan.navigation.scanGraph
 import com.example.blemeter.feature.valvecontrol.navigation.valveControlGraph
-import com.example.blemeter.config.utils.NavigationCallback
 import com.example.blemeter.config.utils.VoidCallback
+import com.example.navigation.uitls.NavigationCallback
 
 @Composable
 fun BLEMeterNavHost(
@@ -18,7 +20,7 @@ fun BLEMeterNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     onNavigateToDestination: NavigationCallback,
-    startDestination: String = ScanDestination.route,
+    startDestination: String = AuthenticationDestination.route,
 ) {
     NavHost(
         modifier = modifier,
@@ -40,6 +42,10 @@ fun BLEMeterNavHost(
             rechargeGraph(
                 onBackNavigation = onBackNavigation
             )
+        }
+
+        authenticationGraph {
+            onNavigateToDestination(ScanDestination, null)
         }
     }
 }

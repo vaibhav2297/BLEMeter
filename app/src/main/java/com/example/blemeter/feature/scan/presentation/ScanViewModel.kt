@@ -3,6 +3,8 @@ package com.example.blemeter.feature.scan.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.authentication.domain.model.EmailAuthRequest
+import com.example.authentication.domain.repository.IAuthRepository
 import com.example.blemeter.config.extenstions.chunkAndReverseString
 import com.example.blemeter.config.extenstions.getMeterAddress
 import com.example.blemeter.config.extenstions.isConnected
@@ -10,7 +12,7 @@ import com.example.blemeter.core.local.DataStore
 import com.example.blemeter.feature.dashboard.navigation.DashboardDestination
 import com.example.blemeter.feature.scan.domain.model.ScanScreenStatus
 import com.example.blemeter.feature.scan.domain.repository.IScanRepository
-import com.example.blemeter.navigation.BLEMeterNavDestination
+import com.example.navigation.BLEMeterNavDestination
 import com.juul.kable.AndroidAdvertisement
 import com.juul.kable.BluetoothDisabledException
 import com.juul.kable.Peripheral
@@ -30,7 +32,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ScanViewModel @Inject constructor(
     private val scanRepo: IScanRepository,
-    private val dataStore: DataStore
+    private val dataStore: DataStore,
+    private val authRepository: IAuthRepository
 ) : ViewModel() {
 
     companion object {
@@ -52,7 +55,7 @@ class ScanViewModel @Inject constructor(
 
     fun onEvent(event: ScanUiEvent) {
         when(event) {
-            is ScanUiEvent.OnScan -> requestPermission(true)
+            is ScanUiEvent.OnScan -> signUp()
             is ScanUiEvent.OnScanCancel -> onScanCancel()
             is ScanUiEvent.OnConnectionCancel -> onConnectionCancel()
             is ScanUiEvent.OnDeviceSelect -> onDeviceSelect(event.device)
@@ -230,5 +233,20 @@ class ScanViewModel @Inject constructor(
         super.onCleared()
         scanJob = null
         connectionJob = null
+    }
+
+    private fun signUp() {
+        viewModelScope.launch {
+            authRepository.loginWithEmail(
+                request = EmailAuthRequest(
+                    email = "vp.221997@gmail.com",
+                    password = "test123#"
+                )
+            ).onSuccess { user ->
+                Log.d(TAG, "signUp: success:: $user")
+            }.onFailure { e ->
+                Log.e(TAG, "signUp: success:: $e")
+            }
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.example.blemeter.navigation
+package com.example.navigation
 
 object InvalidDestinationDefaults {
     const val ERROR_MESSAGE = "Invalid destination"
