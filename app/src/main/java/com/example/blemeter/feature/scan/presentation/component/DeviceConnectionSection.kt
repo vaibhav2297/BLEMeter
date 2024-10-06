@@ -13,13 +13,13 @@ import androidx.compose.ui.unit.dp
 import com.example.blemeter.R
 import com.example.blemeter.config.extenstions.isConnected
 import com.example.blemeter.config.extenstions.toDisplay
-import com.example.blemeter.ui.components.AppOutlinedButton
-import com.example.blemeter.ui.components.AppSurface
-import com.example.blemeter.ui.components.ButtonState
-import com.example.blemeter.ui.components.RoundOutlinedButton
-import com.example.blemeter.ui.theme.AppTheme
-import com.example.blemeter.ui.theme.MeterAppTheme
-import com.example.blemeter.config.utils.VoidCallback
+import com.example.designsystem.components.AppOutlinedButton
+import com.example.designsystem.components.AppSurface
+import com.example.designsystem.components.ButtonState
+import com.example.designsystem.components.RoundOutlinedButton
+import com.example.designsystem.theme.AppTheme
+import com.example.designsystem.theme.MeterAppTheme
+import com.example.designsystem.theme.VoidCallback
 import com.juul.kable.State
 
 @Composable

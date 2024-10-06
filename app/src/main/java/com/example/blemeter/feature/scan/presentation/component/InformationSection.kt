@@ -11,10 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.blemeter.ui.components.AppSurface
-import com.example.blemeter.ui.theme.AppTheme
-import com.example.blemeter.ui.theme.MeterAppTheme
-import com.example.blemeter.ui.components.VerticalSpacer
+import com.example.designsystem.components.AppSurface
+import com.example.designsystem.components.VerticalSpacer
+import com.example.designsystem.theme.AppTheme
+import com.example.designsystem.theme.MeterAppTheme
 
 @Composable
 internal fun InformationSection(

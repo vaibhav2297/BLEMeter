@@ -19,19 +19,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.blemeter.R
-import com.example.blemeter.ui.components.AppIcon
-import com.example.blemeter.ui.components.AppOutlinedButton
-import com.example.blemeter.ui.components.AppSurface
-import com.example.blemeter.ui.components.ButtonState
-import com.example.blemeter.ui.components.OutlinedSlot
-import com.example.blemeter.ui.icon.AppIcon
-import com.example.blemeter.ui.icon.AppIcons
-import com.example.blemeter.ui.theme.AppTheme
-import com.example.blemeter.ui.theme.MeterAppTheme
-import com.example.blemeter.ui.components.HorizontalSpacer
-import com.example.blemeter.config.utils.ValueChanged
-import com.example.blemeter.ui.components.VerticalSpacer
-import com.example.blemeter.config.utils.VoidCallback
+import com.example.designsystem.components.AppIcon
+import com.example.designsystem.components.AppOutlinedButton
+import com.example.designsystem.components.AppSurface
+import com.example.designsystem.components.ButtonState
+import com.example.designsystem.components.HorizontalSpacer
+import com.example.designsystem.components.OutlinedSlot
+import com.example.designsystem.components.VerticalSpacer
+import com.example.designsystem.icons.AppIcon
+import com.example.designsystem.icons.AppIcons
+import com.example.designsystem.theme.AppTheme
+import com.example.designsystem.theme.MeterAppTheme
+import com.example.designsystem.theme.ValueChanged
+import com.example.designsystem.theme.VoidCallback
 import com.juul.kable.AndroidAdvertisement
 
 @Composable

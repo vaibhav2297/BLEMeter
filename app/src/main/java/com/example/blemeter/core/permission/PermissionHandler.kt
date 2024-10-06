@@ -8,8 +8,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.example.blemeter.R
-import com.example.blemeter.config.utils.VoidCallback
-import com.example.blemeter.ui.components.AppAlertDialog
+import com.example.designsystem.components.AppAlertDialog
+import com.example.designsystem.theme.VoidCallback
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 

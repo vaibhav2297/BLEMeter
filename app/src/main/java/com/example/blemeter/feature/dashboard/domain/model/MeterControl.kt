@@ -2,8 +2,8 @@ package com.example.blemeter.feature.dashboard.domain.model
 
 import androidx.annotation.StringRes
 import com.example.blemeter.R
-import com.example.blemeter.ui.icon.AppIcon
-import com.example.blemeter.ui.icon.AppIcons
+import com.example.designsystem.icons.AppIcon
+import com.example.designsystem.icons.AppIcons
 
 enum class MeterControl(
     val controlIcon: AppIcon,

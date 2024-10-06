@@ -11,7 +11,7 @@ import com.example.blemeter.feature.recharge.navigation.rechargeGraph
 import com.example.blemeter.feature.scan.navigation.ScanDestination
 import com.example.blemeter.feature.scan.navigation.scanGraph
 import com.example.blemeter.feature.valvecontrol.navigation.valveControlGraph
-import com.example.blemeter.config.utils.VoidCallback
+import com.example.designsystem.theme.VoidCallback
 import com.example.navigation.uitls.NavigationCallback
 
 @Composable

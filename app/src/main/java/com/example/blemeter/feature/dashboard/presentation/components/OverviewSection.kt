@@ -22,13 +22,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.blemeter.R
 import com.example.blemeter.feature.dashboard.presentation.DashboardUiState
-import com.example.blemeter.ui.components.AppSurface
-import com.example.blemeter.ui.components.OutlinedSlotWithTitle
-import com.example.blemeter.ui.components.TitleSlot
-import com.example.blemeter.ui.theme.AppTheme
-import com.example.blemeter.ui.theme.MeterAppTheme
 import com.example.blemeter.config.utils.TimeUtils
-import com.example.blemeter.ui.components.VerticalSpacer
+import com.example.designsystem.components.AppSurface
+import com.example.designsystem.components.OutlinedSlotWithTitle
+import com.example.designsystem.components.TitleSlot
+import com.example.designsystem.components.VerticalSpacer
+import com.example.designsystem.theme.AppTheme
+import com.example.designsystem.theme.MeterAppTheme
 
 
 @Composable

@@ -27,16 +27,16 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.blemeter.R
 import com.example.blemeter.config.extenstions.isDecimal
 import com.example.blemeter.feature.scan.presentation.component.ScanScreenSlot
-import com.example.blemeter.ui.components.AppOutlinedButton
-import com.example.blemeter.ui.components.AppSurface
-import com.example.blemeter.ui.components.ButtonState
-import com.example.blemeter.ui.components.textfield.TextFieldInputState
-import com.example.blemeter.ui.components.textfield.rememberTextFieldInputState
-import com.example.blemeter.ui.theme.AppTheme
-import com.example.blemeter.ui.theme.MeterAppTheme
-import com.example.blemeter.config.utils.ValueChanged
-import com.example.blemeter.ui.components.VerticalSpacer
-import com.example.blemeter.config.utils.VoidCallback
+import com.example.designsystem.components.AppOutlinedButton
+import com.example.designsystem.components.AppSurface
+import com.example.designsystem.components.ButtonState
+import com.example.designsystem.components.VerticalSpacer
+import com.example.designsystem.components.textfield.TextFieldInputState
+import com.example.designsystem.components.textfield.rememberTextFieldInputState
+import com.example.designsystem.theme.AppTheme
+import com.example.designsystem.theme.MeterAppTheme
+import com.example.designsystem.theme.ValueChanged
+import com.example.designsystem.theme.VoidCallback
 import kotlinx.coroutines.delay
 
 @Composable

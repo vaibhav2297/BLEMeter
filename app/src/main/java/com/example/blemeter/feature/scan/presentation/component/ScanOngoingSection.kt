@@ -12,11 +12,11 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.blemeter.R
-import com.example.blemeter.ui.components.AppOutlinedButton
-import com.example.blemeter.ui.components.AppSurface
-import com.example.blemeter.ui.components.ButtonState
-import com.example.blemeter.ui.theme.MeterAppTheme
-import com.example.blemeter.config.utils.VoidCallback
+import com.example.designsystem.components.AppOutlinedButton
+import com.example.designsystem.components.AppSurface
+import com.example.designsystem.components.ButtonState
+import com.example.designsystem.theme.MeterAppTheme
+import com.example.designsystem.theme.VoidCallback
 
 @Composable
 fun ScanOngoingSection(

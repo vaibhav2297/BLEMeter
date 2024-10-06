@@ -17,16 +17,16 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.blemeter.R
-import com.example.blemeter.core.ble.domain.model.request.ValveInteractionCommand
 import com.example.blemeter.config.model.ValveStatus.Companion.toValveInteraction
-import com.example.blemeter.ui.components.AppSurface
-import com.example.blemeter.ui.components.ButtonState
-import com.example.blemeter.ui.components.RoundOutlinedButton
-import com.example.blemeter.ui.theme.AppTheme
-import com.example.blemeter.ui.theme.MeterAppTheme
-import com.example.blemeter.config.utils.ValueChanged
-import com.example.blemeter.ui.components.VerticalSpacer
-import com.example.blemeter.config.utils.VoidCallback
+import com.example.blemeter.core.ble.domain.model.request.ValveInteractionCommand
+import com.example.designsystem.components.AppSurface
+import com.example.designsystem.components.ButtonState
+import com.example.designsystem.components.RoundOutlinedButton
+import com.example.designsystem.components.VerticalSpacer
+import com.example.designsystem.theme.AppTheme
+import com.example.designsystem.theme.MeterAppTheme
+import com.example.designsystem.theme.ValueChanged
+import com.example.designsystem.theme.VoidCallback
 
 @Composable
 fun ValveControlRoute(

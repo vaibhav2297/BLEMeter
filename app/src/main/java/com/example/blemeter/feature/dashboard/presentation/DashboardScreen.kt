@@ -19,11 +19,11 @@ import com.example.blemeter.R
 import com.example.blemeter.feature.dashboard.domain.model.MeterControl
 import com.example.blemeter.feature.dashboard.presentation.components.MeterControlIcon
 import com.example.blemeter.feature.dashboard.presentation.components.OverviewSlot
-import com.example.blemeter.ui.components.AppSurface
-import com.example.blemeter.ui.components.TitleSlot
-import com.example.blemeter.ui.theme.MeterAppTheme
-import com.example.blemeter.config.utils.ValueChanged
-import com.example.blemeter.ui.components.VerticalSpacer
+import com.example.designsystem.components.AppSurface
+import com.example.designsystem.components.TitleSlot
+import com.example.designsystem.components.VerticalSpacer
+import com.example.designsystem.theme.MeterAppTheme
+import com.example.designsystem.theme.ValueChanged
 import com.example.navigation.uitls.NavigationCallback
 
 @Composable

@@ -17,14 +17,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.blemeter.feature.dashboard.domain.model.MeterControl
-import com.example.blemeter.ui.components.AppIcon
-import com.example.blemeter.ui.components.OutlinedSlot
-import com.example.blemeter.ui.icon.AppIcon
-import com.example.blemeter.ui.theme.AppTheme
-import com.example.blemeter.ui.theme.MeterAppTheme
-import com.example.blemeter.config.utils.ValueChanged
-import com.example.blemeter.ui.components.VerticalSpacer
-import com.example.blemeter.config.utils.VoidCallback
+import com.example.designsystem.components.AppIcon
+import com.example.designsystem.components.OutlinedSlot
+import com.example.designsystem.components.VerticalSpacer
+import com.example.designsystem.icons.AppIcon
+import com.example.designsystem.theme.AppTheme
+import com.example.designsystem.theme.MeterAppTheme
+import com.example.designsystem.theme.ValueChanged
+import com.example.designsystem.theme.VoidCallback
 
 @Composable
 fun MeterControlIcon(

@@ -16,18 +16,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.blemeter.R
+import com.example.blemeter.core.permission.AppPermissions
+import com.example.blemeter.core.permission.RequestAppPermissions
 import com.example.blemeter.feature.scan.domain.model.ScanScreenStatus
 import com.example.blemeter.feature.scan.presentation.component.DeviceConnectionSection
 import com.example.blemeter.feature.scan.presentation.component.FoundDeviceSection
 import com.example.blemeter.feature.scan.presentation.component.NoFoundDeviceSection
 import com.example.blemeter.feature.scan.presentation.component.ScanInitiateSection
 import com.example.blemeter.feature.scan.presentation.component.ScanOngoingSection
-import com.example.blemeter.ui.components.AppSurface
-import com.example.blemeter.ui.theme.MeterAppTheme
-import com.example.blemeter.config.utils.ValueChanged
-import com.example.blemeter.core.permission.AppPermissions
-import com.example.blemeter.core.permission.RequestAppPermissions
-import com.example.blemeter.ui.components.AppAlertDialog
+import com.example.designsystem.components.AppAlertDialog
+import com.example.designsystem.components.AppSurface
+import com.example.designsystem.theme.MeterAppTheme
+import com.example.designsystem.theme.ValueChanged
 import com.example.navigation.uitls.NavigationCallback
 
 @Composable
