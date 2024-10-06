@@ -108,4 +108,5 @@ dependencies {
     api(project(":core:data:auth"))
     api(project(":feature:authentication"))
     api(project(":core:navigation"))
+    api(project(":core:designsystem"))
 }

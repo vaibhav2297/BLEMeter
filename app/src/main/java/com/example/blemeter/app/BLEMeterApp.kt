@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.blemeter.navigation.BLEMeterNavHost
-import com.example.blemeter.ui.components.AppSurface
-import com.example.blemeter.ui.components.AppSurfaceDefaults
-import com.example.blemeter.ui.theme.MeterAppTheme
+import com.example.designsystem.components.AppSurface
+import com.example.designsystem.components.AppSurfaceDefaults
+import com.example.designsystem.theme.MeterAppTheme
 
 @Composable
 fun BLEMeterApp(
