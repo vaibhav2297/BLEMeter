@@ -58,6 +58,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
 
+    //Projects
+    api(project(":core:navigation"))
+
     /*viewmodel*/
     implementation(libs.compose.viewmodel)
     implementation(libs.ktx.viewmodel)

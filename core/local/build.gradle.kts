@@ -3,11 +3,10 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     kotlin("kapt")
     alias(libs.plugins.androidDaggerHilt)
-    alias(libs.plugins.kotlinSerialization)
 }
 
 android {
-    namespace = "com.example.auth"
+    namespace = "com.example.local"
     compileSdk = 34
 
     defaultConfig {
@@ -44,15 +43,16 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    //Local
-    api(project(":core:network"))
-    api(project(":core:designsystem"))
-    api(project(":core:local"))
+    //Datastore
+    api(libs.datastore.preference)
 
     //Hilt
     implementation(libs.dagger.hilt)
     kapt(libs.dagger.kapt)
 
-    /*Kotlin Serialization*/
-    implementation(libs.ktx.serialization)
+    //Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    annotationProcessor(libs.room.compiler)
+    kapt(libs.room.compiler)
 }

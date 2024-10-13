@@ -14,7 +14,7 @@ class PasswordInputState(
 ) : BaseTextFieldInputState(hint, initialText) {
 
     override fun validator(): Boolean =
-        text.isNotEmpty() && text.length > 4
+        text.isEmpty() || text.length < 4
 }
 
 @Composable

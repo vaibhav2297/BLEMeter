@@ -1,11 +1,14 @@
 package com.example.authentication.presentation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.authentication.components.AuthScreenSlot
+import com.example.designsystem.components.AppScaffold
+import com.example.designsystem.components.isSuccess
 import com.example.designsystem.theme.ValueChanged
 import com.example.designsystem.theme.VoidCallback
 
@@ -16,10 +19,14 @@ internal fun AuthRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+
+    if (uiState.authState.isSuccess()) {
+        onAuthenticated()
+    }
+
     AuthScreen(
         uiState = uiState,
-        onEvent = viewModel::onEvent,
-        onAuthenticated = onAuthenticated
+        onEvent = viewModel::onEvent
     )
 }
 
@@ -27,15 +34,23 @@ internal fun AuthRoute(
 private fun AuthScreen(
     modifier: Modifier = Modifier,
     uiState: AuthUiState,
-    onEvent: ValueChanged<AuthUiEvent>,
-    onAuthenticated: VoidCallback
+    onEvent: ValueChanged<AuthUiEvent>
 ) {
-    AuthScreenSlot(
-        modifier = modifier,
-        authType = uiState.authType
-    ) { request ->
-        onEvent(
-            AuthUiEvent.OnAuthRequest(request)
-        )
+    AppScaffold(
+        screenState = uiState.authState
+    ) {
+        AuthScreenSlot(
+            modifier = modifier,
+            authType = uiState.authType,
+            onAuthChange = { authType ->
+                onEvent(
+                    AuthUiEvent.OnAuthChange(authType)
+                )
+            }
+        ) { request ->
+            onEvent(
+                AuthUiEvent.OnAuthRequest(request)
+            )
+        }
     }
 }

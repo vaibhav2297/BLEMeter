@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 
 abstract class BaseTextFieldInputState(
     val hint: String,
-    private val initialText: String
+    initialText: String
 ) {
     var text by mutableStateOf(initialText)
         private set

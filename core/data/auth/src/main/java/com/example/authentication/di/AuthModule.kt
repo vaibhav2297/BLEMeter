@@ -3,6 +3,8 @@ package com.example.authentication.di
 import com.example.authentication.data.RemoteDataSource
 import com.example.authentication.data.repository.AuthRepository
 import com.example.authentication.domain.repository.IAuthRepository
+import com.example.local.room.UserDao
+import com.example.network.ktor.KtorClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,14 +18,17 @@ internal object AuthModule {
     @Provides
     @Singleton
     internal fun provideAuthRepository(
-        remoteDataSource: RemoteDataSource
+        remoteDataSource: RemoteDataSource,
+        userDao: UserDao
     ): IAuthRepository =
-        AuthRepository(remoteDataSource)
+        AuthRepository(remoteDataSource, userDao)
 
     @Provides
     @Singleton
-    internal fun provideRemoteDataSource(): RemoteDataSource =
-        RemoteDataSource()
+    internal fun provideRemoteDataSource(
+        ktorClient: KtorClient
+    ): RemoteDataSource =
+        RemoteDataSource(ktorClient)
 
 
 }

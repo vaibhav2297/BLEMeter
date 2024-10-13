@@ -4,15 +4,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.authentication.domain.model.EmailAuthRequest
 import com.example.authentication.domain.repository.IAuthRepository
+import com.example.authentication.model.AuthType
+import com.example.designsystem.components.ScreenState
+import com.example.local.datastore.DataStoreKeys
+import com.example.local.datastore.IAppDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 internal class AuthViewModel @Inject constructor(
-    private val authRepo: IAuthRepository
+    private val authRepo: IAuthRepository,
+    private val dataStore: IAppDataStore
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<AuthUiState> by lazy {
@@ -22,10 +28,22 @@ internal class AuthViewModel @Inject constructor(
 
 
     fun onEvent(event: AuthUiEvent) {
-        when(event) {
-            is AuthUiEvent.OnAuthRequest -> {}
-            is AuthUiEvent.OnAuthType -> {}
+        when (event) {
+            is AuthUiEvent.OnAuthRequest -> initiateAuthRequest(event.request)
+            is AuthUiEvent.OnAuthChange -> updateAuthType(event.authType)
         }
+    }
+
+    private fun initiateAuthRequest(authRequest: EmailAuthRequest) {
+        showLoading()
+        when (_uiState.value.authType) {
+            AuthType.LOGIN_WITH_EMAIL -> loginWithEmail(authRequest)
+            AuthType.SIGNUP_WITH_EMAIL -> signUpWithEmail(authRequest)
+        }
+    }
+
+    private fun updateAuthType(authType: AuthType) {
+        _uiState.update { it.copy(authType = authType) }
     }
 
     private fun signUpWithEmail(
@@ -33,8 +51,22 @@ internal class AuthViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             authRepo.signUpWithEmail(request)
-                .onSuccess {  }
-                .onFailure {  }
+                .onSuccess { response ->
+                    //store to local data
+                    storeAuthToken(
+                        authToken = response.accessToken,
+                        refreshToken = response.refreshToken
+                    )
+
+                    _uiState.update {
+                        it.copy(authState = ScreenState.Success(Unit))
+                    }
+                }
+                .onFailure { e ->
+                    _uiState.update {
+                        it.copy(authState = ScreenState.Error(e.message ?: "Unknown Error"))
+                    }
+                }
         }
     }
 
@@ -43,8 +75,37 @@ internal class AuthViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             authRepo.loginWithEmail(request)
-                .onSuccess {  }
-                .onFailure {  }
+                .onSuccess { response ->
+                    //store to local data
+                    storeAuthToken(
+                        authToken = response.accessToken,
+                        refreshToken = response.refreshToken
+                    )
+
+                    _uiState.update {
+                        it.copy(authState = ScreenState.Success(Unit))
+                    }
+                }
+                .onFailure { e ->
+                    _uiState.update {
+                        it.copy(authState = ScreenState.Error(e.message ?: "Unknown Error"))
+                    }
+                }
+        }
+    }
+
+    private suspend fun storeAuthToken(authToken: String, refreshToken: String) {
+        dataStore.apply {
+            putPreference(DataStoreKeys.AUTH_TOKEN_KEY, authToken)
+            putPreference(DataStoreKeys.REFRESH_TOKEN_KEY, refreshToken)
+        }
+    }
+
+    private fun showLoading() {
+        _uiState.update {
+            it.copy(
+                authState = ScreenState.Loading
+            )
         }
     }
 }

@@ -69,4 +69,5 @@ dependencies {
     //project
     api(project(":core:data:auth"))
     api(project(":core:navigation"))
+    api(project(":core:local"))
 }

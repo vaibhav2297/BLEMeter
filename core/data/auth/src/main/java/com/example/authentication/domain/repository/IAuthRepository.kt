@@ -5,6 +5,6 @@ import com.example.authentication.domain.model.EmailAuthRequest
 import com.example.authentication.domain.model.UserResponse
 
 interface IAuthRepository {
-    suspend fun signUpWithEmail(request: EmailAuthRequest): Result<UserResponse>
+    suspend fun signUpWithEmail(request: EmailAuthRequest): Result<LoginResponse>
     suspend fun loginWithEmail(request: EmailAuthRequest): Result<LoginResponse>
 }

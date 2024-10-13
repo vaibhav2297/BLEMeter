@@ -1,5 +1,6 @@
 package com.example.authentication.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,11 +31,13 @@ import com.example.designsystem.components.textfield.rememberPasswordInputState
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.theme.MeterAppTheme
 import com.example.designsystem.theme.ValueChanged
+import com.example.designsystem.theme.VoidCallback
 
 @Composable
 internal fun AuthScreenSlot(
     modifier: Modifier = Modifier,
     authType: AuthType,
+    onAuthChange: ValueChanged<AuthType>,
     onAuthRequest: ValueChanged<EmailAuthRequest>
 ) {
     Column(
@@ -54,11 +57,14 @@ internal fun AuthScreenSlot(
         )
 
         AuthenticationContent(
-            title = authType.title,
+            title = authType.toString(),
             onAuthRequest = onAuthRequest
         )
 
-        BottomContent(authType = authType)
+        BottomContent(
+            authType = authType,
+            onAuthChange = onAuthChange
+        )
     }
 }
 
@@ -69,8 +75,8 @@ private fun AuthenticationContent(
     onAuthRequest: ValueChanged<EmailAuthRequest>
 ) {
 
-    val emailState = rememberEmailInputState(hint = stringResource(R.string.email))
-    val passwordState = rememberPasswordInputState(hint = stringResource(R.string.password))
+    val emailState = rememberEmailInputState(hint = stringResource(R.string.email), initialText = "vp.221997@gmail.com")
+    val passwordState = rememberPasswordInputState(hint = stringResource(R.string.password), initialText = "test123#")
 
     TitleSlot(
         modifier = modifier.fillMaxWidth(),
@@ -114,11 +120,18 @@ private fun AuthenticationContent(
 @Composable
 private fun BottomContent(
     modifier: Modifier = Modifier,
-    authType: AuthType
+    authType: AuthType,
+    onAuthChange: ValueChanged<AuthType>
 ) {
     Row(
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable {
+                val type = if (authType.isLogin())
+                    AuthType.SIGNUP_WITH_EMAIL
+                else AuthType.LOGIN_WITH_EMAIL
+                onAuthChange(type)
+            },
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -158,7 +171,10 @@ private fun PreviewAuthScreenSlot() {
                 .fillMaxSize()
                 .padding(24.dp),
         ) {
-            AuthScreenSlot(authType = AuthType.LOGIN_WITH_EMAIL) {
+            AuthScreenSlot(
+                authType = AuthType.LOGIN_WITH_EMAIL,
+                onAuthChange = { }
+            ) {
 
             }
         }

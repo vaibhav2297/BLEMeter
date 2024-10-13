@@ -9,13 +9,16 @@ import com.example.network.model.SupabaseApis
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
 import io.ktor.http.HttpMethod
+import javax.inject.Inject
 
-internal class RemoteDataSource {
+internal class RemoteDataSource @Inject constructor(
+    private val ktorClient: KtorClient
+) {
 
     suspend fun signUpWithEmail(
         request: EmailAuthRequest
     ): Result<UserResponse> =
-        KtorClient.client.safeRequest<UserResponse> {
+        ktorClient.client.safeRequest<UserResponse> {
             url(SupabaseApis.SIGN_UP.url)
             method = HttpMethod.Post
             setBody(request)
@@ -24,8 +27,8 @@ internal class RemoteDataSource {
     suspend fun loginWithEmail(
         request: EmailAuthRequest
     ): Result<LoginResponse> =
-        KtorClient.client.safeRequest<LoginResponse> {
-            url(SupabaseApis.SIGN_UP.url)
+        ktorClient.client.safeRequest<LoginResponse> {
+            url(SupabaseApis.LOGIN.url + "?grant_type=password")
             method = HttpMethod.Post
             setBody(request)
         }

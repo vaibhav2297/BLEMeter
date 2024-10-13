@@ -55,7 +55,7 @@ class ScanViewModel @Inject constructor(
 
     fun onEvent(event: ScanUiEvent) {
         when(event) {
-            is ScanUiEvent.OnScan -> signUp()
+            is ScanUiEvent.OnScan -> requestPermission(true)
             is ScanUiEvent.OnScanCancel -> onScanCancel()
             is ScanUiEvent.OnConnectionCancel -> onConnectionCancel()
             is ScanUiEvent.OnDeviceSelect -> onDeviceSelect(event.device)
@@ -233,20 +233,5 @@ class ScanViewModel @Inject constructor(
         super.onCleared()
         scanJob = null
         connectionJob = null
-    }
-
-    private fun signUp() {
-        viewModelScope.launch {
-            authRepository.loginWithEmail(
-                request = EmailAuthRequest(
-                    email = "vp.221997@gmail.com",
-                    password = "test123#"
-                )
-            ).onSuccess { user ->
-                Log.d(TAG, "signUp: success:: $user")
-            }.onFailure { e ->
-                Log.e(TAG, "signUp: success:: $e")
-            }
-        }
     }
 }

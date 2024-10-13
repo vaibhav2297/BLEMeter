@@ -14,7 +14,7 @@ class EmailInputState(
 ) : BaseTextFieldInputState(hint, initialText) {
 
     override fun validator(): Boolean =
-        text.matches(Regex(EMAIL_REGEX))
+        !text.matches(Regex(EMAIL_REGEX))
 
     companion object {
         const val EMAIL_REGEX = "\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*"
