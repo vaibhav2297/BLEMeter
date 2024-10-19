@@ -4,6 +4,8 @@ import com.example.authentication.data.RemoteDataSource
 import com.example.authentication.domain.model.EmailAuthRequest
 import com.example.authentication.domain.model.toUserEntity
 import com.example.authentication.domain.repository.IAuthRepository
+import com.example.local.datastore.DataStoreKeys
+import com.example.local.datastore.IAppDataStore
 import com.example.local.room.UserDao
 
 internal class AuthRepository(

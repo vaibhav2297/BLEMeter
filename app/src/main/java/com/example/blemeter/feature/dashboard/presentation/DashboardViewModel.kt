@@ -10,6 +10,9 @@ import com.example.blemeter.feature.dashboard.domain.usecases.DashboardUseCases
 import com.example.blemeter.feature.recharge.navigation.RechargeDestination
 import com.example.blemeter.feature.valvecontrol.navigation.ValveControlDestination
 import com.example.blemeter.config.model.MeterData
+import com.example.designsystem.utils.ScreenState
+import com.example.local.datastore.DataStoreKeys
+import com.example.local.datastore.IAppDataStore
 import com.example.navigation.BLEMeterNavDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,16 +25,11 @@ import javax.inject.Inject
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
     private val useCases: DashboardUseCases,
-    private val dataStore: DataStore
+    private val dataStore: IAppDataStore
 ) : ViewModel() {
 
     companion object {
         const val TAG = "DashboardViewModel"
-    }
-
-    init {
-        observeResponse()
-        readMeterData()
     }
 
     private val _uiState: MutableStateFlow<DashboardUiState> by lazy {
@@ -39,10 +37,16 @@ class DashboardViewModel @Inject constructor(
     }
     val uiState = _uiState.asStateFlow()
 
+    init {
+        observeResponse()
+        //readMeterData()
+    }
+
     fun onEvent(event: DashboardUiEvent) {
         when (event) {
             is DashboardUiEvent.OnMeterControl -> onMeterControl(event.control)
             is DashboardUiEvent.OnNavigated -> onNavigateTo(null)
+            is DashboardUiEvent.OnRefresh -> readMeterData()
         }
     }
 
@@ -52,23 +56,53 @@ class DashboardViewModel @Inject constructor(
             MeterControl.VALVE_CONTROL -> onNavigateTo(ValveControlDestination)
             MeterControl.RECHARGE -> onNavigateTo(RechargeDestination)
             MeterControl.RESET_DATA -> resetMeterData()
-            MeterControl.ACCUMULATE -> { }
+            MeterControl.ACCUMULATE -> {}
         }
     }
 
     private fun resetMeterData() {
         viewModelScope.launch {
+            showLoading()
             useCases.zeroInitialisationUseCase()
-                .onFailure { }
-                .onSuccess { }
+                .onFailure { e ->
+                    _uiState.update {
+                        it.copy(
+                            screenState = ScreenState.Error(
+                                e.message ?: "unknown error"
+                            )
+                        )
+                    }
+                }
+                .onSuccess {
+                    _uiState.update {
+                        it.copy(
+                            screenState = ScreenState.Success(Unit)
+                        )
+                    }
+                }
         }
     }
 
     private fun readMeterData() {
         viewModelScope.launch {
+            showLoading()
             useCases.readMeterDataUseCase()
-                .onFailure { }
-                .onSuccess { }
+                .onFailure { e ->
+                    _uiState.update {
+                        it.copy(
+                            screenState = ScreenState.Error(
+                                e.message ?: "unknown error"
+                            )
+                        )
+                    }
+                }
+                .onSuccess {
+                    _uiState.update {
+                        it.copy(
+                            screenState = ScreenState.Success(Unit)
+                        )
+                    }
+                }
         }
     }
 
@@ -80,7 +114,7 @@ class DashboardViewModel @Inject constructor(
             )?.catch { cause ->
 
             }?.collect { data ->
-                Log.e(TAG, "observerResponse :: $data")
+                Log.e(TAG, "Dashboard observerResponse :: $data")
                 when (data) {
                     is MeterData -> {
                         _uiState.update { it.copy(meterData = data) }
@@ -104,13 +138,21 @@ class DashboardViewModel @Inject constructor(
 
     private fun saveRechargeTimes(numberOfTimes: Int) {
         viewModelScope.launch {
-            dataStore.saveRechargeTimes(numberOfTimes)
+            dataStore.putPreference(DataStoreKeys.RECHARGE_TIMES_KEY, numberOfTimes)
         }
     }
 
     private fun onNavigateTo(destination: BLEMeterNavDestination?) {
         _uiState.update {
             it.copy(navigationTo = destination)
+        }
+    }
+
+    private fun showLoading() {
+        _uiState.update {
+            it.copy(
+                screenState = ScreenState.Loading
+            )
         }
     }
 }

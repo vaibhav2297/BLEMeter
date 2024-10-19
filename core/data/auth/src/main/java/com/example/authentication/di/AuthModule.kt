@@ -3,6 +3,7 @@ package com.example.authentication.di
 import com.example.authentication.data.RemoteDataSource
 import com.example.authentication.data.repository.AuthRepository
 import com.example.authentication.domain.repository.IAuthRepository
+import com.example.local.datastore.IAppDataStore
 import com.example.local.room.UserDao
 import com.example.network.ktor.KtorClient
 import dagger.Module

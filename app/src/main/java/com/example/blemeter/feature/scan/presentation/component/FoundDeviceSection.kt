@@ -201,7 +201,7 @@ private fun BottomSection(
     ) {
         AppOutlinedButton(
             text = stringResource(R.string.rescan),
-            buttonState = ButtonState.ACTIVE,
+            buttonState = ButtonState.ENABLED,
             onClick = onReScan
         )
 

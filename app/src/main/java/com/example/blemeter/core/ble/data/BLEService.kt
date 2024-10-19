@@ -67,8 +67,6 @@ class BLEService @Inject constructor(
 
                     logger.d(
                         "\noperation : ${operation?.name} \n" +
-                                "serviceUuid : ${serviceUuid?.toString()} \n" +
-                                "characteristicUuid : ${characteristicUuid?.toString()} \n" +
                                 "data : ${data.toHexString()}"
                     )
                     data.toHexString()

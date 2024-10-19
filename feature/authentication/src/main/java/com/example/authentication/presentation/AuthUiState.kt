@@ -1,7 +1,7 @@
 package com.example.authentication.presentation
 
 import com.example.authentication.model.AuthType
-import com.example.designsystem.components.ScreenState
+import com.example.designsystem.utils.ScreenState
 
 
 internal data class AuthUiState(

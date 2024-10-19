@@ -22,7 +22,11 @@ fun BLEMeterApp(
         ) { padding ->
             BLEMeterNavHost(
                 modifier = Modifier
-                    .padding(padding)
+                    .padding(
+                        start = padding,
+                        end = padding,
+                        bottom = padding
+                    )
                     .systemBarsPadding(),
                 onBackNavigation = appState::onBackClick,
                 navController = appState.navController,

@@ -18,8 +18,8 @@ android {
         applicationId = "com.example.blemeter"
         minSdk = 26
         targetSdk = 34
-        versionCode = 1
-        versionName = "0.0.1"
+        versionCode = 241020
+        versionName = "24.10.20"
 
         buildConfigField("int", "MIN_SDK_VERSION", "$minSdk")
 
@@ -107,6 +107,7 @@ dependencies {
     api(project(":core:payment"))
     api(project(":core:data:auth"))
     api(project(":feature:authentication"))
+    api(project(":feature:wallet"))
     api(project(":core:navigation"))
     api(project(":core:designsystem"))
 }

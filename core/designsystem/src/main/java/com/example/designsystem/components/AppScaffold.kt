@@ -6,26 +6,37 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.designsystem.icons.AppIcon
+import com.example.designsystem.icons.AppIcons
 import com.example.designsystem.theme.AppTheme
-import com.example.designsystem.theme.ValueChanged
+import com.example.designsystem.theme.MeterAppTheme
 import com.example.designsystem.theme.VoidComposable
+import com.example.designsystem.theme.White
+import com.example.designsystem.utils.ScreenState
 
+/**
+ * A generic composable `AppScaffold` that manages screen state and displays
+ * different UI components like the top bar, loading indicator, content, and error messages.
+ *
+ * @param modifier Modifier to apply to the scaffold layout.
+ * @param screenState The current state of the screen which can be one of: Loading, Success, or Error.
+ * @param topBar An optional composable that represents the top bar (nullable).
+ * @param content The main content of the screen, provided as a composable.
+ */
 @Composable
 fun <T> AppScaffold(
     modifier: Modifier = Modifier,
     screenState: ScreenState<T>,
+    topBar: VoidComposable? = null,
     content: VoidComposable
 ) {
     val context = LocalContext.current
@@ -36,7 +47,10 @@ fun <T> AppScaffold(
         contentAlignment = Alignment.Center
     ) {
 
-        content()
+        ScaffoldContent(
+            topBar = topBar,
+            content = content
+        )
 
         when (screenState) {
             ScreenState.Loading -> CircularProgressIndicator(
@@ -52,74 +66,74 @@ fun <T> AppScaffold(
     }
 }
 
+/**
+ * A composable `ScaffoldContent` that displays the main UI content along with an optional top bar.
+ *
+ * @param modifier Modifier to apply to the scaffold content layout.
+ * @param topBar An optional composable that represents the top bar, rendered if non-null.
+ * @param content The main content composable that fills the remaining space.
+ */
 @Composable
-fun <T> AppScaffold(
+private fun ScaffoldContent(
     modifier: Modifier = Modifier,
-    screenState: ScreenState<T>,
-    bottomBar: VoidComposable = { },
-    navItems: List<AppNavItem>,
-    selectedNavItem: AppNavItem,
-    onNavItem: ValueChanged<AppNavItem>,
-    content: @Composable () -> Unit
+    topBar: VoidComposable?,
+    content: VoidComposable
 ) {
-    val context = LocalContext.current
-
-    AppSurface(
-        modifier = Modifier
+    Column(
+        modifier = modifier
             .fillMaxSize(),
-        shape = AppSurfaceDefaults.NoCornerShape
-    ) { padding ->
-
-        Column(
-            modifier = modifier
-                .padding(padding)
-                .systemBarsPadding()
-                .fillMaxSize()
-        ) {
-
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        //top app bar
+        if (topBar != null) {
             Box(
                 modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .height(AppTopBarDefaults.HEIGHT),
                 contentAlignment = Alignment.Center
             ) {
-                content()
-
-                when (screenState) {
-                    ScreenState.Loading -> CircularProgressIndicator(
-                        color = AppTheme.colors.brand
-                    )
-
-                    is ScreenState.Error -> {
-                        Toast.makeText(context, screenState.error, Toast.LENGTH_SHORT).show()
-                    }
-
-                    else -> {}
-                }
+                topBar()
             }
+        }
 
-            /*AppBottomNavBar(
-                navItems = navItems,
-                selectedItem = selectedNavItem,
-                onItemSelect = onNavItem
-            )*/
-            bottomBar()
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            contentAlignment = Alignment.Center
+        ) {
+            content()
         }
     }
 }
 
+@Preview
+@Composable
+private fun PreviewAppScaffold() {
 
-sealed interface ScreenState<out T> {
+    val state: ScreenState<String> = ScreenState.None
 
-    data object Loading : ScreenState<Nothing>
+    MeterAppTheme {
+        AppSurface {
+            AppScaffold(
+                screenState = state,
+                topBar = {
+                    AppTopBar(title = "title", leadingContent = {
+                        AppIcon(
+                            icon = AppIcon.DrawableResourceIcon(AppIcons.Back),
+                            tint = White
+                        )
+                    }) {
 
-    data class Success<T>(
-        val data: T
-    ) : ScreenState<T>
-
-    data class Error(val error: String) : ScreenState<Nothing>
-
-    data object None : ScreenState<Nothing>
+                    }
+                }
+            ) {
+                Text(
+                    text = "This is the content",
+                    color = Color.White
+                )
+            }
+        }
+    }
 }
-
-fun <T> ScreenState<T>.isSuccess() = this is ScreenState.Success

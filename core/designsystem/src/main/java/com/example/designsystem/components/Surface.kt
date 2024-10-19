@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.theme.MeterAppTheme
@@ -28,13 +29,13 @@ fun AppSurface(
     modifier: Modifier = Modifier,
     shape: Shape = MaterialTheme.shapes.medium,
     color: Color = AppTheme.colors.background,
-    content: @Composable (padding: PaddingValues) -> Unit
+    content: @Composable (padding: Dp) -> Unit
 ) {
     Surface(
         modifier = modifier,
         color = color,
         shape = shape,
-        content = { content(PaddingValues(AppTheme.padding.extraLarge)) }
+        content = { content(AppTheme.padding.extraLarge) }
     )
 }
 

@@ -17,13 +17,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.designsystem.icons.AppIcon
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.theme.MeterAppTheme
 import com.example.designsystem.theme.ValueChanged
 import com.example.navigation.BLEMeterTopLevelDestination
 
-data class AppNavItem(
+enum class AppNavItem(
     val destination: BLEMeterTopLevelDestination,
     val icon: AppIcon,
     val label: String
@@ -32,10 +34,15 @@ data class AppNavItem(
 @Composable
 fun AppBottomNavBar(
     modifier: Modifier = Modifier,
+    navController: NavController,
     navItems: List<AppNavItem>,
     selectedItem: AppNavItem,
     onItemSelect: ValueChanged<AppNavItem>
 ) {
+    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+
+    
+
     LazyRow(
         modifier = modifier
             .fillMaxWidth(),

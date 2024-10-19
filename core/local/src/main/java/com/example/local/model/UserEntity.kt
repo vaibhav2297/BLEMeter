@@ -16,5 +16,9 @@ data class UserEntity(
     val isEmailVerified: Boolean,
     val isPhoneVerified: Boolean,
     val updatedAt: String,
-    val createdAt: String
+    val createdAt: String,
+
+    //extra info
+    val walletAmount: Double = 0.0,
+    val meterNumber: String = ""
 )

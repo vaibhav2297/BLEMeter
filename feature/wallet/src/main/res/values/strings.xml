@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="wallet">Wallet</string>
+    <string name="add_money">Add Money</string>
+    <string name="wallet_recharge">Wallet Recharge</string>
+    <string name="enter_the_amount">Enter the amount</string>
+    <string name="recharge">Recharge</string>
+    <string name="cancel">cancel</string>
+</resources>

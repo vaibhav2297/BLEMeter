@@ -7,4 +7,6 @@ sealed interface DashboardUiEvent {
     data class OnMeterControl(val control: MeterControl) : DashboardUiEvent
 
     data object OnNavigated : DashboardUiEvent
+
+    data object OnRefresh : DashboardUiEvent
 }

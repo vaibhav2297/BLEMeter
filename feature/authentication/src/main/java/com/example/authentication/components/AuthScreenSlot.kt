@@ -75,8 +75,8 @@ private fun AuthenticationContent(
     onAuthRequest: ValueChanged<EmailAuthRequest>
 ) {
 
-    val emailState = rememberEmailInputState(hint = stringResource(R.string.email), initialText = "vp.221997@gmail.com")
-    val passwordState = rememberPasswordInputState(hint = stringResource(R.string.password), initialText = "test123#")
+    val emailState = rememberEmailInputState(hint = stringResource(R.string.email))
+    val passwordState = rememberPasswordInputState(hint = stringResource(R.string.password))
 
     TitleSlot(
         modifier = modifier.fillMaxWidth(),

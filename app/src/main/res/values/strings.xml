@@ -65,4 +65,6 @@
     <string name="valve_status">Valve Status</string>
     <string name="battery_voltage">Battery Voltage</string>
     <string name="enter_the_amount">Enter the Amount</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="meter_recharge">Meter Recharge</string>
 </resources>

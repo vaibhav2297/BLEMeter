@@ -6,7 +6,7 @@ import com.razorpay.Checkout
 import com.razorpay.PayloadHelper
 import javax.inject.Inject
 
-class PaymentService @Inject constructor(
+internal class PaymentService @Inject constructor(
     private val context: Context
 ) : IPaymentService {
 

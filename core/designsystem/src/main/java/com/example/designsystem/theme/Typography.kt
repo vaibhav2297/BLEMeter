@@ -22,6 +22,12 @@ private val phoneTypography = Typography(
         fontSize = 64.sp,
         color = White
     ),
+    displayMedium = TextStyle(
+        fontFamily = montserratFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 48.sp,
+        color = White
+    ),
     displaySmall = TextStyle(
         fontFamily = montserratFamily,
         fontWeight = FontWeight.Bold,

@@ -24,6 +24,8 @@ object AppIcons {
     val NotFound = R.drawable.ic_not_found
     val LoginLogo = R.drawable.ic_login
     val SignUpLogo = R.drawable.ic_signup
+    val BackRoundFilled = R.drawable.ic_back_filled_round
+    val Wallet = R.drawable.ic_wallet
 }
 
 /**
@@ -33,3 +35,9 @@ sealed class AppIcon {
     data class ImageVectorIcon(val imageVector: ImageVector) : AppIcon()
     data class DrawableResourceIcon(@DrawableRes val id: Int) : AppIcon()
 }
+
+fun getDrawableResource(@DrawableRes id: Int) =
+    AppIcon.DrawableResourceIcon(id)
+
+fun getImageVectorIcon(imageVector: ImageVector) =
+    AppIcon.ImageVectorIcon(imageVector)

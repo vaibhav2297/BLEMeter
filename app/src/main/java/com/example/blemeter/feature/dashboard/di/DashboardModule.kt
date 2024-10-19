@@ -18,12 +18,10 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
-@InstallIn(SingletonComponent::class)
+@InstallIn(ViewModelComponent::class)
 object DashboardModule {
 
-
     @Provides
-    @Singleton
     fun provideDashboardUseCases(
         readMeterDataUseCase: ReadMeterDataUseCase,
         valveControlUseCase: ValveControlUseCase,
@@ -42,7 +40,6 @@ object DashboardModule {
         )
 
     @Provides
-    @Singleton
     fun provideDashboardRepository(
         bleService: IBLEService
     ): IDashboardRepository =

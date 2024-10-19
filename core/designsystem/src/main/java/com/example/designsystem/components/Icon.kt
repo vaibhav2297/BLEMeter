@@ -11,6 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.designsystem.R
 import com.example.designsystem.icons.AppIcon
+import com.example.designsystem.theme.AppTheme
 
 object AppIconDefaults {
     val iconSize = 24.dp
@@ -21,7 +22,7 @@ fun AppIcon(
     modifier: Modifier = Modifier,
     icon: AppIcon,
     contentDescription: String = stringResource(R.string.icon),
-    tint: Color = LocalContentColor.current
+    tint: Color = AppTheme.colors.onBackground
 ) =
     when (icon) {
         is AppIcon.ImageVectorIcon -> {

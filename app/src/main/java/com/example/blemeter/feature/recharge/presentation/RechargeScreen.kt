@@ -1,10 +1,12 @@
 package com.example.blemeter.feature.recharge.presentation
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
@@ -22,21 +24,28 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.blemeter.R
 import com.example.blemeter.config.extenstions.isDecimal
 import com.example.blemeter.feature.scan.presentation.component.ScanScreenSlot
+import com.example.designsystem.components.AppIcon
 import com.example.designsystem.components.AppOutlinedButton
+import com.example.designsystem.components.AppScaffold
 import com.example.designsystem.components.AppSurface
+import com.example.designsystem.components.AppTopBar
 import com.example.designsystem.components.ButtonState
 import com.example.designsystem.components.VerticalSpacer
 import com.example.designsystem.components.textfield.TextFieldInputState
 import com.example.designsystem.components.textfield.rememberTextFieldInputState
+import com.example.designsystem.icons.AppIcons
+import com.example.designsystem.icons.getDrawableResource
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.theme.MeterAppTheme
 import com.example.designsystem.theme.ValueChanged
 import com.example.designsystem.theme.VoidCallback
+import com.example.designsystem.utils.isSuccess
 import kotlinx.coroutines.delay
 
 @Composable
@@ -60,13 +69,47 @@ private fun RechargeScreen(
     onBackNavigation: VoidCallback,
     onEvent: ValueChanged<RechargeUiEvent>
 ) {
+    if (uiState.screenState.isSuccess()) {
+        onBackNavigation()
+    }
+
+    AppScaffold(
+        modifier = modifier,
+        screenState = uiState.screenState,
+        topBar = {
+            AppTopBar(
+                title = "",
+                leadingContent = {
+                    AppIcon(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clickable(onClick = onBackNavigation),
+                        icon = getDrawableResource(AppIcons.Back)
+                    )
+                }
+            )
+        }
+    ) {
+        RechargeContent(
+            uiState = uiState,
+            onEvent = onEvent
+        )
+    }
+}
+
+@Composable
+private fun RechargeContent(
+    modifier: Modifier = Modifier,
+    uiState: RechargeUiState,
+    onEvent: ValueChanged<RechargeUiEvent>
+) {
     ScanScreenSlot(
         modifier = modifier.fillMaxSize(),
         topContent = { mod ->
             //Title
             Text(
                 modifier = mod,
-                text = stringResource(id = R.string.recharge),
+                text = stringResource(R.string.meter_recharge),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.headlineLarge,
                 color = AppTheme.colors.textPrimary
