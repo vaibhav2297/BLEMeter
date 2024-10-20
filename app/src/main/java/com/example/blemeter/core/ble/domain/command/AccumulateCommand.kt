@@ -67,9 +67,9 @@ object AccumulateCommand : Command<AccumulateDataRequest, MeterData>(
                 controlState = getControlState(meterType, statusByte)
             )
             return MeterData(
-                accumulatedUsage = (substring(28..35).toInt(16)) / 100.0,
-                surplus = (substring(36..43).toInt(16)) / 100.0,
-                totalPurchase = (substring(44..51).toInt(16)) / 100.0,
+                accumulatedUsage = (substring(28..35).toLong(16)) / 100.0,
+                surplus = (substring(36..43).toLong(16)) / 100.0,
+                totalPurchase = (substring(44..51).toLong(16)) / 100.0,
                 numberTimes = substring(52..53).toUInt(),
                 statuses = statuses,
                 alarmVariable = substring(58..59).toUInt(),
