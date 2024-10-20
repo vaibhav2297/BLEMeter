@@ -13,15 +13,15 @@ import com.example.blemeter.feature.dashboard.domain.usecases.ZeroInitialisation
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)
 object DashboardModule {
 
     @Provides
+    @Singleton
     fun provideDashboardUseCases(
         readMeterDataUseCase: ReadMeterDataUseCase,
         valveControlUseCase: ValveControlUseCase,
@@ -40,6 +40,7 @@ object DashboardModule {
         )
 
     @Provides
+    @Singleton
     fun provideDashboardRepository(
         bleService: IBLEService
     ): IDashboardRepository =
