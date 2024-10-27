@@ -70,7 +70,7 @@ private fun RechargeScreen(
     onEvent: ValueChanged<RechargeUiEvent>
 ) {
     if (uiState.screenState.isSuccess()) {
-        onBackNavigation()
+        //onBackNavigation()
     }
 
     AppScaffold(
@@ -194,21 +194,26 @@ private fun AmountField(
     textStyle: TextStyle = MaterialTheme.typography.displayLarge,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
 ) {
+    val textColor =
+        if (state.isHint) AppTheme.colors.textHighlighted else AppTheme.colors.textPrimary
+
     TextField(
         modifier = modifier
             .fillMaxWidth(),
         value = state.text,
         onValueChange = { state.updateText(it) },
         placeholder = {
-            Box(
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = state.hint,
-                    style = textStyle,
-                    color = AppTheme.colors.textHighlighted
-                )
+            if (state.isHint) {
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = state.hint,
+                        style = textStyle,
+                        color = AppTheme.colors.textHighlighted
+                    )
+                }
             }
         },
         textStyle = textStyle.copy(
@@ -221,6 +226,8 @@ private fun AmountField(
         enabled = enabled,
         isError = isError,
         colors = TextFieldDefaults.colors(
+            focusedTextColor = textColor,
+            unfocusedTextColor = textColor,
             disabledTextColor = AppTheme.colors.textHighlighted,
             errorTextColor = AppTheme.colors.error,
             focusedContainerColor = Color.Transparent,

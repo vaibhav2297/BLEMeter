@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -36,6 +38,7 @@ import com.example.designsystem.components.TitleSlot
 import com.example.designsystem.components.VerticalSpacer
 import com.example.designsystem.icons.AppIcons
 import com.example.designsystem.icons.getDrawableResource
+import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.theme.MeterAppTheme
 import com.example.designsystem.theme.ValueChanged
 import com.example.navigation.uitls.NavigationCallback
@@ -123,15 +126,18 @@ private fun DashboardContent(
         onEvent(DashboardUiEvent.OnNavigated)
     }
 
+    val scrollState = rememberScrollState()
+
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(top = 24.dp),
+            .padding(top = AppTheme.padding.extraLarge)
+            .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         OverviewSlot(uiState = uiState)
 
-        VerticalSpacer(height = 48.dp)
+        VerticalSpacer(height = 32.dp)
 
         MeterControlSlot { control ->
             onEvent(DashboardUiEvent.OnMeterControl(control))

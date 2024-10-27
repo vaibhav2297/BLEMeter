@@ -40,7 +40,7 @@ class BLEService @Inject constructor(
 
     private var _deviceInfo: DeviceInfo? = null
 
-    var peripheral: Peripheral? = null
+    private var peripheral: Peripheral? = null
 
     override val scanner = Scanner {
         scanSettings = ScanSettings.Builder()
@@ -140,12 +140,6 @@ class BLEService @Inject constructor(
 
         return peripheral?.observe(observeChar)?.map { it.toUByteArray() }
     }
-
-    fun setDeviceInfo(deviceInfo: DeviceInfo) {
-        _deviceInfo = deviceInfo
-    }
-
-    fun getDeviceInfo(): DeviceInfo? = _deviceInfo
 
     override suspend fun connectAndWrite(onCharWrite: suspend () -> Unit) {
         val stateFlow = peripheral?.state ?: return

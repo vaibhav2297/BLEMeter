@@ -2,6 +2,7 @@ package com.example.blemeter.feature.dashboard.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -50,26 +51,29 @@ private fun OverviewSection(
     modifier: Modifier = Modifier,
     uiState: DashboardUiState
 ) {
-    LazyVerticalGrid(
-        modifier = modifier.fillMaxWidth(),
-        columns = GridCells.Fixed(2),
-        verticalArrangement = Arrangement.spacedBy(24.dp),
-        horizontalArrangement = Arrangement.spacedBy(24.dp),
+    Column(
+        modifier = modifier
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(AppTheme.padding.large),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         //Accumulated Usage
-        item(
-            span = { GridItemSpan(maxLineSpan) }
-        ) {
-            AccumulatedUsageSection(
-                usage = uiState.meterData.accumulatedUsage,
-                syncTime = uiState.lastSync
-            )
-        }
+        AccumulatedUsageSection(
+            usage = uiState.meterData.accumulatedUsage,
+            syncTime = uiState.lastSync
+        )
 
-        //Total Purchase
-        item {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(AppTheme.padding.large),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            //Total Purchase
             OutlinedSlotWithTitle(
+                modifier = Modifier
+                    .weight(1f),
                 title = stringResource(R.string.total_purchase)
             ) {
                 Text(
@@ -114,11 +118,11 @@ private fun OverviewSection(
                     textAlign = TextAlign.Center,
                 )
             }
-        }
 
-        //Recharge Times
-        item {
+            //Recharge Times
             OutlinedSlotWithTitle(
+                modifier = Modifier
+                    .weight(1f),
                 title = stringResource(R.string.recharge_times)
             ) {
                 Text(
@@ -132,9 +136,16 @@ private fun OverviewSection(
             }
         }
 
-        //Valve Status
-        item {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(AppTheme.padding.large),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            //Valve Status
             OutlinedSlotWithTitle(
+                modifier = Modifier
+                    .weight(1f),
                 title = stringResource(R.string.valve_status)
             ) {
                 Text(
@@ -147,11 +158,11 @@ private fun OverviewSection(
                     color = AppTheme.colors.textPrimary
                 )
             }
-        }
 
-        //Battery Voltage
-        item {
+            //Battery Voltage
             OutlinedSlotWithTitle(
+                modifier = Modifier
+                    .weight(1f),
                 title = stringResource(R.string.battery_voltage)
             ) {
                 Text(

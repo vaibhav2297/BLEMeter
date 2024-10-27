@@ -21,7 +21,7 @@ enum class MeterControl(
 
     RECHARGE(
         controlIcon = AppIcon.DrawableResourceIcon(AppIcons.Recharge),
-        displayName = R.string.recharge
+        displayName = R.string.meter_recharge
     ),
 
     RESET_DATA(

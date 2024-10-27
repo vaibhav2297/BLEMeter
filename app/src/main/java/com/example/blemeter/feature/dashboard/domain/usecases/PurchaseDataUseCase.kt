@@ -1,5 +1,6 @@
 package com.example.blemeter.feature.dashboard.domain.usecases
 
+import com.example.blemeter.config.extenstions.fromHexToUByteArray
 import com.example.blemeter.config.model.MeterConfig
 import com.example.blemeter.core.ble.domain.command.PurchaseDataCommand
 import com.example.blemeter.core.ble.domain.model.request.PurchaseDataRequest

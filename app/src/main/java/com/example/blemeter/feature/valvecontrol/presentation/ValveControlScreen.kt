@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -49,8 +51,12 @@ fun ValveControlScreen(
     onEvent: ValueChanged<ValveControlUiEvent>,
     onBackNavigation: VoidCallback
 ) {
+
+    val scrollState = rememberScrollState()
+
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize()
+            .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -59,7 +65,7 @@ fun ValveControlScreen(
         //Title
         Text(
             modifier = Modifier
-                .padding(top = 84.dp)
+                .padding(top = 72.dp)
                 .fillMaxWidth(),
             text = stringResource(id = R.string.valve_control),
             textAlign = TextAlign.Center,
@@ -67,7 +73,7 @@ fun ValveControlScreen(
             color = AppTheme.colors.textPrimary
         )
 
-        VerticalSpacer(height = 78.dp)
+        VerticalSpacer(height = 62.dp)
 
         //Open Valve
         ValveControlButton(
@@ -84,7 +90,7 @@ fun ValveControlScreen(
             }
         )
 
-        VerticalSpacer(height = 56.dp)
+        VerticalSpacer(height = 48.dp)
 
         //Close Valve
         ValveControlButton(

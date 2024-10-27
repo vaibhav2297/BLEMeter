@@ -49,6 +49,7 @@ class ObserveDataUseCase @Inject constructor(
                 else -> NoData()
             }
         } catch (e: Exception) {
+            e.printStackTrace()
             NoData()
         }
     }
