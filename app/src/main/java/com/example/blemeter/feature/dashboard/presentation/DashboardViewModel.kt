@@ -10,6 +10,8 @@ import com.example.blemeter.feature.dashboard.domain.usecases.DashboardUseCases
 import com.example.blemeter.feature.recharge.navigation.RechargeDestination
 import com.example.blemeter.feature.valvecontrol.navigation.ValveControlDestination
 import com.example.blemeter.config.model.MeterData
+import com.example.blemeter.config.model.NoData
+import com.example.blemeter.feature.dashboard.domain.usecases.ObserveDataUseCase
 import com.example.designsystem.utils.ScreenState
 import com.example.local.datastore.DataStoreKeys
 import com.example.local.datastore.IAppDataStore
@@ -25,6 +27,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
     private val useCases: DashboardUseCases,
+    private val observeDataUseCase: ObserveDataUseCase,
     private val dataStore: IAppDataStore
 ) : ViewModel() {
 
@@ -108,7 +111,7 @@ class DashboardViewModel @Inject constructor(
 
     private fun observeResponse() {
         viewModelScope.launch {
-            useCases.observeDataUseCase(
+            observeDataUseCase(
                 service = MeterServicesProvider.MainService.SERVICE,
                 observeCharacteristic = MeterServicesProvider.MainService.NOTIFY_CHARACTERISTIC
             )?.catch { cause ->

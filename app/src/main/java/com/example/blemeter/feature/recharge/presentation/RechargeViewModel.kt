@@ -8,6 +8,7 @@ import com.example.blemeter.core.ble.domain.model.request.PurchaseDataRequest
 import com.example.blemeter.core.local.DataStore
 import com.example.blemeter.feature.dashboard.domain.usecases.DashboardUseCases
 import com.example.blemeter.config.model.MeterData
+import com.example.blemeter.config.model.NoData
 import com.example.blemeter.feature.dashboard.domain.usecases.ObserveDataUseCase
 import com.example.designsystem.utils.ScreenState
 import com.example.local.datastore.DataStoreKeys
@@ -23,14 +24,18 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 import javax.inject.Inject
 
 @HiltViewModel
 class RechargeViewModel @Inject constructor(
     private val useCases: DashboardUseCases,
     private val paymentRepository: PaymentRepository,
+    private val observeDataUseCase: ObserveDataUseCase,
     private val dataStore: IAppDataStore
 ) : ViewModel() {
 
@@ -95,12 +100,9 @@ class RechargeViewModel @Inject constructor(
 
     private fun onRecharge() {
         viewModelScope.launch {
-            Log.e(TAG, "RechargeVM :: onRecharge ::")
             showLoading()
 
             if (!checkAvailableBalance()) return@launch
-
-            Log.e(TAG, "RechargeVM :: onRecharge :: checkAvailablePass")
 
             val rechargeTimes =
                 dataStore.getPreference(DataStoreKeys.RECHARGE_TIMES_KEY, 0).firstOrNull() ?: 0
@@ -124,7 +126,7 @@ class RechargeViewModel @Inject constructor(
 
     private fun observeResponse() {
         viewModelScope.launch {
-            useCases.observeDataUseCase(
+            observeDataUseCase(
                 service = MeterServicesProvider.MainService.SERVICE,
                 observeCharacteristic = MeterServicesProvider.MainService.NOTIFY_CHARACTERISTIC
             )?.catch { cause ->
@@ -147,6 +149,14 @@ class RechargeViewModel @Inject constructor(
                         _uiState.update {
                             it.copy(
                                 screenState = ScreenState.Success(Unit)
+                            )
+                        }
+                    }
+
+                    is NoData -> {
+                        _uiState.update {
+                            it.copy(
+                                screenState = ScreenState.Error("No Data received from device")
                             )
                         }
                     }

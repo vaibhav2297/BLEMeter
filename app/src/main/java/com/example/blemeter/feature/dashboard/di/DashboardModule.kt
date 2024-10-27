@@ -27,17 +27,20 @@ object DashboardModule {
         valveControlUseCase: ValveControlUseCase,
         purchaseDataUseCase: PurchaseDataUseCase,
         zeroInitialisationUseCase: ZeroInitialisationUseCase,
-        accumulateDataUseCase: AccumulateDataUseCase,
-        observeDataUseCase: ObserveDataUseCase
+        accumulateDataUseCase: AccumulateDataUseCase
     ): DashboardUseCases =
         DashboardUseCases(
             readMeterDataUseCase = readMeterDataUseCase,
             valveControlUseCase = valveControlUseCase,
             zeroInitialisationUseCase = zeroInitialisationUseCase,
             purchaseDataUseCase = purchaseDataUseCase,
-            accumulateDataUseCase = accumulateDataUseCase,
-            observeDataUseCase = observeDataUseCase
+            accumulateDataUseCase = accumulateDataUseCase
         )
+
+    @Provides
+    fun provideObserveUseCase(
+        dashboardRepository: IDashboardRepository
+    ) = ObserveDataUseCase(dashboardRepository)
 
     @Provides
     @Singleton

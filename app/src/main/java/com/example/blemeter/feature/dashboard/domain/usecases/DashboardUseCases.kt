@@ -5,6 +5,5 @@ data class DashboardUseCases(
     val valveControlUseCase: ValveControlUseCase,
     val zeroInitialisationUseCase: ZeroInitialisationUseCase,
     val purchaseDataUseCase: PurchaseDataUseCase,
-    val accumulateDataUseCase: AccumulateDataUseCase,
-    val observeDataUseCase: ObserveDataUseCase
+    val accumulateDataUseCase: AccumulateDataUseCase
 )

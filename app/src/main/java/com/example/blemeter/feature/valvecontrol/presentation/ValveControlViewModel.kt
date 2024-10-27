@@ -8,6 +8,7 @@ import com.example.blemeter.core.ble.domain.model.request.ValveInteractionComman
 import com.example.blemeter.feature.dashboard.domain.usecases.DashboardUseCases
 import com.example.blemeter.config.model.ValveControlData
 import com.example.blemeter.config.model.ValveStatus
+import com.example.blemeter.feature.dashboard.domain.usecases.ObserveDataUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ValveControlViewModel @Inject constructor(
-    private val useCases: DashboardUseCases
+    private val useCases: DashboardUseCases,
+    private val observeDataUseCase: ObserveDataUseCase,
 ) : ViewModel() {
 
     companion object {
@@ -50,7 +52,7 @@ class ValveControlViewModel @Inject constructor(
 
     private fun observeResponse() {
         viewModelScope.launch {
-            useCases.observeDataUseCase(
+            observeDataUseCase(
                 service = MeterServicesProvider.MainService.SERVICE,
                 observeCharacteristic = MeterServicesProvider.MainService.NOTIFY_CHARACTERISTIC
             )?.catch { cause ->
