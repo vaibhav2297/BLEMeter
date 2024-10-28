@@ -8,7 +8,7 @@ import java.nio.ByteOrder
 fun String.fromHexToUByteArray(): UByteArray {
     check(length % 2 == 0) { "Must have an even length" }
 
-    return chunked(2).map { it.toInt(16).toUByte() }.toUByteArray()
+    return chunked(2).map { it.toUByte(16) }.toUByteArray()
 }
 
 @OptIn(ExperimentalUnsignedTypes::class)

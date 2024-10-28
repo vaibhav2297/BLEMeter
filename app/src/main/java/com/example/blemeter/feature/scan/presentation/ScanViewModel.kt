@@ -12,6 +12,8 @@ import com.example.blemeter.core.local.DataStore
 import com.example.blemeter.feature.dashboard.navigation.DashboardDestination
 import com.example.blemeter.feature.scan.domain.model.ScanScreenStatus
 import com.example.blemeter.feature.scan.domain.repository.IScanRepository
+import com.example.local.datastore.DataStoreKeys
+import com.example.local.datastore.IAppDataStore
 import com.example.navigation.BLEMeterNavDestination
 import com.juul.kable.AndroidAdvertisement
 import com.juul.kable.BluetoothDisabledException
@@ -32,7 +34,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ScanViewModel @Inject constructor(
     private val scanRepo: IScanRepository,
-    private val dataStore: DataStore,
+    private val dataStore: IAppDataStore,
     private val authRepository: IAuthRepository
 ) : ViewModel() {
 
@@ -178,10 +180,8 @@ class ScanViewModel @Inject constructor(
      * Meter address is stored in the reverse order of 2 chunks
      * e.x - 123456 will store as 563412
      */
-    private fun saveMeterAddress(address: String) {
-        viewModelScope.launch {
-            dataStore.saveMeterAddress(address.chunkAndReverseString())
-        }
+    private suspend fun saveMeterAddress(address: String) {
+        dataStore.putPreference(DataStoreKeys.METER_ADDRESS_KEY, address.chunkAndReverseString())
     }
 
     private fun navigateTo(destination: BLEMeterNavDestination?) {

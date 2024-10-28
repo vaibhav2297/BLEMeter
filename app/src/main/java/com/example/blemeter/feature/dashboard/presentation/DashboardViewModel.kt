@@ -125,6 +125,14 @@ class DashboardViewModel @Inject constructor(
                         //saving recharge times
                         saveRechargeTimes(data.numberTimes.toInt())
                     }
+
+                    is NoData -> {
+                        _uiState.update {
+                            it.copy(
+                                screenState = ScreenState.Error("No Data received from device")
+                            )
+                        }
+                    }
                 }
 
                 //updating sync time on every successful response
@@ -139,10 +147,8 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    private fun saveRechargeTimes(numberOfTimes: Int) {
-        viewModelScope.launch {
-            dataStore.putPreference(DataStoreKeys.RECHARGE_TIMES_KEY, numberOfTimes)
-        }
+    private suspend fun saveRechargeTimes(numberOfTimes: Int) {
+        dataStore.putPreference(DataStoreKeys.RECHARGE_TIMES_KEY, numberOfTimes)
     }
 
     private fun onNavigateTo(destination: BLEMeterNavDestination?) {
