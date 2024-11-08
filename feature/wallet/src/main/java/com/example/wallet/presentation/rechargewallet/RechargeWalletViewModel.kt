@@ -11,6 +11,7 @@ import com.example.payment.PaymentActivity
 import com.example.payment.domain.PaymentOptions
 import com.example.payment.domain.Prefill
 import com.example.payment.domain.Retry
+import com.example.payments.domain.model.TransactionType
 import com.example.payments.domain.repository.PaymentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -103,7 +104,11 @@ internal class RechargeWalletViewModel @Inject constructor(
     private fun updateWalletBalance() {
         viewModelScope.launch {
             val userId = dataStore.getPreference(DataStoreKeys.USER_ID_KEY, "").firstOrNull() ?: ""
-            paymentRepository.updateWalletAmount(userId, _uiState.value.rechargeAmount)
+            paymentRepository.updateWalletAmount(
+                userId = userId,
+                amount = _uiState.value.rechargeAmount,
+                transactionType = TransactionType.CREDIT
+            )
         }
     }
 

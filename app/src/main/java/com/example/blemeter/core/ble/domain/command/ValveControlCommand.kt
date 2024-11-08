@@ -69,7 +69,7 @@ object ValveControlCommand :
 
         command.run {
 
-            val meterType = MeterType.getMeterType(BLEConstants.METER_TYPE)
+            val meterType = MeterType.getMeterType(substring(2..3).toUInt(16))
             val statusByte = substring(28..29).toUByte(16)
             val valveStatus = getControlState(meterType, statusByte)
 

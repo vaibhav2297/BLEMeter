@@ -1,8 +1,10 @@
 package com.example.blemeter.feature.dashboard.data.repository
 
+import com.example.blemeter.config.extenstions.fromHexToUByteArray
 import com.example.blemeter.core.ble.data.IBLEService
 import com.example.blemeter.feature.dashboard.domain.repository.IDashboardRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 @OptIn(ExperimentalUnsignedTypes::class)

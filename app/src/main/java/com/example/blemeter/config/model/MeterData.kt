@@ -12,8 +12,8 @@ data class MeterData(
     val overdraft: UInt = 0u,
     val minimumUsage: UInt = 0u,
     val additionDeduction: UInt = 0u,
-    val productVersion: UInt = 0u,
     val programVersion: UInt = 0u,
+    val productVersion: ProductVersion = ProductVersion()
 ) : Data {
     override val dataIdentifier: DataIdentifier
         get() = DataIdentifier.METER_DATA

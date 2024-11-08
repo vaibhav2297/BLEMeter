@@ -38,7 +38,7 @@ data class MeterAddress(
             require(this.size > 6) { "Not enough bytes to retrieve meter address" }
 
             val addressCode = this.toUInt32(0)
-            val meterType = MeterType.getMeterType(this[4])
+            val meterType = MeterType.getMeterType(this[4].toUInt())
             val manufacturerCode = this.toUInt16(5)
 
             return MeterAddress(
@@ -52,7 +52,7 @@ data class MeterAddress(
         fun UByteArray.retrieveMeterType(): MeterType {
             require(this.size > 6) { "Not enough bytes to retrieve meter address" }
 
-            return MeterType.getMeterType(this[4])
+            return MeterType.getMeterType(this[4].toUInt())
         }
     }
 }

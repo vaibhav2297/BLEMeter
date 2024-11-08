@@ -13,6 +13,7 @@ import com.example.blemeter.feature.dashboard.domain.usecases.ObserveDataUseCase
 import com.example.designsystem.utils.ScreenState
 import com.example.local.datastore.DataStoreKeys
 import com.example.local.datastore.IAppDataStore
+import com.example.payments.domain.model.TransactionType
 import com.example.payments.domain.repository.PaymentRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -167,19 +168,11 @@ class RechargeViewModel @Inject constructor(
 
     private suspend fun updateWalletBalance() {
         val userId = dataStore.getPreference(DataStoreKeys.USER_ID_KEY, "").firstOrNull() ?: ""
-        val walletAmount = _uiState.value.currentAmount
-        val rechargedAmount = _uiState.value.rechargeAmount
-
-        Log.d(
-            TAG, "updateWalletBalance: \n" +
-                    "userId: $userId \n" +
-                    "walletAmount: $walletAmount \n" +
-                    "rechargeAmount: $rechargedAmount"
-        )
 
         paymentRepository.updateWalletAmount(
             userId = userId,
-            amount = walletAmount - rechargedAmount
+            amount = _uiState.value.rechargeAmount,
+            transactionType = TransactionType.DEBIT
         )
     }
 

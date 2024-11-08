@@ -5,13 +5,21 @@ import com.example.blemeter.config.extenstions.getMeterType
 import com.example.blemeter.config.extenstions.isDecimal
 import com.example.blemeter.core.ble.domain.model.DataIdentifier
 import com.example.blemeter.config.extenstions.accumulateSum
+import com.example.blemeter.config.extenstions.accumulateUByteArray
+import com.example.blemeter.config.extenstions.fromHexToUByteArray
 import com.example.blemeter.config.extenstions.to4UByteArray
 import com.example.blemeter.config.extenstions.toInt16
 import com.example.blemeter.config.model.BatteryVoltage
+import com.example.blemeter.config.model.CalibrationIdentification
+import com.example.blemeter.config.model.InPlaceMethod
 import com.example.blemeter.config.model.MeterAddress
+import com.example.blemeter.config.model.MeterData
 import com.example.blemeter.config.model.MeterType
+import com.example.blemeter.config.model.PaymentMethod
+import com.example.blemeter.config.model.ProductVersion
 import com.example.blemeter.config.model.ValveStatus
 import com.example.blemeter.config.model.getControlState
+import com.example.blemeter.core.ble.domain.command.ReadMeterDataCommand
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -266,6 +274,10 @@ class ExampleUnitTest {
         val expectedAccumulation = "00000000"
         val expectedTotal = "00000064"
 
+        val subString = data.substring(2..3)
+        val actualMeterType = MeterType.getMeterType(subString.toUInt(16))
+        val expectedMeterType = MeterType.WaterMeter.DrinkingWaterMeter
+
         val actualAccumulation = data.substring(28..35)
         val actualTotal = data.substring(44..51)
 
@@ -291,6 +303,7 @@ class ExampleUnitTest {
         val expectedProgramVersion = "01"
 
         assertEquals(expectedAccumulation, actualAccumulation)
+        assertEquals(expectedMeterType, actualMeterType)
         assertEquals(expectedTotal, actualTotal)
         assertEquals(expectedStatusByte, actualStatusByte)
         assertEquals(expectedMinimum, minimumUsage)
@@ -315,6 +328,70 @@ class ExampleUnitTest {
         val data = "100"
         val expected = false
         val actual = data.isDecimal()
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun assert_inputString_to_readCommand() {
+        val data = "681201001803249671811b901f010000000000000000000000000002000000000005010000001516"
+        val expected = MeterData()
+
+        val actual = ReadMeterDataCommand.fromCommand(data)
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun assert_inputString_to_4Uint() {
+        val data = "00000064"
+        val expected = 100u
+
+        val actual = data.toUInt(16)
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun assert_checkSum() {
+        val data = "681201001803249671041ba0180001001803249671124b4a0000000000000000000000000000".fromHexToUByteArray()
+        val expected = "e7"
+
+        val actual = data.accumulateUByteArray().toHexString()
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun assert_string_to_meterType() {
+        val data = "681201001803249671811b901f00000000000000006400000064010200000000000501000000db16"
+
+        val subString = data.substring(2..3)
+        val actualMeterType = MeterType.getMeterType(subString.toUInt(16))
+        val expectedMeterType = MeterType.WaterMeter.DrinkingWaterMeter
+
+        assertEquals(expectedMeterType, actualMeterType)
+    }
+
+    @Test
+    fun assert_uInt_to_ProductVersion() {
+        val data = 1u
+
+        //Product Version
+        val actual = ProductVersion.getProductVersionFromResponseBit(data)
+
+        val expected = ProductVersion(
+            inPlaceMethod = InPlaceMethod.TWO_WIRE_ACTUATOR,
+            paymentMethod = PaymentMethod.ORDINARY,
+            calibrationIdentification = CalibrationIdentification.TEN_LITRE
+        )
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun assert_data_to_ReadMeterData() {
+        val data = "681003001803249671811b901f000000000afffffff7000000010100000000000002010000000f16"
+
+        val actual = ReadMeterDataCommand.fromCommand(data)
+        val expected = MeterData()
 
         assertEquals(expected, actual)
     }

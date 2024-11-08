@@ -1,22 +1,24 @@
 package com.example.blemeter.feature.dashboard.domain.usecases
 
+import com.example.blemeter.config.extenstions.fromHexToUByteArray
 import com.example.blemeter.config.model.MeterConfig
 import com.example.blemeter.config.model.MeterType
-import com.example.blemeter.core.ble.domain.command.ZeroInitialiseCommand
-import com.example.blemeter.core.ble.domain.model.request.MeterDataRequest
-import com.example.blemeter.core.local.DataStore
+import com.example.blemeter.core.ble.domain.command.NumberingInstructionDataCommand
+import com.example.blemeter.core.ble.domain.model.request.NumberingInstructionDataRequest
 import com.example.blemeter.feature.dashboard.domain.repository.IDashboardRepository
 import com.example.local.datastore.DataStoreKeys
 import com.example.local.datastore.IAppDataStore
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
-class ZeroInitialisationUseCase @Inject constructor(
+class NumberingInstructionDataUseCase @Inject constructor(
     private val repository: IDashboardRepository,
     private val dataStore: IAppDataStore
 ) {
     @OptIn(ExperimentalUnsignedTypes::class)
-    suspend operator fun invoke(): Result<Boolean> {
+    suspend operator fun invoke(
+        request: NumberingInstructionDataRequest
+    ): Result<Boolean> {
         return try {
 
             val meterAddress = dataStore.getPreference(DataStoreKeys.METER_ADDRESS_KEY, "").first()
@@ -27,8 +29,8 @@ class ZeroInitialisationUseCase @Inject constructor(
                     else MeterType.getMeterType(this.toUInt())
                 }
 
-            val zeroInitialiseCommand = ZeroInitialiseCommand.toCommand(
-                request = MeterDataRequest(),
+            val numberingInstructionCommand = NumberingInstructionDataCommand.toCommand(
+                request = request,
                 meterConfig = MeterConfig(
                     meterAddress = meterAddress,
                     meterType = meterType
@@ -36,9 +38,9 @@ class ZeroInitialisationUseCase @Inject constructor(
             )
 
             repository.connectAndWrite(
-                service = ZeroInitialiseCommand.serviceUuid,
-                writeCharacteristic = ZeroInitialiseCommand.characteristicUuid,
-                value = zeroInitialiseCommand
+                service = NumberingInstructionDataCommand.serviceUuid,
+                writeCharacteristic = NumberingInstructionDataCommand.characteristicUuid,
+                value = numberingInstructionCommand
             )
 
             Result.success(true)

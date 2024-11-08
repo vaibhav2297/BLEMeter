@@ -14,7 +14,7 @@ sealed class MeterType(val code: UInt) {
         data object MiddleWaterMeter : WaterMeter(0x13u) //13H
 
         //General meter that used if none of above
-        data object GeneralWaterMeter : WaterMeter(0x14u)
+        data object GeneralWaterMeter : WaterMeter(0x15u)
     }
 
     sealed class HeatMeter(code: UInt) : MeterType(code){
@@ -34,22 +34,22 @@ sealed class MeterType(val code: UInt) {
     data object Unknown : MeterType(0xFFFFFFFFu)
 
     companion object {
-        fun getMeterType(code: UByte) : MeterType {
-            return when(code.toUInt()) {
-                in 16u..25u -> when(code.toUInt()) {
+        fun getMeterType(code: UInt) : MeterType {
+            return when(code) {
+                in 0x10u..0x19u -> when(code) {
                     WaterMeter.ColdWaterMeter.code -> WaterMeter.ColdWaterMeter
                     WaterMeter.DomesticHotWaterMeter.code -> WaterMeter.DomesticHotWaterMeter
                     WaterMeter.DrinkingWaterMeter.code -> WaterMeter.DrinkingWaterMeter
                     WaterMeter.MiddleWaterMeter.code -> WaterMeter.MiddleWaterMeter
                     else -> WaterMeter.GeneralWaterMeter
                 }
-                in 32u..41u -> when(code.toUInt()) {
+                in 0x20u..0x29u -> when(code) {
                     HeatMeter.ColdMeteringHeatMeter.code -> HeatMeter.ColdMeteringHeatMeter
                     HeatMeter.HeatMeteringHeatMeter.code -> HeatMeter.HeatMeteringHeatMeter
                     else -> HeatMeter.GeneralHeatMeter
                 }
-                in 48u..57u -> GasMeter
-                in 64u..73u -> ElectricityMeter
+                in 0x30u..0x39u -> GasMeter
+                in 0x40u..0x49u -> ElectricityMeter
                 else -> Unknown
             }
         }

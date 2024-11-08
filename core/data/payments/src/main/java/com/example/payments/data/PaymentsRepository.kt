@@ -2,6 +2,7 @@ package com.example.payments.data
 
 import com.example.local.model.UserEntity
 import com.example.local.room.UserDao
+import com.example.payments.domain.model.TransactionType
 import com.example.payments.domain.repository.PaymentRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -11,9 +12,10 @@ internal class PaymentsRepository @Inject constructor(
     private val userDao: UserDao
 ) : PaymentRepository {
 
-    override suspend fun updateWalletAmount(userId: String, amount: Double) {
+    override suspend fun updateWalletAmount(userId: String, amount: Double, transactionType: TransactionType) {
         userDao.getUser(userId)?.let { user ->
-            userDao.updateUser(user.copy(walletAmount = amount))
+            val updatedAmount = transactionType.updateBalance(user.walletAmount, amount)
+            userDao.updateUser(user.copy(walletAmount = updatedAmount))
         }
     }
 

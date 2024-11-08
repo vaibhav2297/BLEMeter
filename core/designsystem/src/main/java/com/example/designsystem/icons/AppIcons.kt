@@ -26,6 +26,7 @@ object AppIcons {
     val SignUpLogo = R.drawable.ic_signup
     val BackRoundFilled = R.drawable.ic_back_filled_round
     val Wallet = R.drawable.ic_wallet
+    val Config = R.drawable.ic_config
 }
 
 /**

@@ -56,6 +56,7 @@
     <string name="recharge">Recharge</string>
     <string name="reset_data">Reset Data</string>
     <string name="accumulate">Accumulate</string>
+    <string name="meter_configuration">Meter Configuration</string>
     <string name="controls">Controls</string>
     <string name="overview">Overview</string>
     <string name="accumulated_usage">Accumulated Usage</string>
@@ -67,4 +68,5 @@
     <string name="enter_the_amount">Enter the Amount</string>
     <string name="dashboard">Dashboard</string>
     <string name="meter_recharge">Meter Recharge</string>
+    <string name="remaining">Remaining</string>
 </resources>

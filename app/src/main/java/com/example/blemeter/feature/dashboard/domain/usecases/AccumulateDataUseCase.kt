@@ -1,6 +1,7 @@
 package com.example.blemeter.feature.dashboard.domain.usecases
 
 import com.example.blemeter.config.model.MeterConfig
+import com.example.blemeter.config.model.MeterType
 import com.example.blemeter.core.ble.domain.command.AccumulateCommand
 import com.example.blemeter.core.ble.domain.model.request.AccumulateDataRequest
 import com.example.blemeter.core.local.DataStore
@@ -15,14 +16,23 @@ class AccumulateDataUseCase @Inject constructor(
     private val dataStore: IAppDataStore
 ) {
     @OptIn(ExperimentalUnsignedTypes::class)
-    suspend operator fun invoke(request: AccumulateDataRequest) : Result<Boolean> {
+    suspend operator fun invoke(request: AccumulateDataRequest): Result<Boolean> {
         return try {
 
             val meterAddress = dataStore.getPreference(DataStoreKeys.METER_ADDRESS_KEY, "").first()
+            val meterType = dataStore.getPreference(DataStoreKeys.METER_CALIBRATION_TYPE, 0)
+                .first()
+                .run {
+                    if (this == 0) MeterType.WaterMeter.DrinkingWaterMeter
+                    else MeterType.getMeterType(this.toUInt())
+                }
 
             val accumulationCommand = AccumulateCommand.toCommand(
                 request = request,
-                meterConfig = MeterConfig(meterAddress = meterAddress)
+                meterConfig = MeterConfig(
+                    meterAddress = meterAddress,
+                    meterType = meterType
+                )
             )
 
             repository.connectAndWrite(

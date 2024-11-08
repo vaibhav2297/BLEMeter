@@ -9,6 +9,7 @@ import com.example.blemeter.config.extenstions.fromHexToUByteArray
 import com.example.blemeter.config.model.BatteryVoltage
 import com.example.blemeter.config.model.MeterData
 import com.example.blemeter.config.model.MeterType
+import com.example.blemeter.config.model.ProductVersion
 import com.example.blemeter.config.model.Statuses
 import com.example.blemeter.config.model.getControlState
 
@@ -56,22 +57,30 @@ object ZeroInitialiseCommand : Command<MeterDataRequest, MeterData>(
         command.run {
 
             val statusByte = substring(54..55).toUByte(16)
-            val meterType = MeterType.getMeterType(BLEConstants.METER_TYPE)
+            val meterType = MeterType.getMeterType(substring(2..3).toUInt(16))
             val statuses = Statuses(
                 batteryState = BatteryVoltage.getBatteryVoltage(statusByte),
                 controlState = getControlState(meterType, statusByte)
             )
+
+            //Product Version
+            val productVersionResponse = substring(66..67).toUInt()
+            val productVersion = ProductVersion.getProductVersionFromResponseBit(productVersionResponse)
+
+            //multiplying factor based on the meter type
+            val factor = productVersion.calibrationIdentification.factor.toInt()
+
             return MeterData(
-                accumulatedUsage = (substring(28..35).toLong(16)) / 10.0,
-                surplus = (substring(36..43).toLong(16)) / 100.0,
-                totalPurchase = (substring(44..51).toLong(16)) / 100.0,
+                accumulatedUsage = (substring(28..35).toLong(16)).times(factor).div(BLEConstants.ONE_METER_CUBE),
+                surplus = (substring(36..43).toLong(16)).times(factor).div(BLEConstants.ONE_METER_CUBE),
+                totalPurchase = (substring(44..51).toLong(16)).times(factor).div(BLEConstants.ONE_METER_CUBE),
                 numberTimes = substring(52..53).toUInt(),
                 statuses = statuses,
                 alarmVariable = substring(58..59).toUInt(),
                 overdraft = substring(60..61).toUInt(),
                 minimumUsage = substring(62..63).toUInt(),
                 additionDeduction = substring(64..65).toUInt(),
-                productVersion = substring(66..67).toUInt(),
+                productVersion = productVersion,
                 programVersion = substring(68..69).toUInt(),
             )
         }

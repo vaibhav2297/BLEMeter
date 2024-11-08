@@ -32,5 +32,10 @@ enum class MeterControl(
     ACCUMULATE(
         controlIcon = AppIcon.DrawableResourceIcon(AppIcons.Accumulate),
         displayName = R.string.accumulate
+    ),
+
+    NUMBERING_INSTRUCTION(
+        controlIcon = AppIcon.DrawableResourceIcon(AppIcons.Config),
+        displayName = R.string.meter_configuration
     )
 }

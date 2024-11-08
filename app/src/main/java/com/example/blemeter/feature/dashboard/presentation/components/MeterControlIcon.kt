@@ -50,6 +50,7 @@ fun MeterControlIcon(
                 .fillMaxWidth(),
             text = stringResource(id = meterControl.displayName)
                 .replace(" ", "\n"),
+            maxLines = 2,
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.bodySmall,
             color = AppTheme.colors.textHighlighted

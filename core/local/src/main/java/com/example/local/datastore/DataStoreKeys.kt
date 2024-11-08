@@ -12,4 +12,6 @@ object DataStoreKeys {
     val USER_LOGGED_IN_KEY = booleanPreferencesKey("USER_LOGGED_IN_KEY")
     val RECHARGE_TIMES_KEY = intPreferencesKey("RECHARGE_TIMES_KEY")
     val METER_ADDRESS_KEY = stringPreferencesKey("METER_ADDRESS_KEY")
+    val METER_TYPE_KEY = intPreferencesKey("METER_TYPE_KEY")
+    val METER_CALIBRATION_TYPE = intPreferencesKey("METER_CALIBRATION_TYPE")
 }

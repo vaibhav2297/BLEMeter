@@ -3,6 +3,8 @@ package com.example.blemeter.feature.dashboard.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.blemeter.config.model.CalibrationIdentification
+import com.example.blemeter.config.model.InPlaceMethod
 import com.example.blemeter.core.ble.domain.model.MeterServicesProvider
 import com.example.blemeter.core.local.DataStore
 import com.example.blemeter.feature.dashboard.domain.model.MeterControl
@@ -10,7 +12,11 @@ import com.example.blemeter.feature.dashboard.domain.usecases.DashboardUseCases
 import com.example.blemeter.feature.recharge.navigation.RechargeDestination
 import com.example.blemeter.feature.valvecontrol.navigation.ValveControlDestination
 import com.example.blemeter.config.model.MeterData
+import com.example.blemeter.config.model.MeterType
 import com.example.blemeter.config.model.NoData
+import com.example.blemeter.config.model.PaymentMethod
+import com.example.blemeter.core.ble.domain.model.request.AccumulateDataRequest
+import com.example.blemeter.core.ble.domain.model.request.NumberingInstructionDataRequest
 import com.example.blemeter.feature.dashboard.domain.usecases.ObserveDataUseCase
 import com.example.designsystem.utils.ScreenState
 import com.example.local.datastore.DataStoreKeys
@@ -59,7 +65,8 @@ class DashboardViewModel @Inject constructor(
             MeterControl.VALVE_CONTROL -> onNavigateTo(ValveControlDestination)
             MeterControl.RECHARGE -> onNavigateTo(RechargeDestination)
             MeterControl.RESET_DATA -> resetMeterData()
-            MeterControl.ACCUMULATE -> {}
+            MeterControl.ACCUMULATE -> accumulateUsage()
+            MeterControl.NUMBERING_INSTRUCTION -> numberingInstructionData()
         }
     }
 
@@ -109,6 +116,61 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
+    private fun accumulateUsage() {
+        viewModelScope.launch {
+            showLoading()
+            useCases.accumulateDataUseCase(
+                request = AccumulateDataRequest(100u)
+            )
+                .onFailure { e ->
+                    _uiState.update {
+                        it.copy(
+                            screenState = ScreenState.Error(
+                                e.message ?: "unknown error"
+                            )
+                        )
+                    }
+                }
+                .onSuccess {
+                    _uiState.update {
+                        it.copy(
+                            screenState = ScreenState.Success(Unit)
+                        )
+                    }
+                }
+        }
+    }
+
+    private fun numberingInstructionData() {
+        viewModelScope.launch {
+            showLoading()
+
+            val request = NumberingInstructionDataRequest(
+                calibrationIdentification = CalibrationIdentification.HUNDRED_LITRE,
+                inPlaceMethod = InPlaceMethod.FIVE_WIRE_ACTUATOR,
+                paymentMethod = PaymentMethod.STEP
+            )
+
+            useCases.numberingInstructionDataUseCase(request = request)
+                .onFailure { e ->
+                    _uiState.update {
+                        it.copy(
+                            screenState = ScreenState.Error(
+                                e.message ?: "unknown error"
+                            )
+                        )
+                    }
+                }
+                .onSuccess {
+                    _uiState.update {
+                        it.copy(
+                            screenState = ScreenState.Success(Unit)
+                        )
+                    }
+                }
+        }
+    }
+
     private fun observeResponse() {
         viewModelScope.launch {
             observeDataUseCase(
@@ -124,6 +186,9 @@ class DashboardViewModel @Inject constructor(
 
                         //saving recharge times
                         saveRechargeTimes(data.numberTimes.toInt())
+
+                        //saving the meter calibration
+                        saveMeterCalibrationType(data.productVersion.calibrationIdentification)
                     }
 
                     is NoData -> {
@@ -149,6 +214,10 @@ class DashboardViewModel @Inject constructor(
 
     private suspend fun saveRechargeTimes(numberOfTimes: Int) {
         dataStore.putPreference(DataStoreKeys.RECHARGE_TIMES_KEY, numberOfTimes)
+    }
+
+    private suspend fun saveMeterCalibrationType(identification: CalibrationIdentification) {
+        dataStore.putPreference(DataStoreKeys.METER_CALIBRATION_TYPE, identification.commandBit.toInt())
     }
 
     private fun onNavigateTo(destination: BLEMeterNavDestination?) {

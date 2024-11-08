@@ -16,4 +16,6 @@ object BLEConstants {
     const val SERIAL_NUMBER: UByte = 0xD0u
 
     const val STAND_BY: UByte = 0x00u
+
+    const val ONE_METER_CUBE = 1000.0
 }

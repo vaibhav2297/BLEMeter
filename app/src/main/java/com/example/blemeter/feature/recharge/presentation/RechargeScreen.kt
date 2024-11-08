@@ -70,7 +70,7 @@ private fun RechargeScreen(
     onEvent: ValueChanged<RechargeUiEvent>
 ) {
     if (uiState.screenState.isSuccess()) {
-        //onBackNavigation()
+        onBackNavigation()
     }
 
     AppScaffold(

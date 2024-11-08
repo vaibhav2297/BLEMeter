@@ -1,6 +1,7 @@
 package com.example.blemeter.feature.dashboard.domain.usecases
 
 import com.example.blemeter.config.model.MeterConfig
+import com.example.blemeter.config.model.MeterType
 import com.example.blemeter.core.ble.domain.command.ValveControlCommand
 import com.example.blemeter.core.ble.domain.model.request.ValveControlRequest
 import com.example.blemeter.core.ble.domain.model.request.ValveInteractionCommand
@@ -20,10 +21,19 @@ class ValveControlUseCase @Inject constructor(
         return try {
 
             val meterAddress = dataStore.getPreference(DataStoreKeys.METER_ADDRESS_KEY, "").first()
+            val meterType = dataStore.getPreference(DataStoreKeys.METER_CALIBRATION_TYPE, 0)
+                .first()
+                .run {
+                    if (this == 0) MeterType.WaterMeter.DrinkingWaterMeter
+                    else MeterType.getMeterType(this.toUInt())
+                }
 
             val valveCommand = ValveControlCommand.toCommand(
                 request = ValveControlRequest(status = status),
-                meterConfig = MeterConfig(meterAddress = meterAddress)
+                meterConfig = MeterConfig(
+                    meterAddress = meterAddress,
+                    meterType = meterType
+                )
             )
 
             repository.connectAndWrite(

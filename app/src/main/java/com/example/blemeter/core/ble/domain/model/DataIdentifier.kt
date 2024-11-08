@@ -6,7 +6,8 @@ enum class DataIdentifier(val identifier: String) {
     VALVE_CONTROL_DATA("a017"),
     PURCHASE_DATA("a013"),
     ACCUMULATION("a035"),
-    ZERO_INITIALISATION("a021");
+    ZERO_INITIALISATION("a021"),
+    NUMBERING_INSTRUCTION("a018");
 
     companion object {
         fun getDataType(hexCommand: String) : DataIdentifier {
@@ -17,6 +18,7 @@ enum class DataIdentifier(val identifier: String) {
                 PURCHASE_DATA.identifier -> PURCHASE_DATA
                 ACCUMULATION.identifier -> ACCUMULATION
                 ZERO_INITIALISATION.identifier -> ZERO_INITIALISATION
+                NUMBERING_INSTRUCTION.identifier -> NUMBERING_INSTRUCTION
                 else -> NONE
             }
         }

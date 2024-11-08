@@ -58,11 +58,118 @@ private fun OverviewSection(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        //Accumulated Usage
-        AccumulatedUsageSection(
-            usage = uiState.meterData.accumulatedUsage,
-            syncTime = uiState.lastSync
+        Text(
+            modifier = Modifier
+                .fillMaxWidth(),
+            text = stringResource(R.string.last_sync, TimeUtils.formatDate(uiState.lastSync)),
+            style = MaterialTheme.typography.bodySmall,
+            color = AppTheme.colors.textHighlighted
         )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(AppTheme.padding.large),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            //Accumulated Usage
+            OutlinedSlotWithTitle(
+                modifier = Modifier
+                    .weight(1f),
+                title = stringResource(R.string.accumulated_usage)
+            ) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontFamily = MaterialTheme.typography.titleMedium.fontFamily,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                color = AppTheme.colors.textPrimary
+                            )
+                        ) {
+                            append("${uiState.meterData.accumulatedUsage}")
+                        }
+                        append(" ")
+
+                        withStyle(
+                            style = SpanStyle(
+                                fontFamily = MaterialTheme.typography.bodySmall.fontFamily,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                color = AppTheme.colors.textHighlighted,
+                            )
+                        ) {
+                            append("m")
+                        }
+
+                        withStyle(
+                            style = SpanStyle(
+                                fontFamily = MaterialTheme.typography.bodySmall.fontFamily,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                color = AppTheme.colors.textHighlighted,
+                                baselineShift = BaselineShift.Superscript
+                            )
+                        ) {
+                            append("3")
+                        }
+                    },
+                    textAlign = TextAlign.Center,
+                )
+            }
+
+            //Remaining Usage
+            OutlinedSlotWithTitle(
+                modifier = Modifier
+                    .weight(1f),
+                title = stringResource(R.string.remaining)
+            ) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontFamily = MaterialTheme.typography.titleMedium.fontFamily,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = MaterialTheme.typography.titleMedium.fontSize,
+                                color = AppTheme.colors.textPrimary
+                            )
+                        ) {
+                            append("${uiState.meterData.surplus}")
+                        }
+                        append(" ")
+
+                        withStyle(
+                            style = SpanStyle(
+                                fontFamily = MaterialTheme.typography.bodySmall.fontFamily,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                color = AppTheme.colors.textHighlighted,
+                            )
+                        ) {
+                            append("m")
+                        }
+
+                        withStyle(
+                            style = SpanStyle(
+                                fontFamily = MaterialTheme.typography.bodySmall.fontFamily,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                color = AppTheme.colors.textHighlighted,
+                                baselineShift = BaselineShift.Superscript
+                            )
+                        ) {
+                            append("3")
+                        }
+                    },
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
 
         Row(
             modifier = Modifier
