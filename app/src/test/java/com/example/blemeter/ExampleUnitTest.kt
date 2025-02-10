@@ -19,6 +19,7 @@ import com.example.blemeter.config.model.PaymentMethod
 import com.example.blemeter.config.model.ProductVersion
 import com.example.blemeter.config.model.ValveStatus
 import com.example.blemeter.config.model.getControlState
+import com.example.blemeter.core.ble.domain.command.PurchaseDataCommand
 import com.example.blemeter.core.ble.domain.command.ReadMeterDataCommand
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -388,11 +389,21 @@ class ExampleUnitTest {
 
     @Test
     fun assert_data_to_ReadMeterData() {
-        val data = "681003001803249671811b901f000000000afffffff7000000010100000000000002010000000f16"
+        val data = "681202001712249671811b901f00000000000000000000000000020000000000000d020000002c16"
 
         val actual = ReadMeterDataCommand.fromCommand(data)
         val expected = MeterData()
 
         assertEquals(expected, actual)
     }
+
+/*    @Test
+    fun assert_data_to_PurchaseCommand() {
+        val data = "68 12 02001712249671 04 08 a013 00 02 0000000a 9b 16"
+
+        val actual = PurchaseDataCommand.toCommand(data)
+        val expected = MeterData()
+
+        assertEquals(expected, actual)
+    }*/
 }

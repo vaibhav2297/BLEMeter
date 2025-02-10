@@ -44,7 +44,7 @@ object PurchaseDataCommand : Command<PurchaseDataRequest, MeterData>(
             *dataIdentifier.identifier.fromHexToUByteArray(),
             serialNumber,
             request.numberTimes.toUByte(),
-            *(request.purchaseVariable).toUInt().to4UByteArray()
+            *(request.purchaseVariable * 10).toUInt().to4UByteArray()
         )
 
         return ubyteArrayOf(
@@ -70,7 +70,7 @@ object PurchaseDataCommand : Command<PurchaseDataRequest, MeterData>(
             )
 
             //Product Version
-            val productVersionResponse = substring(66..67).toUInt()
+            val productVersionResponse = substring(66..67).toUInt(16)
             val productVersion = ProductVersion.getProductVersionFromResponseBit(productVersionResponse)
 
             //multiplying factor based on the meter type
@@ -80,14 +80,14 @@ object PurchaseDataCommand : Command<PurchaseDataRequest, MeterData>(
                 accumulatedUsage = (substring(28..35).toLong(16)).times(factor).div(BLEConstants.ONE_METER_CUBE),
                 surplus = (substring(36..43).toLong(16)).times(factor).div(BLEConstants.ONE_METER_CUBE),
                 totalPurchase = (substring(44..51).toLong(16)).times(factor).div(BLEConstants.ONE_METER_CUBE),
-                numberTimes = substring(52..53).toUInt(),
+                numberTimes = substring(52..53).toUInt(16),
                 statuses = statuses,
-                alarmVariable = substring(58..59).toUInt(),
-                overdraft = substring(60..61).toUInt(),
-                minimumUsage = substring(62..63).toUInt(),
-                additionDeduction = substring(64..65).toUInt(),
+                alarmVariable = substring(58..59).toUInt(16),
+                overdraft = substring(60..61).toUInt(16),
+                minimumUsage = substring(62..63).toUInt(16),
+                additionDeduction = substring(64..65).toUInt(16),
                 productVersion = productVersion,
-                programVersion = substring(68..69).toUInt(),
+                programVersion = substring(68..69).toUInt(16),
             )
         }
     }

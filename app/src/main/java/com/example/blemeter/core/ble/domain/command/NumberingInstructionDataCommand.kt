@@ -61,8 +61,8 @@ object NumberingInstructionDataCommand :
 
         command.run {
             val calibrationIdentification =
-                CalibrationIdentification.getCalibrationIdentificationByCommandBit(substring(42..43).toUInt())
-            val inPlaceMethod = InPlaceMethod.getInPlaceMethodByCommandBit(substring(46..47).toUInt())
+                CalibrationIdentification.getCalibrationIdentificationByCommandBit(substring(42..43).toUInt(16))
+            val inPlaceMethod = InPlaceMethod.getInPlaceMethodByCommandBit(substring(46..47).toUInt(16))
 
             return NumberingInstructionData(
                 calibrationIdentification = calibrationIdentification,

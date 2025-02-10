@@ -5,15 +5,21 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
+import com.example.logger.ILogger
 import com.example.payment.domain.PaymentOptions
 import com.razorpay.Checkout
 import com.razorpay.PaymentData
 import com.razorpay.PaymentResultWithDataListener
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-
+@AndroidEntryPoint
 class PaymentActivity : ComponentActivity(), PaymentResultWithDataListener {
 
     private lateinit var checkout: Checkout
+
+    @Inject
+    lateinit var logger: ILogger
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,16 +40,17 @@ class PaymentActivity : ComponentActivity(), PaymentResultWithDataListener {
     private fun openPayment(option: PaymentOptions) {
         if (::checkout.isInitialized) {
             try {
-                Log.d(TAG, "openPayment: ${option.toJSON()}")
+                logger.d( "openPayment: ${option.toJSON()}")
                 checkout.open(this@PaymentActivity, option.toJSON())
             } catch (e: Exception) {
                 e.printStackTrace()
+                logger.e("openPayment :: ${e.message}")
             }
         }
     }
 
     override fun onPaymentSuccess(razorPayPaymentId: String?, paymentData: PaymentData?) {
-        Log.d(TAG, "onPaymentSuccess: $paymentData")
+        logger.d("onPaymentSuccess: $paymentData")
 
         val resultIntent = Intent().apply {
             putExtra(IS_PAYMENT_SUCCEED, true)
@@ -54,7 +61,7 @@ class PaymentActivity : ComponentActivity(), PaymentResultWithDataListener {
     }
 
     override fun onPaymentError(errorCode: Int, response: String?, data: PaymentData?) {
-        Log.d(TAG, "onPaymentError: $errorCode :: response :: $response")
+        logger.d( "onPaymentError: $errorCode :: response :: $response")
 
         val resultIntent = Intent().apply {
             putExtra(IS_PAYMENT_SUCCEED, false)

@@ -4,13 +4,11 @@ plugins {
     kotlin("kapt")
     alias(libs.plugins.androidDaggerHilt)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.google.service)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 android {
-    signingConfigs {
-        create("release") {
-        }
-    }
     namespace = "com.example.blemeter"
     compileSdk = 34
 
@@ -18,8 +16,8 @@ android {
         applicationId = "com.example.blemeter"
         minSdk = 26
         targetSdk = 34
-        versionCode = 241109
-        versionName = "24.11.09"
+        versionCode = 250210
+        versionName = "25.02.10"
 
         buildConfigField("int", "MIN_SDK_VERSION", "$minSdk")
 
@@ -30,6 +28,15 @@ android {
         signingConfig = signingConfigs.getByName("debug")
     }
 
+    signingConfigs {
+        create("release") {
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+            storeFile = file("C:\\Users\\vaibh\\.android\\debug.keystore")
+            storePassword = "android"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -38,6 +45,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 
@@ -110,4 +118,9 @@ dependencies {
     api(project(":feature:wallet"))
     api(project(":core:navigation"))
     api(project(":core:designsystem"))
+
+    //firebase
+    api(platform(libs.firebase.bom))
+    api(libs.firebase.crashlytics)
+    api(libs.firebase.analytics)
 }

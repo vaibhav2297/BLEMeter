@@ -69,7 +69,7 @@ object AccumulateCommand : Command<AccumulateDataRequest, MeterData>(
             )
 
             //Product Version
-            val productVersionResponse = substring(66..67).toUInt()
+            val productVersionResponse = substring(66..67).toUInt(16)
             val productVersion = ProductVersion.getProductVersionFromResponseBit(productVersionResponse)
 
 
@@ -77,14 +77,14 @@ object AccumulateCommand : Command<AccumulateDataRequest, MeterData>(
                 accumulatedUsage = (substring(28..35).toLong(16)) / 10.0,
                 surplus = (substring(36..43).toLong(16)) / 100.0,
                 totalPurchase = (substring(44..51).toLong(16)) / 100.0,
-                numberTimes = substring(52..53).toUInt(),
+                numberTimes = substring(52..53).toUInt(16),
                 statuses = statuses,
-                alarmVariable = substring(58..59).toUInt(),
-                overdraft = substring(60..61).toUInt(),
-                minimumUsage = substring(62..63).toUInt(),
-                additionDeduction = substring(64..65).toUInt(),
+                alarmVariable = substring(58..59).toUInt(16),
+                overdraft = substring(60..61).toUInt(16),
+                minimumUsage = substring(62..63).toUInt(16),
+                additionDeduction = substring(64..65).toUInt(16),
                 productVersion = productVersion,
-                programVersion = substring(68..69).toUInt(),
+                programVersion = substring(68..69).toUInt(16),
             )
         }
     }

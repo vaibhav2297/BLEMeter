@@ -52,4 +52,5 @@ dependencies {
     kapt(libs.dagger.kapt)
 
     implementation(project(":core:network"))
+    implementation(project(":core:logger"))
 }

@@ -146,7 +146,7 @@ class DashboardViewModel @Inject constructor(
             showLoading()
 
             val request = NumberingInstructionDataRequest(
-                calibrationIdentification = CalibrationIdentification.HUNDRED_LITRE,
+                calibrationIdentification = CalibrationIdentification.TEN_LITRE,
                 inPlaceMethod = InPlaceMethod.FIVE_WIRE_ACTUATOR,
                 paymentMethod = PaymentMethod.STEP
             )
