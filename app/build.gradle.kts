@@ -16,8 +16,8 @@ android {
         applicationId = "com.example.blemeter"
         minSdk = 26
         targetSdk = 34
-        versionCode = 250210
-        versionName = "25.02.10"
+        versionCode = 250224
+        versionName = "25.02.24"
 
         buildConfigField("int", "MIN_SDK_VERSION", "$minSdk")
 
