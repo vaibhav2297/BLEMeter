@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.blemeter.config.model.CalibrationIdentification
 import com.example.blemeter.config.model.InPlaceMethod
 import com.example.blemeter.core.ble.domain.model.MeterServicesProvider
-import com.example.blemeter.core.local.DataStore
 import com.example.blemeter.feature.dashboard.domain.model.MeterControl
 import com.example.blemeter.feature.dashboard.domain.usecases.DashboardUseCases
 import com.example.blemeter.feature.recharge.navigation.RechargeDestination
@@ -146,7 +145,7 @@ class DashboardViewModel @Inject constructor(
             showLoading()
 
             val request = NumberingInstructionDataRequest(
-                calibrationIdentification = CalibrationIdentification.TEN_LITRE,
+                calibrationIdentification = CalibrationIdentification.HUNDRED_LITRE,
                 inPlaceMethod = InPlaceMethod.FIVE_WIRE_ACTUATOR,
                 paymentMethod = PaymentMethod.STEP
             )
@@ -217,7 +216,10 @@ class DashboardViewModel @Inject constructor(
     }
 
     private suspend fun saveMeterCalibrationType(identification: CalibrationIdentification) {
-        dataStore.putPreference(DataStoreKeys.METER_CALIBRATION_TYPE, identification.commandBit.toInt())
+        dataStore.putPreference(
+            DataStoreKeys.METER_CALIBRATION_TYPE,
+            identification.commandBit.toInt()
+        )
     }
 
     private fun onNavigateTo(destination: BLEMeterNavDestination?) {

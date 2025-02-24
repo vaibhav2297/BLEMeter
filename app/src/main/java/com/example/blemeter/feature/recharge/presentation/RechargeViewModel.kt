@@ -1,6 +1,7 @@
 package com.example.blemeter.feature.recharge.presentation
 
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.blemeter.core.ble.domain.model.MeterServicesProvider
@@ -9,13 +10,18 @@ import com.example.blemeter.core.local.DataStore
 import com.example.blemeter.feature.dashboard.domain.usecases.DashboardUseCases
 import com.example.blemeter.config.model.MeterData
 import com.example.blemeter.config.model.NoData
+import com.example.blemeter.core.logger.ExceptionHandler
 import com.example.blemeter.feature.dashboard.domain.usecases.ObserveDataUseCase
 import com.example.designsystem.utils.ScreenState
 import com.example.local.datastore.DataStoreKeys
 import com.example.local.datastore.IAppDataStore
 import com.example.payments.domain.model.TransactionType
 import com.example.payments.domain.repository.PaymentRepository
+import com.example.transactions.domain.model.request.MeterTransactionRequest
+import com.example.transactions.domain.repository.IMeterTransactionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,14 +36,17 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.withTimeoutOrNull
+import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
 class RechargeViewModel @Inject constructor(
     private val useCases: DashboardUseCases,
     private val paymentRepository: PaymentRepository,
+    private val meterTransactionRepository: IMeterTransactionRepository,
     private val observeDataUseCase: ObserveDataUseCase,
-    private val dataStore: IAppDataStore
+    private val dataStore: IAppDataStore,
+    private val exceptionHandler: ExceptionHandler
 ) : ViewModel() {
 
     companion object {
@@ -147,6 +156,9 @@ class RechargeViewModel @Inject constructor(
                         //update balance
                         updateWalletBalance()
 
+                        //log to the server
+                        insertMeterTransaction(data)
+
                         _uiState.update {
                             it.copy(
                                 screenState = ScreenState.Success(Unit)
@@ -178,6 +190,26 @@ class RechargeViewModel @Inject constructor(
 
     private suspend fun saveRechargeTimes(numberOfTimes: Int) {
         dataStore.putPreference(DataStoreKeys.RECHARGE_TIMES_KEY, numberOfTimes)
+    }
+
+    private suspend fun insertMeterTransaction(data: MeterData) {
+
+        val userId =
+            dataStore.getPreference(DataStoreKeys.USER_ID_KEY, "").firstOrNull() ?: ""
+
+        val meterId =
+            dataStore.getPreference(DataStoreKeys.METER_ADDRESS_KEY, "").firstOrNull() ?: ""
+
+        val request = MeterTransactionRequest(
+            userId = userId,
+            meterId = meterId,
+            amount = _uiState.value.rechargeAmount,
+            purchaseTimes = data.numberTimes.toInt()
+        )
+
+        meterTransactionRepository.insertMeterTransaction(request)
+            .onSuccess { Log.d(TAG, "insertMeterTransaction: success") }
+            .onFailure { e -> exceptionHandler.handle(Exception(e)) }
     }
 
     private fun showLoading() {

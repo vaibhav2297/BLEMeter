@@ -6,7 +6,8 @@ enum class SupabaseApis {
     SIGN_UP,
     LOGIN,
     WALLET,
-    TRANSACTION;
+    TRANSACTION,
+    METER_TRANSACTION;
 
     val url: String
         get() {
@@ -15,6 +16,7 @@ enum class SupabaseApis {
                 LOGIN -> ApiConstants.Supabase.LOGIN_END_POINT
                 WALLET -> ApiConstants.Supabase.WALLET_END_POINT
                 TRANSACTION -> ApiConstants.Supabase.TRANSACTION_END_POINT
+                METER_TRANSACTION -> ApiConstants.Supabase.METER_TRANSACTION_END_POINT
             }
 
             return ApiConstants.Supabase.BASE_URL + endPoint

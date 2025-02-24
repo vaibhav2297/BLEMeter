@@ -114,6 +114,7 @@ dependencies {
     //projects
     api(project(":core:payment"))
     api(project(":core:data:auth"))
+    api(project(":core:data:transactions"))
     api(project(":feature:authentication"))
     api(project(":feature:wallet"))
     api(project(":core:navigation"))

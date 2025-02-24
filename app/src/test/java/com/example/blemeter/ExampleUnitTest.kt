@@ -389,7 +389,7 @@ class ExampleUnitTest {
 
     @Test
     fun assert_data_to_ReadMeterData() {
-        val data = "681202001712249671811b901f00000000000000000000000000020000000000000d020000002c16"
+        val data = "681002001712249671811b901f00000000000000000000000000010200000000000e020000002c16"
 
         val actual = ReadMeterDataCommand.fromCommand(data)
         val expected = MeterData()
