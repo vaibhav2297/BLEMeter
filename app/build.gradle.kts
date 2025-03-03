@@ -6,6 +6,9 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.google.service)
     alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.google.devtools.ksp)
 }
 
 android {
@@ -114,7 +117,7 @@ dependencies {
     //projects
     api(project(":core:payment"))
     api(project(":core:data:auth"))
-    api(project(":core:data:transactions"))
+    api(project(":core:data:meter"))
     api(project(":feature:authentication"))
     api(project(":feature:wallet"))
     api(project(":core:navigation"))
