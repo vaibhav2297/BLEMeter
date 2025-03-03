@@ -1,12 +1,10 @@
 package com.example.blemeter.feature.recharge.presentation
 
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.blemeter.core.ble.domain.model.MeterServicesProvider
 import com.example.blemeter.core.ble.domain.model.request.PurchaseDataRequest
-import com.example.blemeter.core.local.DataStore
 import com.example.blemeter.feature.dashboard.domain.usecases.DashboardUseCases
 import com.example.blemeter.config.model.MeterData
 import com.example.blemeter.config.model.NoData
@@ -15,35 +13,27 @@ import com.example.blemeter.feature.dashboard.domain.usecases.ObserveDataUseCase
 import com.example.designsystem.utils.ScreenState
 import com.example.local.datastore.DataStoreKeys
 import com.example.local.datastore.IAppDataStore
-import com.example.payments.domain.model.TransactionType
-import com.example.payments.domain.repository.PaymentRepository
+import com.example.wallet.domain.model.TransactionType
+import com.example.wallet.domain.repository.WalletRepository
 import com.example.meter.domain.model.request.MeterLogRequest
 import com.example.meter.domain.model.request.MeterTransactionRequest
 import com.example.meter.domain.repository.IMeterTransactionRepository
+import com.example.wallet.domain.model.request.WalletTransactionRequest
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.shareIn
-import kotlinx.coroutines.flow.timeout
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeout
-import kotlinx.coroutines.withTimeoutOrNull
 import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
 class RechargeViewModel @Inject constructor(
     private val useCases: DashboardUseCases,
-    private val paymentRepository: PaymentRepository,
+    private val walletRepository: WalletRepository,
     private val meterTransactionRepository: IMeterTransactionRepository,
     private val observeDataUseCase: ObserveDataUseCase,
     private val dataStore: IAppDataStore,
@@ -95,7 +85,7 @@ class RechargeViewModel @Inject constructor(
         viewModelScope.launch {
             val userId = dataStore.getPreference(DataStoreKeys.USER_ID_KEY, "").firstOrNull() ?: ""
 
-            paymentRepository
+            walletRepository
                 .getUserWalletBalance(userId)
                 .collectLatest { amount ->
 
@@ -158,7 +148,8 @@ class RechargeViewModel @Inject constructor(
                         updateWalletBalance()
 
                         //log to the server
-                        insertMeterTransaction(data)
+                        //insertMeterTransaction(data)
+                        insertMeterLog(data)
 
                         _uiState.update {
                             it.copy(
@@ -182,7 +173,7 @@ class RechargeViewModel @Inject constructor(
     private suspend fun updateWalletBalance() {
         val userId = dataStore.getPreference(DataStoreKeys.USER_ID_KEY, "").firstOrNull() ?: ""
 
-        paymentRepository.updateWalletAmount(
+        walletRepository.updateWalletAmount(
             userId = userId,
             amount = _uiState.value.rechargeAmount,
             transactionType = TransactionType.DEBIT
@@ -193,7 +184,7 @@ class RechargeViewModel @Inject constructor(
         dataStore.putPreference(DataStoreKeys.RECHARGE_TIMES_KEY, numberOfTimes)
     }
 
-    private suspend fun insertMeterTransaction(data: MeterData) {
+    private suspend fun insertWalletTransaction(data: MeterData) {
 
         val userId =
             dataStore.getPreference(DataStoreKeys.USER_ID_KEY, "").firstOrNull() ?: ""
@@ -201,15 +192,49 @@ class RechargeViewModel @Inject constructor(
         val meterId =
             dataStore.getPreference(DataStoreKeys.METER_ADDRESS_KEY, "").firstOrNull() ?: ""
 
-        val request = MeterTransactionRequest(
+        val request = WalletTransactionRequest(
             userId = userId,
             meterId = meterId,
             amount = _uiState.value.rechargeAmount,
-            purchaseTimes = data.numberTimes.toInt()
+            purchaseFrequency = data.numberTimes.toInt(),
+            transactionType = TransactionType.DEBIT.name,
+            walletId = ""
         )
 
-        meterTransactionRepository.insertMeterTransaction(request)
+        walletRepository.insertWalletTransaction(request)
             .onSuccess { Log.d(TAG, "insertMeterTransaction: success") }
+            .onFailure { e -> exceptionHandler.handle(Exception(e)) }
+    }
+
+    private suspend fun insertMeterLog(data: MeterData) {
+
+        val userId =
+            dataStore.getPreference(DataStoreKeys.USER_ID_KEY, "").firstOrNull() ?: ""
+
+        val meterId =
+            dataStore.getPreference(DataStoreKeys.METER_ADDRESS_KEY, "").firstOrNull() ?: ""
+
+        val request = MeterLogRequest(
+            userId = userId,
+            meterId = meterId,
+            minimumUsageVariable = data.minimumUsage.toInt(),
+            inplaceMethod = data.productVersion.inPlaceMethod.name,
+            calibrationIdentification = data.productVersion.calibrationIdentification.name,
+            batteryVoltage = data.statuses.batteryState.name,
+            alarmVariables = data.alarmVariable.toInt(),
+            additionalDeductions = data.additionDeduction.toInt(),
+            accumulatedUsage = data.accumulatedUsage,
+            totalPurchase = data.totalPurchase,
+            valveStatus = data.statuses.controlState.title(),
+            overdraftVariables = data.overdraft.toInt(),
+            surplusVariable = data.surplus,
+            purchaseFrequency = data.numberTimes.toInt(),
+            programVersion = data.programVersion.toInt(),
+            paymentMethod = data.productVersion.paymentMethod.name
+        )
+
+        meterTransactionRepository.insertMeterLogs(request)
+            .onSuccess { Log.d(TAG, "insertMeterLogs: success") }
             .onFailure { e -> exceptionHandler.handle(Exception(e)) }
     }
 

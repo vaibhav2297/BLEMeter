@@ -16,4 +16,8 @@ internal class MeterTransactionRepository @Inject constructor(
     override suspend fun insertMeterTransaction(
         meterTransactionRequest: MeterTransactionRequest
     ) = remoteDataSource.insertMeterTransaction(meterTransactionRequest)
+
+    override suspend fun insertMeterLogs(
+        meterLogRequest: MeterLogRequest
+    ) = remoteDataSource.insertMeterLogs(meterLogRequest)
 }

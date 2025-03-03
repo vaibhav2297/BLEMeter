@@ -36,4 +36,13 @@ internal class RemoteDataSource @Inject constructor(
             method = HttpMethod.Post
             setBody(meterTransactionRequest)
         }
+
+    suspend fun insertMeterLogs(
+        request: MeterLogRequest
+    ): Result<Unit> =
+        ktorClient.client.safeRequest<Unit> {
+            url(SupabaseApis.METER_LOGS.url)
+            method = HttpMethod.Post
+            setBody(request)
+        }
 }

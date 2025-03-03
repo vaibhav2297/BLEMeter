@@ -3,8 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     kotlin("kapt")
     alias(libs.plugins.androidDaggerHilt)
-    alias(libs.plugins.jetbrainsCompose)
-    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 android {
@@ -34,9 +33,6 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    buildFeatures {
-        compose = true
-    }
 }
 
 dependencies {
@@ -48,29 +44,14 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    /*Compose*/
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    implementation(libs.lifecycle.runtime.compose)
-
-    /*viewmodel*/
-    implementation(libs.compose.viewmodel)
-    implementation(libs.ktx.viewmodel)
-    implementation(libs.dagger.hilt.navigation)
-
     /*Dagger Hilt*/
     implementation(libs.dagger.hilt)
     kapt(libs.dagger.kapt)
 
-    //project
-    api(project(":core:data:auth"))
-    api(project(":core:data:wallet"))
-    api(project(":core:payment"))
-    api(project(":core:designsystem"))
-    api(project(":core:navigation"))
+    /*Projects*/
     api(project(":core:local"))
+    api(project(":core:network"))
+
+    /*Kotlin Serialization*/
+    implementation(libs.ktx.serialization)
 }

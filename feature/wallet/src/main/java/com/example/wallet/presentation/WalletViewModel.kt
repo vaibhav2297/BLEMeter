@@ -5,10 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.designsystem.utils.ScreenState
 import com.example.local.datastore.DataStoreKeys
 import com.example.local.datastore.IAppDataStore
-import com.example.local.model.UserEntity
-import com.example.payment.domain.PaymentOptions
-import com.example.payment.domain.Prefill
-import com.example.payments.domain.repository.PaymentRepository
+import com.example.wallet.domain.repository.WalletRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 internal class WalletViewModel @Inject constructor(
-    private val paymentRepository: PaymentRepository,
+    private val walletRepository: WalletRepository,
     private val dataStore: IAppDataStore
 ) : ViewModel() {
 
@@ -36,7 +33,7 @@ internal class WalletViewModel @Inject constructor(
     private fun getUserBalance() {
         viewModelScope.launch {
             val userId = dataStore.getPreference(DataStoreKeys.USER_ID_KEY, "").firstOrNull()
-            paymentRepository
+            walletRepository
                 .getUserWalletBalance(userId = userId ?: "")
                 .collect { amount ->
                     _uiState.update {
