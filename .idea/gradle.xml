@@ -13,8 +13,8 @@
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/core/data" />
             <option value="$PROJECT_DIR$/core/data/auth" />
+            <option value="$PROJECT_DIR$/core/data/meter" />
             <option value="$PROJECT_DIR$/core/data/payments" />
-            <option value="$PROJECT_DIR$/core/data/transactions" />
             <option value="$PROJECT_DIR$/core/designsystem" />
             <option value="$PROJECT_DIR$/core/file" />
             <option value="$PROJECT_DIR$/core/local" />

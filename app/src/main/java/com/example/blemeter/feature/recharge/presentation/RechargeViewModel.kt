@@ -17,8 +17,9 @@ import com.example.local.datastore.DataStoreKeys
 import com.example.local.datastore.IAppDataStore
 import com.example.payments.domain.model.TransactionType
 import com.example.payments.domain.repository.PaymentRepository
-import com.example.transactions.domain.model.request.MeterTransactionRequest
-import com.example.transactions.domain.repository.IMeterTransactionRepository
+import com.example.meter.domain.model.request.MeterLogRequest
+import com.example.meter.domain.model.request.MeterTransactionRequest
+import com.example.meter.domain.repository.IMeterTransactionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
