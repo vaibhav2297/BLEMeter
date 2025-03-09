@@ -9,13 +9,13 @@ import com.example.authentication.model.AuthType
 import com.example.designsystem.utils.ScreenState
 import com.example.local.datastore.DataStoreKeys
 import com.example.local.datastore.IAppDataStore
+import com.example.logger.ExceptionHandler
+import com.example.logger.ILogger
 import com.example.wallet.domain.model.Wallet
-import com.example.wallet.domain.model.WalletResponse
 import com.example.wallet.domain.repository.WalletRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -25,7 +25,9 @@ import javax.inject.Inject
 internal class AuthViewModel @Inject constructor(
     private val authRepo: IAuthRepository,
     private val walletRepo: WalletRepository,
-    private val dataStore: IAppDataStore
+    private val dataStore: IAppDataStore,
+    private val logger: ILogger,
+    private val exceptionHandler: ExceptionHandler
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<AuthUiState> by lazy {
@@ -50,6 +52,8 @@ internal class AuthViewModel @Inject constructor(
             val isLoggedIn =
                 dataStore.getPreference(DataStoreKeys.USER_LOGGED_IN_KEY, false).firstOrNull()
                     ?: false
+
+            logger.d("Is User Logged in : $isLoggedIn")
 
             if (isLoggedIn) {
                 _uiState.update {
@@ -124,9 +128,6 @@ internal class AuthViewModel @Inject constructor(
 
                     storeUserInfo(response.user)
 
-                    //user wallet info
-                    getUserWallet()?.let { wallet -> storeUserWallet(wallet) }
-
                     _uiState.update {
                         it.copy(
                             authState = ScreenState.Success(Unit)
@@ -140,9 +141,6 @@ internal class AuthViewModel @Inject constructor(
                 }
         }
     }
-
-    private suspend fun getUserWallet() =
-        walletRepo.getWallet().getOrNull()?.firstOrNull()
 
     private suspend fun storeAuthToken(authToken: String, refreshToken: String) {
         dataStore.apply {
