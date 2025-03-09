@@ -147,8 +147,8 @@ class RechargeViewModel @Inject constructor(
                         updateWalletBalance()
 
                         //log to the server
-                        insertWalletTransaction(data)
                         insertMeterLog(data)
+                        insertWalletTransaction(data)
 
                         _uiState.update {
                             it.copy(
