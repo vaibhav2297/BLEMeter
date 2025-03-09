@@ -1,5 +1,7 @@
 package com.example.wallet.data
 
+import com.example.local.datastore.DataStoreKeys
+import com.example.local.datastore.IAppDataStore
 import com.example.local.model.UserEntity
 import com.example.local.room.UserDao
 import com.example.wallet.domain.model.TransactionType
@@ -8,7 +10,8 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 internal class LocalDataSource @Inject constructor(
-    private val userDao: UserDao
+    private val userDao: UserDao,
+    private val dataStore: IAppDataStore
 ) {
 
     suspend fun updateWalletAmount(
@@ -29,4 +32,7 @@ internal class LocalDataSource @Inject constructor(
 
     suspend fun getUser(userId: String): UserEntity? =
         userDao.getUser(userId)
+
+    suspend fun getUserWallet() =
+        dataStore.getPreference(DataStoreKeys.USER_WALLET_ID, "")
 }
