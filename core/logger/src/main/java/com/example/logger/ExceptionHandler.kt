@@ -14,6 +14,12 @@ class ExceptionHandler @Inject constructor(
         logger.e(exception.stackTraceToString())
     }
 
+    fun handle(throwable: Throwable) {
+
+        logger.e("Exception occurred in method : ${getCallerMethodName()}")
+        logger.e(Exception(throwable).stackTraceToString())
+    }
+
     private fun getCallerMethodName(): String {
         val stackTrace = Thread.currentThread().stackTrace
         for (i in 4 until stackTrace.size) {
