@@ -2,6 +2,7 @@ package com.example.authentication.data
 
 import com.example.authentication.domain.model.LoginResponse
 import com.example.authentication.domain.model.EmailAuthRequest
+import com.example.authentication.domain.model.UserProfileRequest
 import com.example.authentication.domain.model.UserResponse
 import com.example.network.config.safeRequest
 import com.example.network.ktor.KtorClient
@@ -29,6 +30,15 @@ internal class RemoteDataSource @Inject constructor(
     ): Result<LoginResponse> =
         ktorClient.client.safeRequest<LoginResponse> {
             url(SupabaseApis.LOGIN.url + "?grant_type=password")
+            method = HttpMethod.Post
+            setBody(request)
+        }
+
+    suspend fun insertUserProfile(
+        request: UserProfileRequest
+    ): Result<Unit> =
+        ktorClient.client.safeRequest<Unit> {
+            url(SupabaseApis.USER_PROFILE.url)
             method = HttpMethod.Post
             setBody(request)
         }

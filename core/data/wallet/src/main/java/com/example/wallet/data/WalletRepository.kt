@@ -13,7 +13,6 @@ internal class WalletRepository @Inject constructor(
     private val localDataSource: LocalDataSource
 ) : WalletRepository {
 
-    // -- Wallet Transactions -- //
     override suspend fun updateWalletAmount(
         userId: String,
         amount: Double,
@@ -36,9 +35,5 @@ internal class WalletRepository @Inject constructor(
     override suspend fun insertWalletTransaction(walletTransactionRequest: WalletTransactionRequest) =
         remoteDataSource.insertWalletTransactions(walletTransactionRequest)
 
-    // -- Wallet -- //
     override suspend fun getWallet() = remoteDataSource.getWallet()
-
-    override suspend fun insertWallet(walletRequest: WalletRequest) =
-        remoteDataSource.insertWallet(walletRequest)
 }

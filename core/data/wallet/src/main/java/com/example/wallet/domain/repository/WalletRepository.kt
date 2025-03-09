@@ -15,5 +15,4 @@ interface WalletRepository {
     suspend fun getWalletTransactions(): Result<WalletTransactionResponse>
     suspend fun insertWalletTransaction(walletTransactionRequest: WalletTransactionRequest): Result<WalletTransactionResponse>
     suspend fun getWallet(): Result<WalletResponse>
-    suspend fun insertWallet(walletRequest: WalletRequest): Result<Unit>
 }

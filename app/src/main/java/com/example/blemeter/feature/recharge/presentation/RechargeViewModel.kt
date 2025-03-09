@@ -148,7 +148,7 @@ class RechargeViewModel @Inject constructor(
                         updateWalletBalance()
 
                         //log to the server
-                        //insertMeterTransaction(data)
+                        insertWalletTransaction(data)
                         insertMeterLog(data)
 
                         _uiState.update {
@@ -192,13 +192,16 @@ class RechargeViewModel @Inject constructor(
         val meterId =
             dataStore.getPreference(DataStoreKeys.METER_ADDRESS_KEY, "").firstOrNull() ?: ""
 
+        val walletId =
+            dataStore.getPreference(DataStoreKeys.USER_WALLET_ID, "").firstOrNull() ?: ""
+
         val request = WalletTransactionRequest(
             userId = userId,
             meterId = meterId,
             amount = _uiState.value.rechargeAmount,
             purchaseFrequency = data.numberTimes.toInt(),
             transactionType = TransactionType.DEBIT.name,
-            walletId = ""
+            walletId = walletId
         )
 
         walletRepository.insertWalletTransaction(request)

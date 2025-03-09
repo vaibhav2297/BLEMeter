@@ -71,4 +71,5 @@ dependencies {
     api(project(":core:data:auth"))
     api(project(":core:navigation"))
     api(project(":core:local"))
+    api(project(":core:data:wallet"))
 }
