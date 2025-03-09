@@ -3,11 +3,10 @@ package com.example.blemeter.core.logger
 import android.util.Log
 import com.example.blemeter.BuildConfig
 import com.example.blemeter.core.file.IFileService
-import com.example.blemeter.utils.Extras
-import com.example.blemeter.utils.Logger.IS_ENABLE
-import com.example.blemeter.utils.Logger.IS_FILE_LOG_ENABLE
-import com.example.blemeter.utils.Logger.TAG
-import com.example.blemeter.utils.Storage
+import com.example.blemeter.config.constants.Extras
+import com.example.blemeter.config.constants.Logger.IS_ENABLE
+import com.example.blemeter.config.constants.Logger.IS_FILE_LOG_ENABLE
+import com.example.blemeter.config.constants.Logger.TAG
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date

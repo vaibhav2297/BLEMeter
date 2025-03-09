@@ -4,22 +4,23 @@ plugins {
     kotlin("kapt")
     alias(libs.plugins.androidDaggerHilt)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.google.service)
+    alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.google.devtools.ksp)
 }
 
 android {
-    signingConfigs {
-        create("release") {
-        }
-    }
     namespace = "com.example.blemeter"
     compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.blemeter"
-        minSdk = 25
+        minSdk = 26
         targetSdk = 34
-        versionCode = 1
-        versionName = "0.0.1"
+        versionCode = 250224
+        versionName = "25.02.24"
 
         buildConfigField("int", "MIN_SDK_VERSION", "$minSdk")
 
@@ -30,6 +31,15 @@ android {
         signingConfig = signingConfigs.getByName("debug")
     }
 
+    signingConfigs {
+        create("release") {
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+            storeFile = file("C:\\Users\\vaibh\\.android\\debug.keystore")
+            storePassword = "android"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -38,6 +48,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
 
@@ -82,9 +93,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     /*Dagger Hilt*/
-    val hiltVersion = "2.48"
     implementation(libs.dagger.hilt)
-    kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
+    kapt(libs.dagger.kapt)
 
     /*Kotlin Serialization*/
     implementation(libs.ktx.serialization)
@@ -96,4 +106,25 @@ dependencies {
     implementation(libs.compose.viewmodel)
     implementation(libs.ktx.viewmodel)
     implementation(libs.dagger.hilt.navigation)
+
+    implementation("com.juul.kable:core:0.31.1")
+    
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+
+    /*Lottie Animation*/
+    implementation(libs.lottie.compose)
+
+    //projects
+    api(project(":core:payment"))
+    api(project(":core:data:auth"))
+    api(project(":core:data:meter"))
+    api(project(":feature:authentication"))
+    api(project(":feature:wallet"))
+    api(project(":core:navigation"))
+    api(project(":core:designsystem"))
+
+    //firebase
+    api(platform(libs.firebase.bom))
+    api(libs.firebase.crashlytics)
+    api(libs.firebase.analytics)
 }

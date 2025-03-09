@@ -1,14 +1,10 @@
 package com.example.blemeter.core.file
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import androidx.core.content.FileProvider
-import com.example.blemeter.utils.Extras
-import com.example.blemeter.utils.Storage
+import com.example.blemeter.config.constants.Extras
+import com.example.blemeter.config.constants.Storage
 import java.io.File
 import java.io.FileWriter
-import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
