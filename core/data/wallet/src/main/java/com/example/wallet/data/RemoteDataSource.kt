@@ -40,13 +40,4 @@ internal class RemoteDataSource @Inject constructor(
             url(walletUrl)
             method = HttpMethod.Get
         }
-
-    suspend fun insertWallet(
-        walletRequest: WalletRequest
-    ): Result<Unit> =
-        ktorClient.client.safeRequest<Unit> {
-            url(walletUrl)
-            method = HttpMethod.Post
-            setBody(walletRequest)
-        }
 }

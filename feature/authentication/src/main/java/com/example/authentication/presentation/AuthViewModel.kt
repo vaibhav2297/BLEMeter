@@ -9,6 +9,9 @@ import com.example.authentication.model.AuthType
 import com.example.designsystem.utils.ScreenState
 import com.example.local.datastore.DataStoreKeys
 import com.example.local.datastore.IAppDataStore
+import com.example.wallet.domain.model.Wallet
+import com.example.wallet.domain.model.WalletResponse
+import com.example.wallet.domain.repository.WalletRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,6 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 internal class AuthViewModel @Inject constructor(
     private val authRepo: IAuthRepository,
+    private val walletRepo: WalletRepository,
     private val dataStore: IAppDataStore
 ) : ViewModel() {
 
@@ -81,6 +85,8 @@ internal class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             authRepo.signUpWithEmail(request)
                 .onSuccess { response ->
+
+
                     //store to local data
                     storeAuthToken(
                         authToken = response.accessToken,
@@ -109,6 +115,7 @@ internal class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             authRepo.loginWithEmail(request)
                 .onSuccess { response ->
+
                     //store to shared pref
                     storeAuthToken(
                         authToken = response.accessToken,
@@ -116,6 +123,9 @@ internal class AuthViewModel @Inject constructor(
                     )
 
                     storeUserInfo(response.user)
+
+                    //user wallet info
+                    getUserWallet()?.let { wallet -> storeUserWallet(wallet) }
 
                     _uiState.update {
                         it.copy(
@@ -131,6 +141,9 @@ internal class AuthViewModel @Inject constructor(
         }
     }
 
+    private suspend fun getUserWallet() =
+        walletRepo.getWallet().getOrNull()?.firstOrNull()
+
     private suspend fun storeAuthToken(authToken: String, refreshToken: String) {
         dataStore.apply {
             putPreference(DataStoreKeys.AUTH_TOKEN_KEY, authToken)
@@ -142,6 +155,12 @@ internal class AuthViewModel @Inject constructor(
         dataStore.apply {
             putPreference(DataStoreKeys.USER_ID_KEY, user.id)
             putPreference(DataStoreKeys.USER_LOGGED_IN_KEY, true)
+        }
+    }
+
+    private suspend fun storeUserWallet(wallet: Wallet) {
+        dataStore.apply {
+            putPreference(DataStoreKeys.USER_WALLET_ID, wallet.id)
         }
     }
 
