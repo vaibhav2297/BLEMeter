@@ -2,8 +2,8 @@ package com.example.blemeter.core.ble.di
 
 import com.example.blemeter.core.ble.data.BLEService
 import com.example.blemeter.core.ble.data.IBLEService
-import com.example.blemeter.core.logger.ExceptionHandler
-import com.example.blemeter.core.logger.ILogger
+import com.example.logger.ExceptionHandler
+import com.example.logger.ILogger
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

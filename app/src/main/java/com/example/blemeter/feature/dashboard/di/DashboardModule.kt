@@ -1,7 +1,6 @@
 package com.example.blemeter.feature.dashboard.di
 
 import com.example.blemeter.core.ble.data.IBLEService
-import com.example.blemeter.core.logger.ExceptionHandler
 import com.example.blemeter.feature.dashboard.data.repository.DashboardRepository
 import com.example.blemeter.feature.dashboard.domain.repository.IDashboardRepository
 import com.example.blemeter.feature.dashboard.domain.usecases.AccumulateDataUseCase
@@ -12,6 +11,7 @@ import com.example.blemeter.feature.dashboard.domain.usecases.PurchaseDataUseCas
 import com.example.blemeter.feature.dashboard.domain.usecases.ReadMeterDataUseCase
 import com.example.blemeter.feature.dashboard.domain.usecases.ValveControlUseCase
 import com.example.blemeter.feature.dashboard.domain.usecases.ZeroInitialisationUseCase
+import com.example.logger.ExceptionHandler
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

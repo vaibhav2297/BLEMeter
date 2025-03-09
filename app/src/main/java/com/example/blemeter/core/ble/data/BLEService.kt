@@ -3,9 +3,9 @@ package com.example.blemeter.core.ble.data
 import android.bluetooth.le.ScanSettings
 import com.benasher44.uuid.uuidFrom
 import com.example.blemeter.core.ble.domain.model.MeterServicesProvider
-import com.example.blemeter.core.logger.ExceptionHandler
-import com.example.blemeter.core.logger.ILogger
 import com.example.blemeter.config.model.DeviceInfo
+import com.example.logger.ExceptionHandler
+import com.example.logger.ILogger
 import com.juul.kable.AndroidAdvertisement
 import com.juul.kable.Filter
 import com.juul.kable.ObsoleteKableApi

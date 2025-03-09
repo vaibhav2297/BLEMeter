@@ -1,6 +1,7 @@
 package com.example.network.di
 
 import com.example.local.datastore.IAppDataStore
+import com.example.logger.ILogger
 import com.example.network.ktor.KtorClient
 import dagger.Module
 import dagger.Provides
@@ -15,6 +16,7 @@ internal object NetworkModule {
     @Singleton
     @Provides
     internal fun provideNetworkClient(
-        dataStore: IAppDataStore
-    ): KtorClient = KtorClient(dataStore)
+        dataStore: IAppDataStore,
+        logger: ILogger
+    ): KtorClient = KtorClient(dataStore, logger)
 }

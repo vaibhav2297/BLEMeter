@@ -1,10 +1,8 @@
 package com.example.blemeter
 
 import android.app.Application
-import com.example.blemeter.core.file.FileService
 import com.example.blemeter.core.file.IFileService
-import com.example.blemeter.core.logger.ILogger
-import com.example.blemeter.core.logger.Logger
+import com.example.logger.ILogger
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 

@@ -11,7 +11,7 @@ import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
 
-class Logger @Inject constructor(
+internal class Logger @Inject constructor(
     private val fileService: IFileService
 ): ILogger {
 

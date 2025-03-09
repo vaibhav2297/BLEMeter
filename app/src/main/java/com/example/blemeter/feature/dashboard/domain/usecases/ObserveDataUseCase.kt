@@ -10,8 +10,7 @@ import com.example.blemeter.feature.dashboard.domain.repository.IDashboardReposi
 import com.example.blemeter.config.model.Data
 import com.example.blemeter.config.model.NoData
 import com.example.blemeter.core.ble.domain.command.NumberingInstructionDataCommand
-import com.example.blemeter.core.logger.ExceptionHandler
-import com.example.blemeter.core.logger.ILogger
+import com.example.logger.ExceptionHandler
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
