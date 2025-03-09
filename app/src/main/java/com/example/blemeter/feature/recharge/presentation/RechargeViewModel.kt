@@ -8,15 +8,14 @@ import com.example.blemeter.core.ble.domain.model.request.PurchaseDataRequest
 import com.example.blemeter.feature.dashboard.domain.usecases.DashboardUseCases
 import com.example.blemeter.config.model.MeterData
 import com.example.blemeter.config.model.NoData
-import com.example.blemeter.core.logger.ExceptionHandler
 import com.example.blemeter.feature.dashboard.domain.usecases.ObserveDataUseCase
 import com.example.designsystem.utils.ScreenState
 import com.example.local.datastore.DataStoreKeys
 import com.example.local.datastore.IAppDataStore
+import com.example.logger.ExceptionHandler
 import com.example.wallet.domain.model.TransactionType
 import com.example.wallet.domain.repository.WalletRepository
 import com.example.meter.domain.model.request.MeterLogRequest
-import com.example.meter.domain.model.request.MeterTransactionRequest
 import com.example.meter.domain.repository.IMeterTransactionRepository
 import com.example.wallet.domain.model.request.WalletTransactionRequest
 import dagger.hilt.android.lifecycle.HiltViewModel

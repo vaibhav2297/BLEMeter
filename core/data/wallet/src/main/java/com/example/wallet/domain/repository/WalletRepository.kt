@@ -13,6 +13,6 @@ interface WalletRepository {
     suspend fun getUserWalletBalance(userId: String): Flow<Double>
     suspend fun getUser(userId: String): UserEntity?
     suspend fun getWalletTransactions(): Result<WalletTransactionResponse>
-    suspend fun insertWalletTransaction(walletTransactionRequest: WalletTransactionRequest): Result<WalletTransactionResponse>
+    suspend fun insertWalletTransaction(walletTransactionRequest: WalletTransactionRequest): Result<Unit>
     suspend fun getWallet(): Result<WalletResponse>
 }

@@ -2,6 +2,7 @@ package com.example.network.ktor
 
 import com.example.local.datastore.DataStoreKeys
 import com.example.local.datastore.IAppDataStore
+import com.example.logger.ILogger
 import com.example.network.utils.NetworkConstants
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.android.Android
@@ -25,7 +26,8 @@ import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 class KtorClient @Inject constructor(
-    private val dataStore: IAppDataStore
+    private val dataStore: IAppDataStore,
+    private val appLogger: ILogger
 ) {
 
     val client = HttpClient(Android) {
@@ -47,7 +49,12 @@ class KtorClient @Inject constructor(
 
         //Logging
         install(Logging) {
-            logger = Logger.ANDROID
+            logger = object : Logger {
+                override fun log(message: String) {
+                    appLogger.d(message = message)
+                }
+
+            }
             level = LogLevel.ALL
         }
 

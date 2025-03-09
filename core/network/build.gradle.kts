@@ -48,6 +48,7 @@ dependencies {
 
     //project
     api(project(":core:local"))
+    api(project(":core:logger"))
 
     //ktor
     api(libs.ktor.client.core)
