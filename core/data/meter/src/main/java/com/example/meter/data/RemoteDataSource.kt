@@ -1,9 +1,9 @@
 package com.example.meter.data
 
+import com.example.meter.domain.model.MeterTransaction
 import com.example.network.config.safeRequest
 import com.example.network.ktor.KtorClient
 import com.example.network.model.SupabaseApis
-import com.example.meter.domain.model.MeterTransactionResponse
 import com.example.meter.domain.model.request.MeterTransactionRequest
 import com.example.meter.domain.model.request.MeterLogRequest
 import io.ktor.client.request.parameter
@@ -20,8 +20,8 @@ internal class RemoteDataSource @Inject constructor(
 
     suspend fun getMeterTransactionsByUser(
         userId: String
-    ): Result<MeterTransactionResponse> =
-        ktorClient.client.safeRequest<MeterTransactionResponse> {
+    ): Result<List<MeterTransaction>> =
+        ktorClient.client.safeRequest<List<MeterTransaction>> {
             url(sourceUrl)
             method = HttpMethod.Get
             parameter("user_id", "eq.${userId}")
