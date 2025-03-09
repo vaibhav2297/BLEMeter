@@ -191,8 +191,7 @@ class RechargeViewModel @Inject constructor(
         val meterId =
             dataStore.getPreference(DataStoreKeys.METER_ADDRESS_KEY, "").firstOrNull() ?: ""
 
-        val walletId =
-            dataStore.getPreference(DataStoreKeys.USER_WALLET_ID, "").firstOrNull() ?: ""
+        val walletId = walletRepository.getWalletId()
 
         val request = WalletTransactionRequest(
             userId = userId,

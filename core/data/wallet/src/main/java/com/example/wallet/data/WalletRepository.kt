@@ -2,10 +2,10 @@ package com.example.wallet.data
 
 import com.example.local.model.UserEntity
 import com.example.wallet.domain.model.TransactionType
-import com.example.wallet.domain.model.request.WalletRequest
 import com.example.wallet.domain.model.request.WalletTransactionRequest
 import com.example.wallet.domain.repository.WalletRepository
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 internal class WalletRepository @Inject constructor(
@@ -35,5 +35,14 @@ internal class WalletRepository @Inject constructor(
     override suspend fun insertWalletTransaction(walletTransactionRequest: WalletTransactionRequest) =
         remoteDataSource.insertWalletTransactions(walletTransactionRequest)
 
-    override suspend fun getWallet() = remoteDataSource.getWallet()
+    override suspend fun getWallet() =
+        remoteDataSource.getWallet()
+
+    override suspend fun getWalletId(): String {
+        return localDataSource.getUserWallet().first().let { walletId ->
+            walletId.ifEmpty {
+                getWallet().getOrNull()?.first()?.id ?: ""
+            }
+        }
+    }
 }
