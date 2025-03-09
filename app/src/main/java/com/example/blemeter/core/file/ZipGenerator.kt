@@ -1,6 +1,6 @@
 package com.example.blemeter.core.file
 
-import com.example.blemeter.utils.Storage
+import com.example.blemeter.config.constants.Storage
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileInputStream

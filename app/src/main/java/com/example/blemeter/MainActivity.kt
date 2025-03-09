@@ -1,19 +1,18 @@
 package com.example.blemeter
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.core.content.FileProvider
 import com.example.blemeter.app.BLEMeterApp
-import com.example.blemeter.core.file.FileService
 import com.example.blemeter.core.file.IFileService
 import com.example.blemeter.core.shake.ShakeDetector
-import com.example.blemeter.utils.Extras
-import com.example.blemeter.utils.ShakeDetectorConstant
+import com.example.blemeter.config.constants.Extras
+import com.example.blemeter.config.constants.ShakeDetectorConstant
+import com.example.payment.PaymentActivity
+import com.example.payment.data.IPaymentService
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 @AndroidEntryPoint
@@ -24,6 +23,9 @@ class MainActivity : ComponentActivity(), ShakeDetector.OnShakeListener {
 
     @Inject
     lateinit var fileService: IFileService
+
+    @Inject
+    lateinit var paymentService: IPaymentService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +58,14 @@ class MainActivity : ComponentActivity(), ShakeDetector.OnShakeListener {
     override fun onDestroy() {
         shakeDetector.stopListening()
         super.onDestroy()
+    }
+
+    private fun launchPayment() {
+        paymentService.apply {
+            initialisePayment()
+            setKeyID("rzp_test_NeREBciyHyczNU")
+            openPayment(this@MainActivity)
+        }
     }
 }
 
