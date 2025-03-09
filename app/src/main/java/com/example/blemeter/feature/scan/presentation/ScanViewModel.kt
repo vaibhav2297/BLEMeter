@@ -14,11 +14,19 @@ import com.example.blemeter.feature.scan.domain.model.ScanScreenStatus
 import com.example.blemeter.feature.scan.domain.repository.IScanRepository
 import com.example.local.datastore.DataStoreKeys
 import com.example.local.datastore.IAppDataStore
+import com.example.meter.domain.model.request.MeterLogRequest
+import com.example.meter.domain.repository.IMeterTransactionRepository
 import com.example.navigation.BLEMeterNavDestination
+import com.example.wallet.domain.model.TransactionType
+import com.example.wallet.domain.model.request.WalletRequest
+import com.example.wallet.domain.model.request.WalletTransactionRequest
+import com.example.wallet.domain.repository.WalletRepository
 import com.juul.kable.AndroidAdvertisement
 import com.juul.kable.BluetoothDisabledException
 import com.juul.kable.Peripheral
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,8 +42,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ScanViewModel @Inject constructor(
     private val scanRepo: IScanRepository,
-    private val dataStore: IAppDataStore,
-    private val authRepository: IAuthRepository
+    private val dataStore: IAppDataStore
 ) : ViewModel() {
 
     companion object {
@@ -43,20 +50,20 @@ class ScanViewModel @Inject constructor(
         const val TAG = "ScanModel"
     }
 
-    private var scanJob : Job? = null
+    private var scanJob: Job? = null
 
-    private var connectionJob : Job? = null
+    private var connectionJob: Job? = null
 
     private val foundDevices = hashMapOf<String, AndroidAdvertisement>()
 
-    private val _uiState : MutableStateFlow<ScanUiState> by lazy {
+    private val _uiState: MutableStateFlow<ScanUiState> by lazy {
         MutableStateFlow(ScanUiState())
     }
     val uiState = _uiState.asStateFlow()
 
 
     fun onEvent(event: ScanUiEvent) {
-        when(event) {
+        when (event) {
             is ScanUiEvent.OnScan -> requestPermission(true)
             is ScanUiEvent.OnScanCancel -> onScanCancel()
             is ScanUiEvent.OnConnectionCancel -> onConnectionCancel()
@@ -96,7 +103,7 @@ class ScanViewModel @Inject constructor(
                     .onStart {
                         updateScreenState(ScanScreenStatus.Scanning)
                     }
-                    .catch { cause -> handleError(cause)  }
+                    .catch { cause -> handleError(cause) }
                     .onCompletion {
                         if (foundDevices.isEmpty()) {
                             updateScreenState(ScanScreenStatus.NoDeviceFound)
@@ -112,7 +119,7 @@ class ScanViewModel @Inject constructor(
     }
 
     private fun handleError(cause: Throwable) {
-        when(cause) {
+        when (cause) {
             is BluetoothDisabledException -> {
                 requestBluetoothEnable()
             }
@@ -153,22 +160,22 @@ class ScanViewModel @Inject constructor(
 
     private fun observeConnectionState(peripheral: Peripheral?) {
         viewModelScope.launch {
-           peripheral?.state?.collect { state ->
+            peripheral?.state?.collect { state ->
                 _uiState.update {
                     it.copy(
                         screenStatus = ScanScreenStatus.OnConnection(state)
                     )
                 }
 
-               //storing the meter address on connection
-               if (state.isConnected()) {
-                   try {
-                       saveMeterAddress(address = peripheral.name?.getMeterAddress() ?: "")
-                       navigateTo(DashboardDestination)
-                   } catch (e: Exception) {
-                       e.printStackTrace()
-                   }
-               }
+                //storing the meter address on connection
+                if (state.isConnected()) {
+                    try {
+                        saveMeterAddress(address = peripheral.name?.getMeterAddress() ?: "")
+                        navigateTo(DashboardDestination)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
             }
         }
     }
