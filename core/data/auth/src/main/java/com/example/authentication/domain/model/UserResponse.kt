@@ -13,7 +13,7 @@ data class UserResponse(
     val aud: String,
 
     @SerialName("confirmation_sent_at")
-    val confirmationSentAt: String,
+    val confirmationSentAt: String = "",
 
     @SerialName("created_at")
     val createdAt: String,
@@ -22,17 +22,17 @@ data class UserResponse(
 
     val id: String,
 
-    val identities: List<Identity>,
+    val identities: List<Identity> = emptyList(),
 
     @SerialName("is_anonymous")
     val isAnonymous: Boolean,
 
-    val phone: String,
+    val phone: String = "",
 
-    val role: String,
+    val role: String = "",
 
     @SerialName("updated_at")
-    val updatedAt: String,
+    val updatedAt: String = "",
 
     @SerialName("user_metadata")
     val userMetadata: UserMetadata? = null
