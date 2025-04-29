@@ -2,16 +2,19 @@ package com.example.authentication.data.repository
 
 import com.example.authentication.data.RemoteDataSource
 import com.example.authentication.domain.model.EmailAuthRequest
+import com.example.authentication.domain.model.LoginResponse
 import com.example.authentication.domain.model.UserProfileRequest
 import com.example.authentication.domain.model.toUserEntity
 import com.example.authentication.domain.repository.IAuthRepository
 import com.example.local.datastore.DataStoreKeys
 import com.example.local.datastore.IAppDataStore
 import com.example.local.room.UserDao
+import com.example.network.stretagy.fetchData
 
 internal class AuthRepository(
     private val remoteDataSource: RemoteDataSource,
-    private val dao: UserDao
+    private val dao: UserDao,
+    private val dataStore: IAppDataStore
 ) : IAuthRepository {
 
     /**
@@ -55,8 +58,15 @@ internal class AuthRepository(
      */
     override suspend fun loginWithEmail(
         request: EmailAuthRequest
-    ) = remoteDataSource.loginWithEmail(request).onSuccess { response ->
-        dao.insertUser(response.user.toUserEntity())
+    ) = fetchData<Result<LoginResponse>> {
+        server {
+            remoteDataSource.loginWithEmail(request)
+        }
+        save { result ->
+            result.onSuccess { response ->
+                dao.insertUser(response.user.toUserEntity())
+            }
+        }
     }
 
     /**
@@ -70,4 +80,19 @@ internal class AuthRepository(
     override suspend fun insertUserProfile(
         request: UserProfileRequest
     ) = remoteDataSource.insertUserProfile(request)
+
+
+    override suspend fun logout(): Result<Unit> {
+        return fetchData {
+            server {
+                remoteDataSource.logout()
+            }
+            save { result ->
+                result.onSuccess {
+                    dataStore.clearAllPreference()
+                    dao.deleteUserTable()
+                }
+            }
+        }
+    }
 }

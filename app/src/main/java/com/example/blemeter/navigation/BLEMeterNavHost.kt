@@ -14,6 +14,10 @@ import com.example.blemeter.feature.scan.navigation.scanGraph
 import com.example.blemeter.feature.valvecontrol.navigation.valveControlGraph
 import com.example.designsystem.theme.VoidCallback
 import com.example.navigation.uitls.NavigationCallback
+import com.example.settings.navigation.SettingsDestination
+import com.example.settings.navigation.settingsGraph
+import com.example.wallet.navigation.RechargeWalletDestination
+import com.example.wallet.navigation.WalletDestination
 import com.example.wallet.navigation.rechargeWalletGraph
 import com.example.wallet.navigation.walletGraph
 
@@ -55,8 +59,18 @@ fun BLEMeterNavHost(
 
         rechargeWalletGraph(onBackNavigate = onBackNavigation)
 
+        settingsGraph(
+            onNavigateToWallet = {
+                onNavigateToDestination(WalletDestination, null)
+            },
+            onNavigateToAuth = {
+                onNavigateToDestination(AuthenticationDestination, null)
+            },
+            onBackNavigate = onBackNavigation
+        )
+
         authenticationGraph {
-            onNavigateToDestination(ScanDestination, null)
+            onNavigateToDestination(SettingsDestination, null)
         }
     }
 }

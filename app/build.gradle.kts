@@ -123,6 +123,7 @@ dependencies {
     api(project(":feature:wallet"))
     api(project(":core:navigation"))
     api(project(":core:designsystem"))
+    api(project(":feature:settings"))
 
     //firebase
     api(platform(libs.firebase.bom))

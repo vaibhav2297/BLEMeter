@@ -7,12 +7,16 @@ import com.example.designsystem.utils.ScreenState
 import com.example.local.datastore.DataStoreKeys
 import com.example.local.datastore.IAppDataStore
 import com.example.local.model.UserEntity
+import com.example.logger.ExceptionHandler
+import com.example.logger.ILogger
 import com.example.payment.PaymentActivity
 import com.example.payment.domain.PaymentOptions
 import com.example.payment.domain.Prefill
 import com.example.wallet.domain.model.TransactionType
+import com.example.wallet.domain.model.request.WalletTransactionRequest
 import com.example.wallet.domain.repository.WalletRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
@@ -23,7 +27,9 @@ import javax.inject.Inject
 @HiltViewModel
 internal class RechargeWalletViewModel @Inject constructor(
     private val walletRepository: WalletRepository,
-    private val dataStore: IAppDataStore
+    private val dataStore: IAppDataStore,
+    private val exceptionHandler: ExceptionHandler,
+    private val logger: ILogger
 ) : ViewModel() {
 
     private val _uiState: MutableStateFlow<RechargeWalletUiState> by lazy {
@@ -80,23 +86,28 @@ internal class RechargeWalletViewModel @Inject constructor(
     }
 
     private fun handlePaymentResult(data: Intent) {
-        val isSucceed = data.getBooleanExtra(PaymentActivity.IS_PAYMENT_SUCCEED, false)
-        if (isSucceed.not()) {
-            val errorCode = data.getIntExtra(PaymentActivity.PAYMENT_ERROR_CODE, -1)
+        viewModelScope.launch(Dispatchers.IO) {
+            showLoading()
+            val isSucceed = data.getBooleanExtra(PaymentActivity.IS_PAYMENT_SUCCEED, false)
 
-            _uiState.update {
-                it.copy(
-                    state = ScreenState.Error(error = "Payment error : $errorCode")
-                )
-            }
-        } else {
-            _uiState.update {
-                it.copy(
-                    state = ScreenState.Success(Unit)
-                )
-            }
+            logger.d( "handlePaymentResult: isSucceed: $isSucceed")
+            if (isSucceed.not()) {
+                val errorCode = data.getIntExtra(PaymentActivity.PAYMENT_ERROR_CODE, -1)
+                logger.e( "handlePaymentResult: errorCode: $errorCode")
+                _uiState.update {
+                    it.copy(
+                        state = ScreenState.Error(error = "Payment error : $errorCode")
+                    )
+                }
+            } else {
+                insertWalletTransaction()
 
-            updateWalletBalance()
+                _uiState.update {
+                    it.copy(
+                        state = ScreenState.Success(Unit)
+                    )
+                }
+            }
         }
     }
 
@@ -111,8 +122,46 @@ internal class RechargeWalletViewModel @Inject constructor(
         }
     }
 
+    private suspend fun insertWalletTransaction() {
+        try {
+            val userId =
+                dataStore.getPreference(DataStoreKeys.USER_ID_KEY, "").firstOrNull() ?: ""
+
+            val meterId =
+                dataStore.getPreference(DataStoreKeys.METER_ADDRESS_KEY, "").firstOrNull() ?: ""
+
+            val walletId = walletRepository.getWalletId(userId)
+
+            val request = WalletTransactionRequest(
+                userId = userId,
+                meterId = meterId,
+                amount = _uiState.value.rechargeAmount,
+                purchaseFrequency = 0,
+                transactionType = TransactionType.CREDIT.name,
+                walletId = walletId
+            )
+
+            logger.d( "RechargeWalletViewmodel: walletTransactionRequest: $request")
+
+            walletRepository.insertWalletTransaction(request)
+                .onSuccess { logger.d( "RechargeWalletViewmodel :: insertWalletTransaction: success") }
+                .onFailure { e -> exceptionHandler.handle(Exception(e)) }
+        } catch (e: Exception) {
+            logger.e("Error :: ${e.message}")
+            exceptionHandler.handle(e)
+        }
+    }
+
     private suspend fun getUser(): UserEntity? {
         val userId = dataStore.getPreference(DataStoreKeys.USER_ID_KEY, "").firstOrNull() ?: ""
         return walletRepository.getUser(userId)
+    }
+
+    private fun showLoading() {
+        _uiState.update {
+            it.copy(
+                state = ScreenState.Loading
+            )
+        }
     }
 }

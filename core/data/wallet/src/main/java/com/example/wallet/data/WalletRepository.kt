@@ -20,8 +20,7 @@ internal class WalletRepository @Inject constructor(
     ) =
         localDataSource.updateWalletAmount(
             userId = userId,
-            amount = amount,
-            transactionType = transactionType
+            amount = amount
         )
 
     override suspend fun getUserWalletBalance(userId: String): Flow<Double> =
@@ -33,15 +32,32 @@ internal class WalletRepository @Inject constructor(
     override suspend fun getWalletTransactions() = remoteDataSource.getWalletTransactions()
 
     override suspend fun insertWalletTransaction(walletTransactionRequest: WalletTransactionRequest) =
-        remoteDataSource.insertWalletTransactions(walletTransactionRequest)
+        remoteDataSource.insertWalletTransactions(walletTransactionRequest).onSuccess {
+            getWallet(walletTransactionRequest.userId).getOrNull()?.let { wallet ->
+                localDataSource.updateWalletAmount(
+                    userId = walletTransactionRequest.userId,
+                    amount = wallet.balance
+                )
+            }
+        }
 
-    override suspend fun getWallet() =
+    override suspend fun getWallet(userId: String) =
         remoteDataSource.getWallet()
+            .mapCatching { wallets ->
+                wallets.firstOrNull()
+                    ?: throw NoSuchElementException("No wallet found for user $userId")
+            }
+            .onSuccess { wallet ->
+                localDataSource.updateWalletAmount(
+                    userId = userId,
+                    amount = wallet.balance
+                )
+            }
 
-    override suspend fun getWalletId(): String {
+    override suspend fun getWalletId(userId: String): String {
         return localDataSource.getUserWallet().first().let { walletId ->
             walletId.ifEmpty {
-                getWallet().getOrNull()?.first()?.id ?: ""
+                getWallet(userId).getOrNull()?.id ?: ""
             }
         }
     }

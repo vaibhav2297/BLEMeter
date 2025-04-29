@@ -13,6 +13,6 @@ interface WalletRepository {
     suspend fun getUser(userId: String): UserEntity?
     suspend fun getWalletTransactions(): Result<List<WalletTransaction>>
     suspend fun insertWalletTransaction(walletTransactionRequest: WalletTransactionRequest): Result<Unit>
-    suspend fun getWallet(): Result<List<Wallet>>
-    suspend fun getWalletId(): String
+    suspend fun getWallet(userId: String): Result<Wallet?>
+    suspend fun getWalletId(userId: String): String
 }

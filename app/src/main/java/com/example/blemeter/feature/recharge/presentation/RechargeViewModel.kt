@@ -13,6 +13,7 @@ import com.example.designsystem.utils.ScreenState
 import com.example.local.datastore.DataStoreKeys
 import com.example.local.datastore.IAppDataStore
 import com.example.logger.ExceptionHandler
+import com.example.logger.ILogger
 import com.example.wallet.domain.model.TransactionType
 import com.example.wallet.domain.repository.WalletRepository
 import com.example.meter.domain.model.request.MeterLogRequest
@@ -36,7 +37,8 @@ class RechargeViewModel @Inject constructor(
     private val meterTransactionRepository: IMeterTransactionRepository,
     private val observeDataUseCase: ObserveDataUseCase,
     private val dataStore: IAppDataStore,
-    private val exceptionHandler: ExceptionHandler
+    private val exceptionHandler: ExceptionHandler,
+    private val logger: ILogger
 ) : ViewModel() {
 
     companion object {
@@ -130,25 +132,30 @@ class RechargeViewModel @Inject constructor(
                 service = MeterServicesProvider.MainService.SERVICE,
                 observeCharacteristic = MeterServicesProvider.MainService.NOTIFY_CHARACTERISTIC
             )?.catch { cause ->
+                exceptionHandler.handle(cause)
                 _uiState.update {
                     it.copy(
                         screenState = ScreenState.Error(cause.message ?: "Unknown Error")
                     )
                 }
             }?.collect { data ->
-                Log.e(TAG, "RechargeVM :: observerResponse :: $data")
+                logger.d( "RechargeVM :: observerResponse :: $data")
                 when (data) {
                     is MeterData -> {
 
-                        //saving recharge times
-                        saveRechargeTimes(data.numberTimes.toInt())
+                        val oldRechargeTimes =
+                            dataStore.getPreference(DataStoreKeys.RECHARGE_TIMES_KEY, 0).firstOrNull() ?: 0
 
-                        //update balance
-                        updateWalletBalance()
+                        //indicates successful recharge
+                        if ((oldRechargeTimes.inc()) == data.numberTimes.toInt()) {
 
-                        //log to the server
-                        insertMeterLog(data)
-                        insertWalletTransaction(data)
+                            //saving recharge times
+                            saveRechargeTimes(data.numberTimes.toInt())
+
+                            //log to the server
+                            insertMeterLog(data)
+                            insertWalletTransaction(data)
+                        }
 
                         _uiState.update {
                             it.copy(
@@ -169,17 +176,8 @@ class RechargeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun updateWalletBalance() {
-        val userId = dataStore.getPreference(DataStoreKeys.USER_ID_KEY, "").firstOrNull() ?: ""
-
-        walletRepository.updateWalletAmount(
-            userId = userId,
-            amount = _uiState.value.rechargeAmount,
-            transactionType = TransactionType.DEBIT
-        )
-    }
-
     private suspend fun saveRechargeTimes(numberOfTimes: Int) {
+        logger.d( "RechargeViewmodel: saveRechargeTimes: $numberOfTimes")
         dataStore.putPreference(DataStoreKeys.RECHARGE_TIMES_KEY, numberOfTimes)
     }
 
@@ -191,7 +189,7 @@ class RechargeViewModel @Inject constructor(
         val meterId =
             dataStore.getPreference(DataStoreKeys.METER_ADDRESS_KEY, "").firstOrNull() ?: ""
 
-        val walletId = walletRepository.getWalletId()
+        val walletId = walletRepository.getWalletId(userId)
 
         val request = WalletTransactionRequest(
             userId = userId,
@@ -202,8 +200,10 @@ class RechargeViewModel @Inject constructor(
             walletId = walletId
         )
 
+        logger.d( "RechargeViewmodel: walletTransactionRequest: $request")
+
         walletRepository.insertWalletTransaction(request)
-            .onSuccess { Log.d(TAG, "insertMeterTransaction: success") }
+            .onSuccess { logger.d( "RechargeViewmodel :: insertWalletTransaction: success") }
             .onFailure { e -> exceptionHandler.handle(Exception(e)) }
     }
 
@@ -234,8 +234,10 @@ class RechargeViewModel @Inject constructor(
             paymentMethod = data.productVersion.paymentMethod.name
         )
 
+        logger.d( "RechargeViewmodel: insertMeterLog: $request")
+
         meterTransactionRepository.insertMeterLogs(request)
-            .onSuccess { Log.d(TAG, "insertMeterLogs: success") }
+            .onSuccess { logger.d("RechargeViewmodel: insertMeterLogs: success") }
             .onFailure { e -> exceptionHandler.handle(Exception(e)) }
     }
 

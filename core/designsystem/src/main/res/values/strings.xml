@@ -67,4 +67,7 @@
     <string name="enter_the_amount">Enter the Amount</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
+    <string name="wallet">Wallet</string>
+    <string name="logout">Log Out</string>
+    <string name="logout_warning">Are you sure you want to log out?</string>
 </resources>

@@ -20,9 +20,10 @@ internal object AuthModule {
     @Singleton
     internal fun provideAuthRepository(
         remoteDataSource: RemoteDataSource,
-        userDao: UserDao
+        userDao: UserDao,
+        dataStore: IAppDataStore
     ): IAuthRepository =
-        AuthRepository(remoteDataSource, userDao)
+        AuthRepository(remoteDataSource, userDao, dataStore)
 
     @Provides
     @Singleton

@@ -16,12 +16,10 @@ internal class LocalDataSource @Inject constructor(
 
     suspend fun updateWalletAmount(
         userId: String,
-        amount: Double,
-        transactionType: TransactionType
+        amount: Double
     ) {
         userDao.getUser(userId)?.let { user ->
-            val updatedAmount = transactionType.updateBalance(user.walletAmount, amount)
-            userDao.updateUser(user.copy(walletAmount = updatedAmount))
+            userDao.updateUser(user.copy(walletAmount = amount))
         }
     }
 

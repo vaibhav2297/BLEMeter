@@ -15,4 +15,6 @@ interface IAuthRepository {
     suspend fun loginWithEmail(request: EmailAuthRequest): Result<LoginResponse>
 
     suspend fun insertUserProfile(request: UserProfileRequest): Result<Unit>
+
+    suspend fun logout(): Result<Unit>
 }

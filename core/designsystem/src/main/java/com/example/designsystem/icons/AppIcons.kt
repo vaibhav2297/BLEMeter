@@ -27,6 +27,7 @@ object AppIcons {
     val BackRoundFilled = R.drawable.ic_back_filled_round
     val Wallet = R.drawable.ic_wallet
     val Config = R.drawable.ic_config
+    val Logout = R.drawable.ic_logout
 }
 
 /**

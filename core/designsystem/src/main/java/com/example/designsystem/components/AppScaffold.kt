@@ -119,7 +119,9 @@ private fun PreviewAppScaffold() {
             AppScaffold(
                 screenState = state,
                 topBar = {
-                    AppTopBar(title = "title", leadingContent = {
+                    AppTopBar(
+                        title = "title",
+                        leadingContent = {
                         AppIcon(
                             icon = AppIcon.DrawableResourceIcon(AppIcons.Back),
                             tint = White

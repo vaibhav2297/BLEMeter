@@ -42,4 +42,10 @@ internal class RemoteDataSource @Inject constructor(
             method = HttpMethod.Post
             setBody(request)
         }
+
+    suspend fun logout(): Result<Unit> =
+        ktorClient.client.safeRequest<Unit> {
+            url(SupabaseApis.LOGOUT.url)
+            method = HttpMethod.Post
+        }
 }

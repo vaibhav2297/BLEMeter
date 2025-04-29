@@ -38,6 +38,7 @@ import com.example.designsystem.components.textfield.rememberTextFieldInputState
 import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.theme.ValueChanged
 import com.example.designsystem.theme.VoidCallback
+import com.example.designsystem.utils.isSuccess
 import com.example.payment.PaymentActivity
 import com.example.wallet.R
 import kotlinx.coroutines.delay
@@ -75,9 +76,6 @@ private fun RechargeWalletScreen(
                     RechargeWalletEvents.OnPaymentResult(d)
                 )
             }
-
-            //navigating back
-            onCancel()
         }
     }
 
@@ -91,6 +89,10 @@ private fun RechargeWalletScreen(
         paymentResult.launch(intent)
 
         onEvents(RechargeWalletEvents.OnNavigatedToPayment)
+    }
+
+    if (uiState.state.isSuccess()) {
+        onCancel()
     }
 
 
