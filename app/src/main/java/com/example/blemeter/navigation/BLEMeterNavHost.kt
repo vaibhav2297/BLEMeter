@@ -70,7 +70,7 @@ fun BLEMeterNavHost(
         )
 
         authenticationGraph {
-            onNavigateToDestination(SettingsDestination, null)
+            onNavigateToDestination(ScanDestination, null)
         }
     }
 }
