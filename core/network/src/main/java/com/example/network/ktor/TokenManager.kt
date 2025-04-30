@@ -4,7 +4,11 @@ import com.example.local.datastore.DataStoreKeys
 import com.example.local.datastore.IAppDataStore
 import com.example.network.model.SupabaseApis
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.authProviders
+import io.ktor.client.plugins.auth.providers.BearerAuthProvider
 import io.ktor.client.plugins.auth.providers.BearerTokens
+import io.ktor.client.plugins.plugin
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
@@ -42,7 +46,6 @@ class TokenManager @Inject constructor(
                 dataStore.putPreference(DataStoreKeys.AUTH_TOKEN_KEY, newAuthToken)
                 dataStore.putPreference(DataStoreKeys.REFRESH_TOKEN_KEY, newRefreshToken)
             }
-
             BearerTokens(newAuthToken, newRefreshToken)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -61,6 +64,15 @@ class TokenManager @Inject constructor(
         } catch (e: Exception) {
             e.printStackTrace()
             BearerTokens("", "")
+        }
+    }
+
+    object TokenManager {
+        fun invalidateAuthToken(client: HttpClient) {
+            client.authProviders
+                .filterIsInstance<BearerAuthProvider>()
+                .firstOrNull()
+                ?.clearToken()
         }
     }
 }

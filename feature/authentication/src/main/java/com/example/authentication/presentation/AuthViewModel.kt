@@ -90,15 +90,6 @@ internal class AuthViewModel @Inject constructor(
             authRepo.signUpWithEmail(request)
                 .onSuccess { response ->
 
-
-                    //store to local data
-                    storeAuthToken(
-                        authToken = response.accessToken,
-                        refreshToken = response.refreshToken
-                    )
-
-                    storeUserInfo(response.user)
-
                     _uiState.update {
                         it.copy(
                             authState = ScreenState.Success(Unit)
@@ -120,14 +111,6 @@ internal class AuthViewModel @Inject constructor(
             authRepo.loginWithEmail(request)
                 .onSuccess { response ->
 
-                    //store to shared pref
-                    storeAuthToken(
-                        authToken = response.accessToken,
-                        refreshToken = response.refreshToken
-                    )
-
-                    storeUserInfo(response.user)
-
                     _uiState.update {
                         it.copy(
                             authState = ScreenState.Success(Unit)
@@ -139,26 +122,6 @@ internal class AuthViewModel @Inject constructor(
                         it.copy(authState = ScreenState.Error(e.message ?: "Unknown Error"))
                     }
                 }
-        }
-    }
-
-    private suspend fun storeAuthToken(authToken: String, refreshToken: String) {
-        dataStore.apply {
-            putPreference(DataStoreKeys.AUTH_TOKEN_KEY, authToken)
-            putPreference(DataStoreKeys.REFRESH_TOKEN_KEY, refreshToken)
-        }
-    }
-
-    private suspend fun storeUserInfo(user: UserResponse) {
-        dataStore.apply {
-            putPreference(DataStoreKeys.USER_ID_KEY, user.id)
-            putPreference(DataStoreKeys.USER_LOGGED_IN_KEY, true)
-        }
-    }
-
-    private suspend fun storeUserWallet(wallet: Wallet) {
-        dataStore.apply {
-            putPreference(DataStoreKeys.USER_WALLET_ID, wallet.id)
         }
     }
 

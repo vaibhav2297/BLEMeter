@@ -64,7 +64,17 @@ internal class AuthRepository(
         }
         save { result ->
             result.onSuccess { response ->
+
+                //store to Room DB
                 dao.insertUser(response.user.toUserEntity())
+
+                //store to preferences
+                dataStore.apply {
+                    putPreference(DataStoreKeys.AUTH_TOKEN_KEY, response.accessToken)
+                    putPreference(DataStoreKeys.REFRESH_TOKEN_KEY, response.refreshToken)
+                    putPreference(DataStoreKeys.USER_ID_KEY, response.user.id)
+                    putPreference(DataStoreKeys.USER_LOGGED_IN_KEY, true)
+                }
             }
         }
     }

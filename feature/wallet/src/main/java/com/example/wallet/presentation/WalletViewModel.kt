@@ -66,7 +66,8 @@ internal class WalletViewModel @Inject constructor(
                     }
                 }
                 .onFailure { e->
-                    logger.d("fetchWalletBalance :: error")
+                    logger.d("fetchWalletBalance :: error ${e.message}")
+                    exceptionHandler.handle(e)
                     _uiState.update {
                         it.copy(
                             state = ScreenState.Error(e.message ?: "")

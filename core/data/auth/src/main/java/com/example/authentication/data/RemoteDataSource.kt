@@ -6,6 +6,7 @@ import com.example.authentication.domain.model.UserProfileRequest
 import com.example.authentication.domain.model.UserResponse
 import com.example.network.config.safeRequest
 import com.example.network.ktor.KtorClient
+import com.example.network.ktor.TokenManager
 import com.example.network.model.SupabaseApis
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
@@ -32,6 +33,8 @@ internal class RemoteDataSource @Inject constructor(
             url(SupabaseApis.LOGIN.url + "?grant_type=password")
             method = HttpMethod.Post
             setBody(request)
+        }.onSuccess {
+            TokenManager.TokenManager.invalidateAuthToken(ktorClient.client)
         }
 
     suspend fun insertUserProfile(

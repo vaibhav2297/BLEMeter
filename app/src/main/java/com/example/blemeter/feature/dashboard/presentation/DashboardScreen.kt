@@ -42,6 +42,7 @@ import com.example.designsystem.theme.AppTheme
 import com.example.designsystem.theme.MeterAppTheme
 import com.example.designsystem.theme.ValueChanged
 import com.example.navigation.uitls.NavigationCallback
+import com.example.settings.navigation.SettingsDestination
 import com.example.wallet.navigation.WalletDestination
 
 @Composable
@@ -96,9 +97,9 @@ private fun DashboardScreen(
                         modifier = Modifier
                             .size(32.dp)
                             .clickable {
-                                onNavigateToDestination(WalletDestination, null)
+                                onNavigateToDestination(SettingsDestination, null)
                             },
-                        icon = getDrawableResource(AppIcons.Wallet)
+                        icon = getDrawableResource(AppIcons.Settings)
                     )
                 }
             )
