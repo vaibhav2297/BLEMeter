@@ -3,7 +3,7 @@ package com.example.authentication.domain.repository
 import com.example.authentication.domain.model.LoginResponse
 import com.example.authentication.domain.model.EmailAuthRequest
 import com.example.authentication.domain.model.UserProfileRequest
-import com.example.authentication.domain.model.UserResponse
+import com.example.user.domain.model.UserProfile
 
 interface IAuthRepository {
 
@@ -17,4 +17,6 @@ interface IAuthRepository {
     suspend fun insertUserProfile(request: UserProfileRequest): Result<Unit>
 
     suspend fun logout(): Result<Unit>
+    suspend fun updateUserProfile(request: UserProfileRequest): Result<Unit>
+    suspend fun getUserProfile(): Result<UserProfile>
 }

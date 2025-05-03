@@ -6,5 +6,6 @@ import kotlinx.serialization.Serializable
 data class EmailAuthRequest(
     val email: String,
     val password: String,
-    val isAdmin: Boolean = false
+    val isAdmin: Boolean = false,
+    val litersPerRupees: Double = 0.0
 )

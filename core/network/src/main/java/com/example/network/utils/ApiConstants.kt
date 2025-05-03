@@ -14,5 +14,6 @@ internal object ApiConstants {
         const val WALLET_TRANSACTION_END_POINT = "/rest/v1/wallet_transactions"
         const val METER_LOGS_END_POINT = "/rest/v1/meter_logs"
         const val USER_PROFILE_END_POINT = "/rest/v1/user_profile"
+        const val USER_END_POINT = "/rest/v1/user"
     }
 }

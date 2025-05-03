@@ -223,3 +223,11 @@ fun calculateBCDFloat(bytes: UByteArray): Float {
     }
     return value
 }
+
+fun Double.to4UByteArray(): UByteArray {
+    val floatValue = this.toFloat()
+    val intBits = floatValue.toBits()
+    return UByteArray(4) { i ->
+        ((intBits shr (8 * i)) and 0xFF).toUByte()
+    }
+}

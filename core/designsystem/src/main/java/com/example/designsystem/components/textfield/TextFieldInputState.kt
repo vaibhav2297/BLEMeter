@@ -8,19 +8,14 @@ import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.setValue
 
-open class TextFieldInputState(
-    val hint: String,
-    val initialText: String
-) {
-    var text by mutableStateOf(initialText)
-        private set
+class TextFieldInputState(
+    hint: String,
+    initialText: String
+) : BaseTextFieldInputState(hint, initialText) {
 
-    fun updateText(newText: String) {
-        text = newText
+    override fun validator(): Boolean {
+        return text.isEmpty()
     }
-
-    val isHint: Boolean
-        get() = text == hint
 
     companion object {
         val Saver: Saver<TextFieldInputState, *> = listSaver(

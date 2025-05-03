@@ -29,6 +29,7 @@ object AppIcons {
     val Config = R.drawable.ic_config
     val Logout = R.drawable.ic_logout
     val Settings = R.drawable.ic_setting
+    val Exchange = R.drawable.exchange
 }
 
 /**

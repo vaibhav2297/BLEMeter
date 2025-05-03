@@ -48,6 +48,7 @@ dependencies {
     api(project(":core:network"))
     api(project(":core:designsystem"))
     api(project(":core:local"))
+    api(project(":core:data:user"))
 
     //Hilt
     implementation(libs.dagger.hilt)

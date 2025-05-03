@@ -8,7 +8,7 @@ data class UserEntity(
 
     @PrimaryKey(autoGenerate = false)
     val id: String,
-
+    val isAdmin: Boolean = false,
     val email: String,
     val phone: String,
     val role: String,
@@ -17,8 +17,10 @@ data class UserEntity(
     val isPhoneVerified: Boolean,
     val updatedAt: String,
     val createdAt: String,
+    val aud: String,
 
     //extra info
     val walletAmount: Double = 0.0,
-    val meterNumber: String = ""
+    val meterNumber: String = "",
+    val litersPerRupees: Double = 0.0,
 )

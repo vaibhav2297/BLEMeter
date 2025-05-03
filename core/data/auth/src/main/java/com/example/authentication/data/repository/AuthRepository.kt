@@ -10,6 +10,8 @@ import com.example.local.datastore.DataStoreKeys
 import com.example.local.datastore.IAppDataStore
 import com.example.local.room.UserDao
 import com.example.network.stretagy.fetchData
+import com.example.user.domain.model.UserProfile
+import kotlinx.coroutines.flow.firstOrNull
 
 internal class AuthRepository(
     private val remoteDataSource: RemoteDataSource,
@@ -40,7 +42,8 @@ internal class AuthRepository(
             insertUserProfile(
                 request = UserProfileRequest(
                     userId = user.id,
-                    isAdmin = request.isAdmin
+                    isAdmin = request.isAdmin,
+                    litersPerRupees = 100.0
                 )
             )
 
@@ -75,6 +78,11 @@ internal class AuthRepository(
                     putPreference(DataStoreKeys.USER_ID_KEY, response.user.id)
                     putPreference(DataStoreKeys.USER_LOGGED_IN_KEY, true)
                 }
+
+                //TODO : Handle
+                getUserProfile().onSuccess { userProfile ->
+                    dataStore.putPreference(DataStoreKeys.COST_CONFIGURATION_KEY, userProfile.litersPerRupees)
+                }
             }
         }
     }
@@ -91,6 +99,11 @@ internal class AuthRepository(
         request: UserProfileRequest
     ) = remoteDataSource.insertUserProfile(request)
 
+    override suspend fun updateUserProfile(
+        request: UserProfileRequest
+    ) = remoteDataSource.updateUserProfile(request)
+
+    override suspend fun getUserProfile() = remoteDataSource.getUserProfile().map { it.firstOrNull() ?: UserProfile() }
 
     override suspend fun logout(): Result<Unit> {
         return fetchData {

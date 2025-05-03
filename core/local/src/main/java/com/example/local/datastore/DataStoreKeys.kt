@@ -1,6 +1,7 @@
 package com.example.local.datastore
 
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.doublePreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 
@@ -15,4 +16,5 @@ object DataStoreKeys {
     val METER_ADDRESS_KEY = stringPreferencesKey("METER_ADDRESS_KEY")
     val METER_TYPE_KEY = intPreferencesKey("METER_TYPE_KEY")
     val METER_CALIBRATION_TYPE = intPreferencesKey("METER_CALIBRATION_TYPE")
+    val COST_CONFIGURATION_KEY = doublePreferencesKey("COST_CONFIGURATION_KEY")
 }

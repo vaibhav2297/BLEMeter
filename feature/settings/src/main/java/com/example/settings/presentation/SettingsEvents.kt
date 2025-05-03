@@ -8,7 +8,9 @@ sealed class SettingsEvents {
 
     data class OnWallet(val navigate: Boolean) : SettingsEvents()
 
-    data class OnNavigateToAuth(val navigate: Boolean) : SettingsEvents()
+    data class OnCostConfigurationDialog(val show: Boolean) : SettingsEvents()
 
-    data object OnMeterConfiguration : SettingsEvents()
+    data class OnCostConfiguration(val literPerRupees: Double) : SettingsEvents()
+
+    data class OnNavigateToAuth(val navigate: Boolean) : SettingsEvents()
 }

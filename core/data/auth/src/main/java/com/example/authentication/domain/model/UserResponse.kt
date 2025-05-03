@@ -48,5 +48,6 @@ fun UserResponse.toUserEntity() = UserEntity(
     isEmailVerified = userMetadata?.isEmailVerified ?: false,
     isPhoneVerified = userMetadata?.isPhoneVerified ?: false,
     updatedAt = updatedAt,
-    createdAt = createdAt
+    createdAt = createdAt,
+    aud = aud
 )

@@ -1,5 +1,6 @@
 package com.example.authentication.domain.model
 
+import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -7,8 +8,13 @@ import kotlinx.serialization.Serializable
 data class UserProfileRequest(
 
     @SerialName("user_id")
-    val userId: String,
+    @EncodeDefault(EncodeDefault.Mode.NEVER)
+    val userId: String?,
 
     @SerialName("is_admin")
-    val isAdmin: Boolean
+    @EncodeDefault(EncodeDefault.Mode.NEVER)
+    val isAdmin: Boolean?,
+
+    @SerialName("liters_per_rupees")
+    val litersPerRupees: Double = 0.0
 )

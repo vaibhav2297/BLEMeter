@@ -8,6 +8,7 @@ import com.example.network.config.safeRequest
 import com.example.network.ktor.KtorClient
 import com.example.network.ktor.TokenManager
 import com.example.network.model.SupabaseApis
+import com.example.user.domain.model.UserProfile
 import io.ktor.client.request.setBody
 import io.ktor.client.request.url
 import io.ktor.http.HttpMethod
@@ -19,23 +20,32 @@ internal class RemoteDataSource @Inject constructor(
 
     suspend fun signUpWithEmail(
         request: EmailAuthRequest
-    ): Result<UserResponse> =
-        ktorClient.client.safeRequest<UserResponse> {
+    ): Result<UserResponse> {
+        val response = ktorClient.client.safeRequest<UserResponse> {
             url(SupabaseApis.SIGN_UP.url)
             method = HttpMethod.Post
             setBody(request)
         }
+        if (response.isSuccess) {
+            TokenManager.TokenManager.invalidateAuthToken(ktorClient.client)
+        }
+        return response
+    }
 
     suspend fun loginWithEmail(
         request: EmailAuthRequest
-    ): Result<LoginResponse> =
-        ktorClient.client.safeRequest<LoginResponse> {
+    ): Result<LoginResponse> {
+        val response = ktorClient.client.safeRequest<LoginResponse> {
             url(SupabaseApis.LOGIN.url + "?grant_type=password")
             method = HttpMethod.Post
             setBody(request)
-        }.onSuccess {
+        }
+
+        if (response.isSuccess) {
             TokenManager.TokenManager.invalidateAuthToken(ktorClient.client)
         }
+        return response
+    }
 
     suspend fun insertUserProfile(
         request: UserProfileRequest
@@ -44,6 +54,24 @@ internal class RemoteDataSource @Inject constructor(
             url(SupabaseApis.USER_PROFILE.url)
             method = HttpMethod.Post
             setBody(request)
+        }
+
+    suspend fun updateUserProfile(
+        request: UserProfileRequest
+    ): Result<Unit> =
+        ktorClient.client.safeRequest<Unit> {
+            url(SupabaseApis.USER_PROFILE.url)
+            url {
+                parameters.append("user_id", "eq.${request.userId}")
+            }
+            method = HttpMethod.Patch
+            setBody(request)
+        }
+
+    suspend fun getUserProfile(): Result<List<UserProfile>> =
+        ktorClient.client.safeRequest<List<UserProfile>> {
+            url(SupabaseApis.USER_PROFILE.url)
+            method = HttpMethod.Get
         }
 
     suspend fun logout(): Result<Unit> =

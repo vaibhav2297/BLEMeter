@@ -11,6 +11,7 @@ import com.example.local.datastore.DataStoreKeys
 import com.example.local.datastore.IAppDataStore
 import com.example.logger.ExceptionHandler
 import com.example.logger.ILogger
+import com.example.user.domain.repository.IUserRepository
 import com.example.wallet.domain.model.Wallet
 import com.example.wallet.domain.repository.WalletRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +25,6 @@ import javax.inject.Inject
 @HiltViewModel
 internal class AuthViewModel @Inject constructor(
     private val authRepo: IAuthRepository,
-    private val walletRepo: WalletRepository,
     private val dataStore: IAppDataStore,
     private val logger: ILogger,
     private val exceptionHandler: ExceptionHandler

@@ -15,6 +15,7 @@ enum class SupabaseApis {
     METER,
     METER_TRANSACTION,
     WALLET_TRANSACTION,
+    USER,
     USER_PROFILE;
 
     /**
@@ -38,6 +39,7 @@ enum class SupabaseApis {
                 METER -> ApiConstants.Supabase.METER_END_POINT
                 METER_LOGS -> ApiConstants.Supabase.METER_LOGS_END_POINT
                 WALLET_TRANSACTION -> ApiConstants.Supabase.WALLET_TRANSACTION_END_POINT
+                USER -> ApiConstants.Supabase.USER_END_POINT
                 USER_PROFILE -> ApiConstants.Supabase.USER_PROFILE_END_POINT
             }
 

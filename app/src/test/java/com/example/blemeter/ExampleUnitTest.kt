@@ -397,13 +397,11 @@ class ExampleUnitTest {
         assertEquals(expected, actual)
     }
 
-/*    @Test
-    fun assert_data_to_PurchaseCommand() {
-        val data = "68 12 02001712249671 04 08 a013 00 02 0000000a 9b 16"
-
-        val actual = PurchaseDataCommand.toCommand(data)
-        val expected = MeterData()
+    @Test
+    fun assert_double_to_4UByteArray() {
+        val expected = byteArrayOf(0x00, 0x00, 0x00, 0x3F).toUByteArray()
+        val actual = 0.5.to4UByteArray()
 
         assertEquals(expected, actual)
-    }*/
+    }
 }

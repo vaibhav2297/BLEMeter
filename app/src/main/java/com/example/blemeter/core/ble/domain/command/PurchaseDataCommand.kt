@@ -44,7 +44,7 @@ object PurchaseDataCommand : Command<PurchaseDataRequest, MeterData>(
             *dataIdentifier.identifier.fromHexToUByteArray(),
             serialNumber,
             request.numberTimes.toUByte(),
-            *(request.purchaseVariable * 10).toUInt().to4UByteArray()
+            *(request.purchaseVariable).to4UByteArray()
         )
 
         return ubyteArrayOf(

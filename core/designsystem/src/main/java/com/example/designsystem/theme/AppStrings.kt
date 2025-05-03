@@ -10,4 +10,8 @@ object AppStrings {
     val ok = R.string.ok
     val cancel = R.string.cancel
     val deny = R.string.deny
+    val costConfiguration = R.string.cost_configuration
+    val set = R.string.set
+    val costConfigurationDescription = R.string.cost_configuration_description
+    val save = R.string.save
 }

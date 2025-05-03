@@ -3,6 +3,7 @@ package com.example.blemeter.feature.recharge.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.blemeter.config.model.CalibrationIdentification
 import com.example.blemeter.core.ble.domain.model.MeterServicesProvider
 import com.example.blemeter.core.ble.domain.model.request.PurchaseDataRequest
 import com.example.blemeter.feature.dashboard.domain.usecases.DashboardUseCases
@@ -109,10 +110,30 @@ class RechargeViewModel @Inject constructor(
             val rechargeTimes =
                 dataStore.getPreference(DataStoreKeys.RECHARGE_TIMES_KEY, 0).firstOrNull() ?: 0
 
+            //Cost Configuration
+            val costConfiguration =
+                dataStore.getPreference(DataStoreKeys.COST_CONFIGURATION_KEY, 0.0).firstOrNull()
+                    ?: 0.0
+
+            val meterCalibration =
+                dataStore.getPreference(DataStoreKeys.METER_CALIBRATION_TYPE, 0).firstOrNull()
+                    ?: 0
+
+            val calibrationIdentification =
+                CalibrationIdentification.getCalibrationIdentificationByCommandBit(meterCalibration.toUInt())
+
+            val purchaseData =
+                ((_uiState.value.rechargeAmount * costConfiguration) / calibrationIdentification.factor.toDouble()).coerceAtLeast(
+                    0.0
+                )
+
+            //1 rs -- 100 litre
+            //? rs -- 50 litre
+
             useCases.purchaseDataUseCase(
                 request = PurchaseDataRequest(
                     numberTimes = rechargeTimes.inc(),
-                    purchaseVariable = _uiState.value.rechargeAmount
+                    purchaseVariable = purchaseData
                 )
             )
                 .onFailure { e ->
@@ -139,12 +160,13 @@ class RechargeViewModel @Inject constructor(
                     )
                 }
             }?.collect { data ->
-                logger.d( "RechargeVM :: observerResponse :: $data")
+                logger.d("RechargeVM :: observerResponse :: $data")
                 when (data) {
                     is MeterData -> {
 
                         val oldRechargeTimes =
-                            dataStore.getPreference(DataStoreKeys.RECHARGE_TIMES_KEY, 0).firstOrNull() ?: 0
+                            dataStore.getPreference(DataStoreKeys.RECHARGE_TIMES_KEY, 0)
+                                .firstOrNull() ?: 0
 
                         //indicates successful recharge
                         if ((oldRechargeTimes.inc()) == data.numberTimes.toInt()) {
@@ -177,7 +199,7 @@ class RechargeViewModel @Inject constructor(
     }
 
     private suspend fun saveRechargeTimes(numberOfTimes: Int) {
-        logger.d( "RechargeViewmodel: saveRechargeTimes: $numberOfTimes")
+        logger.d("RechargeViewmodel: saveRechargeTimes: $numberOfTimes")
         dataStore.putPreference(DataStoreKeys.RECHARGE_TIMES_KEY, numberOfTimes)
     }
 
@@ -200,10 +222,10 @@ class RechargeViewModel @Inject constructor(
             walletId = walletId
         )
 
-        logger.d( "RechargeViewmodel: walletTransactionRequest: $request")
+        logger.d("RechargeViewmodel: walletTransactionRequest: $request")
 
         walletRepository.insertWalletTransaction(request)
-            .onSuccess { logger.d( "RechargeViewmodel :: insertWalletTransaction: success") }
+            .onSuccess { logger.d("RechargeViewmodel :: insertWalletTransaction: success") }
             .onFailure { e -> exceptionHandler.handle(Exception(e)) }
     }
 
@@ -234,7 +256,7 @@ class RechargeViewModel @Inject constructor(
             paymentMethod = data.productVersion.paymentMethod.name
         )
 
-        logger.d( "RechargeViewmodel: insertMeterLog: $request")
+        logger.d("RechargeViewmodel: insertMeterLog: $request")
 
         meterTransactionRepository.insertMeterLogs(request)
             .onSuccess { logger.d("RechargeViewmodel: insertMeterLogs: success") }
